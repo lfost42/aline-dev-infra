@@ -1,10 +1,10 @@
-# Security Group for Private EC2 Instances
+# Security group for private EC2 instances
 module "private_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "3.18.0"
 
   name = "private-sg"
-  description = "Security Group with HTTP & SSH port open for entire VPC Block (IPv4 CIDR), egress ports are all world open"
+  description = "Security Group with HTTP & SSH port open for VPC (IPv4 CIDR), egress ports open"
   vpc_id = module.vpc.vpc_id
   # Ingress Rules & CIDR Blocks
   ingress_rules = ["ssh-tcp", "http-80-tcp"]
@@ -13,3 +13,4 @@ module "private_sg" {
   egress_rules = ["all-all"]
   tags = local.common_tags
 }
+
