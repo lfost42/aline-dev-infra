@@ -1,7 +1,3 @@
-locals {
-  region = "us-east-1"
-}
-
-module "ec2" {
-  source = "../modules/ec2"
+module "cluster" {
+  source = "../modules/cluster"
 }
