@@ -1,0 +1,3 @@
+**.DS_Store
+**/private-key/
+aws/modules/ec2/local-exec-output-files/
