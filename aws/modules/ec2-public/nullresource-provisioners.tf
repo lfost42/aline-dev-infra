@@ -6,7 +6,7 @@ resource "null_resource" "name" {
   connection {
     type     = "ssh"
     host     = aws_eip.bastion_eip.public_ip    
-    user     = "ec2-user"
+    user     = "ubuntu"
     password = ""
     private_key = file("${path.module}/private-key/lf-terraform-key.pem")
   }  
