@@ -6,7 +6,7 @@ module "ec2_private" {
   version = "2.17.0"
   # insert the 10 required variables here
   name                   = "${var.environment}-private"
-  ami                    = data.aws_ami.ubuntu
+  ami                    = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.instance_keypair
   #monitoring             = true

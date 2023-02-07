@@ -1,7 +1,7 @@
 # AWS EC2 Instance Terraform Variables
 # EC2 Instance Variables
 
-# AWS EC2 Instance Type
+# AWS EC2 Ubuntu AMI
 variable "ami_id" {
   description = "AMI id"
   type = string
@@ -19,7 +19,7 @@ variable "instance_type" {
 variable "instance_keypair" {
   description = "AWS EC2 Key pair"
   type = string
-  default = "terraform-key"
+  default = "lf-terraform-key"
 }
 
 # AWS EC2 Private Instance Count

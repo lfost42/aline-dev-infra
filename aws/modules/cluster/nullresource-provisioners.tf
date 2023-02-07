@@ -1,24 +1,24 @@
-# Create a null resource and provisioners
+# Create a Null Resource and Provisioners
 resource "null_resource" "name" {
   depends_on = [module.ec2_public]
-  # Connection block for provisioners to connect to EC2 instance
+  # Connection Block for Provisioners to connect to EC2 Instance
   connection {
     type     = "ssh"
-    host     = aws_eip.bastion_eip.public_ip    
+    host     = aws_eip.pub_eip.public_ip    
     user     = "ubuntu"
     password = ""
-    private_key = file("${path.module}/private-key/terraform-key.pem")
+    private_key = file("private-key/lf-terraform-key.pem")
   }  
 
-## File Provisioner: copies the terraform-key.pem file to /tmp/terraform-key.pem
+## File Provisioner: Copies the lf-terraform-key.pem file to /tmp/lf-terraform-key.pem
   provisioner "file" {
-    source      = "private-key/terraform-key.pem"
-    destination = "/tmp/terraform-key.pem"
+    source      = "private-key/lf-terraform-key.pem"
+    destination = "/tmp/lf-terraform-key.pem"
   }
-## Remote Exec Provisioner: adjust private key permission
+## Remote Exec Provisioner: Using remote-exec provisioner fix the private key permissions on Bastion Host
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod 400 /tmp/terraform-key.pem"
+      "sudo chmod 400 /tmp/lf-terraform-key.pem"
     ]
   }
 ## Local Exec Provisioner:  local-exec provisioner (Creation-Time Provisioner - Triggered during Create Resource)

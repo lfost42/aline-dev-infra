@@ -1,5 +1,4 @@
 # VPC Output Values
-
 # VPC ID
 output "vpc_id" {
   description = "The ID of the VPC"

@@ -2,7 +2,7 @@
 variable "vpc_name" {
   description = "VPC  ame"
   type = string 
-  default = "${local.name}-${local.environment}-VPC"
+  default = "aline-dev-VPC"
 }
 
 # VPC CIDR Block
@@ -16,7 +16,7 @@ variable "vpc_cidr_block" {
 variable "vpc_availability_zones" {
   description = "VPC Availability Zones"
   type = list(string)
-  default = ["${local.region}a", "${local.region}b"]
+  default = ["us-east-1a", "us-east-1b"]
 }
 
 # VPC public subnets
