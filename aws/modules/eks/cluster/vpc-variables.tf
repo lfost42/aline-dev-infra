@@ -20,11 +20,11 @@ variable "vpc_availability_zones" {
 }
 
 # VPC public subnets
-variable "vpc_public_subnets" {
-  description = "VPC public subnets"
-  type = list(string)
-  default = ["10.0.101.0/24", "10.0.102.0/24"]
-}
+# variable "vpc_public_subnets" {
+#   description = "VPC public subnets"
+#   type = list(string)
+#   default = ["10.0.101.0/24", "10.0.102.0/24"]
+# }
 
 # VPC private subnets
 variable "vpc_private_subnets" {
@@ -55,11 +55,11 @@ variable "vpc_create_database_subnet_route_table" {
 }
 
 # VPC enable NAT gateway
-variable "vpc_enable_nat_gateway" {
-  description = "Private subnet outbound communication"
-  type = bool
-  default = true  
-}
+# variable "vpc_enable_nat_gateway" {
+#   description = "Private subnet outbound communication"
+#   type = bool
+#   default = true  
+# }
 
 
 

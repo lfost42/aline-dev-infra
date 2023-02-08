@@ -7,7 +7,7 @@ module "vpc" {
   name = "${local.name}-${var.vpc_name}"
   cidr = var.vpc_cidr_block
   azs             = var.vpc_availability_zones
-  public_subnets  = var.vpc_public_subnets
+  # public_subnets  = var.vpc_public_subnets
   private_subnets = var.vpc_private_subnets  
 
   # Database Subnets
@@ -16,7 +16,7 @@ module "vpc" {
   create_database_subnet_route_table = var.vpc_create_database_subnet_route_table
   
   # NAT Gateways - Outbound Communication
-  enable_nat_gateway = var.vpc_enable_nat_gateway 
+  # enable_nat_gateway = var.vpc_enable_nat_gateway 
 
   # VPC DNS Parameters
   enable_dns_hostnames = true
@@ -27,9 +27,9 @@ module "vpc" {
   vpc_tags = local.common_tags
 
   # subnet tags
-  public_subnet_tags = {
-    Type = "Public Subnets"
-  }
+  # public_subnet_tags = {
+  #   Type = "Public Subnets"
+  # }
   private_subnet_tags = {
     Type = "Private Subnets"
   }  

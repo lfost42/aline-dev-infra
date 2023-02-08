@@ -28,9 +28,3 @@ variable "private_instance_count" {
   type = number
   default = 2
 }
-
-variable "public_instance_count" {
-  description = "AWS EC2 public instances count"
-  type = number
-  default = 1
-}
