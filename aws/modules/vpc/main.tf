@@ -1,47 +1,27 @@
-# Create VPC Terraform Module
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  #version = "2.78.0"
-  version = "3.0.0"
-
-  # VPC Basic Details
-  name = "${local.name}-${var.vpc_name}"
-  cidr = var.vpc_cidr_block
-  azs             = var.vpc_availability_zones
-  public_subnets  = var.vpc_public_subnets
-  private_subnets = var.vpc_private_subnets  
-
-  # Database Subnets
-  database_subnets = var.vpc_database_subnets
-  create_database_subnet_group = var.vpc_create_database_subnet_group
-  create_database_subnet_route_table = var.vpc_create_database_subnet_route_table
-  # create_database_internet_gateway_route = true
-  # create_database_nat_gateway_route = true
-  
-  # NAT Gateways - Outbound Communication
-  enable_nat_gateway = var.vpc_enable_nat_gateway 
-  single_nat_gateway = var.vpc_single_nat_gateway
-
-  # VPC DNS Parameters
+resource "aws_vpc" "cc_vpc" {
+  cidr_block = var.vpc_cidr_block
   enable_dns_hostnames = true
-  enable_dns_support   = true
-
-
-  tags = local.common_tags
-  vpc_tags = local.common_tags
-
-  # Additional Tags to Subnets
-  public_subnet_tags = {
-    Type = "Public Subnets"
-  }
-  private_subnet_tags = {
-    Type = "Private Subnets"
-  }  
-  database_subnet_tags = {
-    Type = "Private Database Subnets"
+  enable_dns_support = true
+  tage = {
+    Name = "${var.project}-VPC"
   }
 }
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
+
+# Private Subnet
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+resource "aws_subnet" "priv_subnet" {
+  vpc_id = aws.vpc.cc_vpc.id
+  count = var.az_count
+  cidr_block = cidrsubnet(var.vpc_cidr_blick, var.subnet_cidr_bits, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "${var.project}-Priv-Subnet-${count.index + 1}"
+  }
+  depends_on = [
+    aws_vpc.cc_vpc
+  ]
+}
