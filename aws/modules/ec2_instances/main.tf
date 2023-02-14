@@ -13,6 +13,10 @@ resource "aws_instance" "ec2_public" {
   subnet_id              = module.vpc.public_subnets[0]
   vpc_security_group_ids = [module.public_sg.security_group_id]
   tags = local.common_tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Create Elastic IP
@@ -53,4 +57,8 @@ resource "aws_instance" "ec2_private" {
   ]  
   instance_count         = var.private_instance_count
   tags = local.common_tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }

@@ -5,9 +5,9 @@ resource "null_resource" "copy_ec2_keys" {
   connection {
     type     = "ssh"
     host     = aws_eip.public_eip.public_ip    
-    user     = "ec2-user"
+    user     = "ubuntu"
     password = ""
-    private_key = file("private-key/eks-terraform-key.pem")
+    private_key = file("private-key/lf-terraform-key.pem")
   }  
 
 ## File Provisioner: Copies the terraform-key.pem file to /tmp/terraform-key.pem
