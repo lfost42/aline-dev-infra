@@ -1,10 +1,31 @@
 # VPC Input Variables
+variable "public_bool" {
+  type = public_bool
+  default = false
+}
+
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
+variable "peering_users" {
+  type = list(string)
+}
 
 # VPC Name
 variable "vpc_name" {
   description = "VPC Name"
   type = string 
-  default = "myvpc"
+  default = "aline-vpc"
+}
+
+variable "destination_vpc_id" {
+  type = string
+}
+
+variable "peer_role_arn" {
+  type = string
 }
 
 # VPC CIDR Block
@@ -42,30 +63,23 @@ variable "vpc_database_subnets" {
   default = ["10.0.151.0/24", "10.0.152.0/24"]
 }
 
-# VPC Create Database Subnet Group (True / False)
+# VPC Create Database Subnet Group
 variable "vpc_create_database_subnet_group" {
   description = "VPC Create Database Subnet Group"
   type = bool
   default = true 
 }
 
-# VPC Create Database Subnet Route Table (True or False)
+# VPC Create Database Subnet Route Table
 variable "vpc_create_database_subnet_route_table" {
   description = "VPC Create Database Subnet Route Table"
   type = bool
   default = true   
 }
 
-# VPC Enable NAT Gateway (True or False) 
+# VPC Enable NAT Gateway
 variable "vpc_enable_nat_gateway" {
   description = "Enable NAT Gateways for Private Subnets Outbound Communication"
   type = bool
   default = true  
-}
-
-# VPC Single NAT Gateway (True or False)
-variable "vpc_single_nat_gateway" {
-  description = "Enable only single NAT Gateway in one Availability Zone to save costs during our demos"
-  type = bool
-  default = true
 }

@@ -35,3 +35,7 @@ output "azs" {
   description = "A list of availability zones spefified as argument to this module"
   value       = module.vpc.azs
 }
+
+output "peer_role_arn" {
+  value = aws_iam_role.peer_role.arn
+}
