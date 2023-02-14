@@ -1,5 +1,5 @@
 # aws_vpc
-resource "aws_vpc" "sb_vpc" {
+resource "aws_vpc" "eks_vpc" {
   cidr_block = var.vpc_cidr_block
   enable_dns_hostnames = true
   enable_dns_support = true
@@ -14,7 +14,7 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "priv_subnet" {
-  vpc_id = aws.vpc.cc_vpc.id
+  vpc_id = aws.vpc.eks_vpc.id
   count = var.az_count
   cidr_block = cidrsubnet(var.vpc_cidr_blick, var.subnet_cidr_bits, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
@@ -23,7 +23,7 @@ resource "aws_subnet" "priv_subnet" {
     Name = "${var.project}-Priv-Subnet-${count.index + 1}"
   }
   depends_on = [
-    aws_vpc.cc_vpc
+    aws_vpc.eks_vpc
   ]
 }
 
