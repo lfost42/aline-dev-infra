@@ -1,3 +1,5 @@
+// tflint --config=aws/tflint/tflint.hcl aws/modules
+
 plugin "terraform" {
   enabled = true
   preset  = "recommended"

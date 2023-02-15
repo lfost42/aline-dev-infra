@@ -20,9 +20,6 @@ module "vpc" {
 
   tags = {
     Name = "aline-${var.infra_env}-vpc"
-    Project = "aline"
-    Environment = var.infra_env
-    ManagedBy = "terraform"
   }
 
   private_subnet_tags = {

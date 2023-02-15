@@ -28,3 +28,14 @@ key_pair = "lf-terraform-key"
 # EKS Node Group Variables
 desired_size = 2
 max_size = 4
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Name        = "lf-aline-develop"
+    Project     = "lf-aline"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+  }
+}

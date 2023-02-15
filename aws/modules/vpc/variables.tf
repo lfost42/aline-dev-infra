@@ -28,3 +28,14 @@ variable "database_subnets" {
   type = list(string)
   description = "subnets to create for database traffic, one per AZ"
 }
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Name        = "lf-aline-develop"
+    Project     = "lf-aline"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+  }
+}

@@ -24,10 +24,6 @@ module "ec2-instance" {
   tags = merge(
   {
     Name        = "aline-${var.infra_env}"
-    Role        = var.infra_role
-    Project     = "aline"
-    Environment = var.infra_env
-    ManagedBy   = "terraform"
   },
   var.tags
   )

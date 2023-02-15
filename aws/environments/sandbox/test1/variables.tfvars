@@ -1,3 +1,5 @@
+infra_env = "sandbox"
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -7,14 +9,4 @@ variable "tags" {
     Environment = "develop"
     ManagedBy   = "terraform"
   }
-}
-
-variable db_user {
-  type = string
-  description = "the database user"
-}
-
-variable db_pass {
-  type = string
-  description = "the database password"
 }

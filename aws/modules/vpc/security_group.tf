@@ -10,9 +10,6 @@ resource "aws_security_group" "public" {
   tags = {
     Name        = "aline-${var.infra_env}-public-sg"
     Role        = "public"
-    Project     = "aline"
-    Environment = var.infra_env
-    ManagedBy   = "terraform"
   }
 }
 
@@ -64,9 +61,6 @@ resource "aws_security_group" "private" {
   tags = {
     Name        = "aline-${var.infra_env}-private-sg"
     Role        = "private"
-    Project     = "aline"
-    Environment = var.infra_env
-    ManagedBy   = "terraform"
   }
 }
 

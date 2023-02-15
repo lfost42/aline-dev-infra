@@ -42,9 +42,9 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    Name        = "aline-${var.infra_env}"
-    Project     = "aline"
-    Environment = var.infra_env
+    Name        = "lf-aline-develop"
+    Project     = "lf-aline"
+    Environment = "develop"
     ManagedBy   = "terraform"
   }
 }

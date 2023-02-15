@@ -11,3 +11,14 @@ variable "bucket_name" {
 variable "common_tags" {
   description = "Common tags you want applied to all components."
 }
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Name        = "lf-aline-develop"
+    Project     = "lf-aline"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+  }
+}

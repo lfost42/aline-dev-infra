@@ -1,6 +1,6 @@
 resource "aws_rds_cluster_parameter_group" "paramater_group" {
   name   = "aline-${var.infra_env}-pg-mysql-cluster"
-  family = "mysql-mysql5.7"
+  family = "mysql-mysql8.0"
 
   parameter {
     name  = "character_set_server"
@@ -19,9 +19,6 @@ resource "aws_rds_cluster_parameter_group" "paramater_group" {
 
   tags = {
     Name        = "aline ${var.infra_env} RDS Parameter Group - mysql Cluster"
-    Environment = var.infra_env
-    Project     = "aline"
-    ManagedBy   = "terraform"
     Type        = "mysql"
   }
 }
@@ -29,20 +26,14 @@ resource "aws_rds_cluster_parameter_group" "paramater_group" {
 resource "aws_db_parameter_group" "db_parameter_group" {
   # Name is used in aws_rds_cluster::db_parameter_group_name parameter
   name   = "aline-${var.infra_env}-mysql"
-  family = "mysql-mysql5.7"
+  family = "mysql-mysql8.0"
 
   tags = {
     Name        = "aline ${var.infra_env} RDS Parameter Group - mysql"
-    Environment = var.infra_env
-    Project     = "aline"
-    ManagedBy   = "terraform"
     Type        = "mysql"
   }
 }
 
-# aws database subnet group
-# aws rds cluster
-# aws rds cluster instance
 module "rds-mysql" {
   source  = "terraform-aws-modules/rds/aws//modules/db_instance"
   version = "5.4.2"
@@ -61,14 +52,10 @@ module "rds-mysql" {
   db_parameter_group_name         = aws_db_parameter_group.db_parameter_group.name
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.paramater_group.name
 
-  create_random_password = false
   username = var.master_username
   password = var.master_password
 
   tags = {
-    Environment = var.infra_env
-    Project     = "aline"
-    ManagedBy   = "terraform"
     Type        = "mysql"
   }
 }

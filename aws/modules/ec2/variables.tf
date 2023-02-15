@@ -36,14 +36,19 @@ variable security_groups {
   default = []
 }
 
-variable "tags" {
-  type = map(string)
-  default = {}
-  description = "tags for the ec2 instance"
-}
-
 variable "create_eip" {
   type = bool
   default = false
   description = "whether or create an EIP for the ec2 instance or not"
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Name        = "lf-aline-develop"
+    Project     = "lf-aline"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+  }
 }

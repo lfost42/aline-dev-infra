@@ -17,7 +17,10 @@ resource "aws_eks_node_group" "this" {
   instance_types = ["t2.medium"]
 
   tags = merge(
-    var.tags
+  {
+    Name        = "aline-${var.infra_env}-nodegroup"
+  },
+  var.tags
   )
 
   depends_on = [
@@ -78,8 +81,11 @@ resource "aws_security_group" "eks_nodes" {
   }
 
   tags = {
-    Name                                           = "$aline-${var.dev-infra}-node-sg"
+    Name                                                   = "$aline-${var.dev-infra}-node-sg"
     "kubernetes.io/cluster/aline-${var.dev-infra}-cluster" = "owned"
+    Project                                                = "lf-aline"
+    Environment                                            = var.infra_env
+    ManagedBy                                              = "terraform"
   }
 }
 
@@ -101,4 +107,35 @@ resource "aws_security_group_rule" "nodes_cluster_inbound" {
   source_security_group_id = aws_security_group.eks_cluster.id
   to_port                  = 65535
   type                     = "ingress"
+}
+
+# nodegroup roles
+resource "aws_iam_role" "eks-ng-roles" {
+  name = "eks-node-group-iam-roles"
+
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aline-AmazonEKSWorkerNodePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.aline.name
+}
+
+resource "aws_iam_role_policy_attachment" "aline-AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.aline.name
+}
+
+resource "aws_iam_role_policy_attachment" "aline-AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.aline.name
 }

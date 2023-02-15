@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-TF_ENV=$1 # develop, sandbox
-TF_APP=$2 # eks, ecs
+TF_ENV=$1 # environment (i.e. develop, sandbox)
+TF_APP=$2 # app (i.e. eks, ecs, test1, test2)
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -17,7 +17,7 @@ if [ $# -gt 0 ]; then
 
     if [ "$3" == "init" ]; then
         terraform -chdir=./$TF_ENV/$TF_APP init \
-          -backend-config="bucket=lf-aline" \
+          -backend-config="bucket=lf-aline-tf" \
           -backend-config="key=$TF_ENV/$TF_APP.tfstate"
     else
         terraform -chdir=./$TF_ENV/$TF_APP $3
