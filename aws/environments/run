@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+TF_ENV=$1 # develop, sandbox
+TF_APP=$2 # eks, ecs
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# Always run from the location of this script
+cd $DIR
+
+if [ $# -gt 0 ]; then
+
+    if [ ! -d "$TF_ENV/$TF_APP" ]; then
+        >&2 echo "Directory $DIR/$TF_ENV/$TF_APP" does not exist
+        exit 1
+    fi
+
+    if [ "$3" == "init" ]; then
+        terraform -chdir=./$TF_ENV/$TF_APP init \
+          -backend-config="bucket=lf-aline" \
+          -backend-config="key=$TF_ENV/$TF_APP.tfstate"
+    else
+        terraform -chdir=./$TF_ENV/$TF_APP $3
+    fi
+fi
+# back to original location
+cd -
