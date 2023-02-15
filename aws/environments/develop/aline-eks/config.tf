@@ -67,6 +67,7 @@ module "ec2_public" {
 
 module "ec2_private" {
   source = "../../../modules/ec2"
+
   infra_env = var.infra_env
   infra_role = "private"
   instance_size = "t3.medium"
@@ -77,22 +78,9 @@ module "ec2_private" {
   create_eip = false
 }
 
-data "aws_subnet_ids" "database_subnets" {
-  vpc_id = module.vpc.aws_vpc.vpc.id
-}
-
-module "database" {
-  source = "../../../modules/rds"
-  infra_env = var.infra_env
-  instance_type = "db.t3.medium"
-  subnets = data.aws_subnet_ids.database_subnets.ids
-  vpc_id = data.aws_vpc.vpc.id
-  master_username = var.db_user
-  master_password = var.db_pass
-}
-
 module "vpc" {
   source = "../../../modules/vpc"
+
   infra_env = var.infra_env
   vpc_cidr = "10.0.0.0/17"
   azs = ["us-east-1a", "us-east-1b"]

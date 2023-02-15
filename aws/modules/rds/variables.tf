@@ -4,6 +4,7 @@ variable "infra_env" {
 
 variable "instance_type" {
   description = "RDS instance type and size"
+  default = "db.t3.micro"
 }
 
 variable "subnets" {
