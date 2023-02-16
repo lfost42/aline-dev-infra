@@ -15,17 +15,17 @@ variable "azs" {
   default = ["us-east-1a", "us-east-1b"]
 }
 
-variable subnets {
-  type = list(string)
-  description = "valid subnets to assign to server"
-}
-
 variable "public_subnets" {
   type = list(string)
   description = "subnets to create for public network traffic, one per AZ"
 }
 
 variable "private_subnets" {
+  type = list(string)
+  description = "subnets to create for private network traffic, one per AZ"
+}
+
+variable "database_subnets" {
   type = list(string)
   description = "subnets to create for private network traffic, one per AZ"
 }
@@ -45,6 +45,15 @@ variable "private_subnet_numbers" {
   default = {
     "us-east-1a" = 3
     "us-east-1b" = 4
+  }
+}
+
+variable "database_subnet_numbers" {
+  type = map(number)
+  description = "Map of AZ to a number that should be used for database subnets"
+  default = {
+    "us-east-1a" = 5
+    "us-east-1b" = 6
   }
 }
 

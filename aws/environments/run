@@ -19,9 +19,12 @@ if [ $# -gt 0 ]; then
         terraform -chdir=./$TF_ENV/$TF_APP init \
           -backend-config="bucket=lf-aline-terraform" \
           -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
+    elif [ "$3" == "apply" || "$3" == "destroy" ]; then
+        terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
     else
         terraform -chdir=./$TF_ENV/$TF_APP $3 $4
     fi
+
 fi
 # back to original location
 cd -

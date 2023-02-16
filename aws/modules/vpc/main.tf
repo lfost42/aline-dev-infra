@@ -1,21 +1,8 @@
-# Uses VPC community module
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "2.77.0"
+# Create a VPC for the region associated with the AZ
+resource "aws_vpc" "vpc" {
+  cidr_block = var.vpc_cidr
 
-  name = "aline-${var.infra_env}-vpc"
-  cidr = var.vpc_cidr
-  azs = var.azs
-
-  # Single NAT Gateway, see docs linked above
-  enable_nat_gateway = true
-  single_nat_gateway = true
-  one_nat_gateway_per_az = false
-
-  private_subnets = var.private_subnets
-  public_subnets  = var.public_subnets
-
-  tags = merge(
+    tags = merge(
     {
       Name        = "aline-${var.infra_env}-vpc"
     },
@@ -26,7 +13,6 @@ module "vpc" {
 # Create 1 public subnets for each AZ within the regional VPC
 resource "aws_subnet" "public" {
   for_each = var.public_subnet_numbers
-
   vpc_id            = aws_vpc.vpc.id
   availability_zone = each.key
 
@@ -60,6 +46,25 @@ resource "aws_subnet" "private" {
   )
 }
 
+# Create 1 database subnet for each AZ within the regional VPC
+resource "aws_subnet" "database" {
+  for_each = var.database_subnet_numbers
+
+  vpc_id            = aws_vpc.vpc.id
+  availability_zone = each.key
+
+  # 2,048 IP addresses each
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 4, each.value)
+
+  tags = merge(
+    {
+      Name        = "aline-${var.infra_env}-database-subnet"
+      Subnet      = "${each.key}-${each.value}"
+    },
+    var.tags
+  )
+}
+
 ###
 # IGW and NGW
 ##
@@ -68,7 +73,7 @@ resource "aws_internet_gateway" "igw" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-vpc"
+      Name        = "aline-${var.infra_env}-igw"
       VPC         = aws_vpc.vpc.id
     },
     var.tags

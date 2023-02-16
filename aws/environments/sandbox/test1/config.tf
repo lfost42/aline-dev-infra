@@ -54,18 +54,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical official
 }
 
-module "ec2_public" {
-  source = "../../../modules/ec2"
-
-  infra_env = var.infra_env
-  infra_role = "public"
-  instance_size = "t3.micro"
-  instance_ami = data.aws_ami.ubuntu.id
-  subnets = module.vpc.vpc_public_subnets
-  security_groups = [module.vpc.security_group_public]
-  create_eip = true
-}
-
 module "vpc" {
   source = "../../../modules/vpc"
 

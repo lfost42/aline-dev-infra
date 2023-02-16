@@ -5,7 +5,7 @@
 resource "aws_security_group" "public" {
   name = "aline-${var.infra_env}-public-sg"
   description = "Public internet access"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     {
@@ -59,7 +59,7 @@ resource "aws_security_group_rule" "public_in_https" {
 resource "aws_security_group" "private" {
   name = "aline-${var.infra_env}-private-sg"
   description = "Private internet access"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     {
@@ -85,7 +85,7 @@ resource "aws_security_group_rule" "private_in" {
   from_port         = 0
   to_port           = 65535
   protocol          = "-1"
-  cidr_blocks = [module.vpc.vpc_cidr_block]
+  cidr_blocks = [aws_vpc.vpc.cidr_block]
 
   security_group_id = aws_security_group.private.id
 }

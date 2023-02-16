@@ -1,7 +1,7 @@
 **.DS_Store
 aws/modules/ec2/local-exec-output-files/
-**/.terraform
+**/.terraform/
 **/local-exec-output-files
 **/private-key
-aws/modules/cluster/.terraform.lock.hcl
-aws/modules/cluster/private-key
+**.terraform.lock.hcl
+**/private-key/

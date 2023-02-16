@@ -3,5 +3,5 @@ output "app_eip" {
 }
 
 output "app_instance" {
-  value = module.ec2-instance.id[0]
+  value = aws_instance.ec2.id
 }
