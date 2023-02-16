@@ -17,10 +17,10 @@ if [ $# -gt 0 ]; then
 
     if [ "$3" == "init" ]; then
         terraform -chdir=./$TF_ENV/$TF_APP init \
-          -backend-config="bucket=lf-aline-tf" \
-          -backend-config="key=$TF_ENV/$TF_APP.tfstate"
+          -backend-config="bucket=lf-aline-terraform" \
+          -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
     else
-        terraform -chdir=./$TF_ENV/$TF_APP $3
+        terraform -chdir=./$TF_ENV/$TF_APP $3 $4
     fi
 fi
 # back to original location

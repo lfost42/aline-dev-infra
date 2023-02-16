@@ -3,13 +3,38 @@ resource "random_shuffle" "subnets" {
   result_count = 1
 }
 
+resource "aws_instance" "ubuntu" {
+  ami           = var.instance_ami
+  instance_type = var.instance_size
+ 
+  root_block_device {
+    volume_size = var.instance_root_device_size
+    volume_type = "gp3"
+  }
+
+  subnet_id = random_shuffle.subnets.result[0] 
+  vpc_security_group_ids = var.security_groups 
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = merge(
+    {
+    Name        = "lf-aline-${var.infra_env}-${var.infra_role}"
+    Role        = var.infra_role
+    },
+    var.tags
+  )
+}
+
 # https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest
 module "ec2-instance" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.17.0"
 
   # insert the 10 required variables here
-  name = "aline-${var.infra_env}"
+  name = "aline-${var.infra_env}-instance"
 
   ami                    = var.instance_ami
   instance_type          = var.instance_size
@@ -23,7 +48,7 @@ module "ec2-instance" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}"
+    Name        = "aline-${var.infra_env}-ec2"
   },
   var.tags
   )
@@ -34,17 +59,15 @@ resource "aws_eip" "aline_addr" {
   vpc      = true
 
   lifecycle {
-    # enable when attached to route53
     # prevent_destroy = true
   }
 
-  tags = {
-    Name        = "aline-${var.infra_env}-web-address"
-    Role        = var.infra_role
-    Project     = "aline"
-    Environment = var.infra_env
-    ManagedBy   = "terraform"
-  }
+  tags = merge(
+    {
+      Name        = "aline-${var.infra_env}-web-address"
+    },
+    var.tags
+  )
 }
 
 resource "aws_eip_association" "eip_assoc" {

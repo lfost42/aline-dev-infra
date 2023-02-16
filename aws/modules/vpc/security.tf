@@ -7,10 +7,13 @@ resource "aws_security_group" "public" {
   description = "Public internet access"
   vpc_id = module.vpc.vpc_id
 
-  tags = {
+  tags = merge(
+    {
     Name        = "aline-${var.infra_env}-public-sg"
     Role        = "public"
-  }
+    },
+    var.tags
+  )
 }
 
 resource "aws_security_group_rule" "public_out" {
@@ -58,10 +61,13 @@ resource "aws_security_group" "private" {
   description = "Private internet access"
   vpc_id = module.vpc.vpc_id
 
-  tags = {
+  tags = merge(
+    {
     Name        = "aline-${var.infra_env}-private-sg"
     Role        = "private"
-  }
+    },
+    var.tags
+  )
 }
 
 resource "aws_security_group_rule" "private_out" {

@@ -80,13 +80,13 @@ resource "aws_security_group" "eks_nodes" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
+  tags = merge(
+  {
     Name                                                   = "$aline-${var.dev-infra}-node-sg"
     "kubernetes.io/cluster/aline-${var.dev-infra}-cluster" = "owned"
-    Project                                                = "lf-aline"
-    Environment                                            = var.infra_env
-    ManagedBy                                              = "terraform"
-  }
+  },
+  var.tags
+  )
 }
 
 resource "aws_security_group_rule" "nodes_internal" {

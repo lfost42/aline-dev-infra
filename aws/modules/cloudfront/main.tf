@@ -118,7 +118,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}"
+    Name        = "aline-${var.infra_env}-cloudfront"
   },
   var.tags
   )

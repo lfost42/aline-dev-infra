@@ -6,7 +6,10 @@ aws_region = "us-east-1"
 
 # VPC Variables
 vpc_name = "myvpc"
-vpc_cidr = "10.0.0.0/16"
+vpc_cidr = "10.0.0.0/17"
+
+# utilize half of the current VPC block for this app
+vpc_cidr_subnets = "10.0.0.0/17"
 subnet_cidr_bits = 8
 azs = ["us-east-1a", "us-east-1b"]
 vpc_public_subnets = ["10.0.101.0/24", "10.0.102.0/24"]
@@ -33,7 +36,6 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    Name        = "lf-aline-develop"
     Project     = "lf-aline"
     Environment = "develop"
     ManagedBy   = "terraform"

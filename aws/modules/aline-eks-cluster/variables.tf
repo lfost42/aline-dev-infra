@@ -1,4 +1,10 @@
-ariable "aws_access_key" {
+variable "dev_infra" {
+  description = "environment"
+  type        = string
+  default = "develop"
+}
+
+variable "aws_access_key" {
   description = "AWS access key"
   type        = string
 }
@@ -42,7 +48,6 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    Name        = "lf-aline-develop"
     Project     = "lf-aline"
     Environment = "develop"
     ManagedBy   = "terraform"

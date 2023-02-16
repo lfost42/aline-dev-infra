@@ -7,10 +7,11 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "lf-aline-tf"
+    bucket = "lf-aline-terraform"
     key = "develop/ecs/terraform.tfstate"
     profile = "aline"
     region  = "us-east-1"
+    dynamodb_table = "lf-aline-tflock"
   }
 }
 
@@ -25,11 +26,11 @@ variable "infra_env" {
   default     = "develop"
 }
 
-variable default_region {
-  type = string
-  description = "the region this infrastructure is in"
-  default = "us-east-1"
-}
+# variable default_region {
+#   type = string
+#   description = "the region this infrastructure is in"
+#   default = "us-east-1"
+# }
 
 
 data "aws_ami" "ubuntu" {
@@ -63,19 +64,6 @@ module "ec2_public" {
   subnets = module.vpc.vpc_public_subnets
   security_groups = [module.vpc.security_group_public]
   create_eip = true
-}
-
-module "ec2_private" {
-  source = "../../../modules/ec2"
-
-  infra_env = var.infra_env
-  infra_role = "private"
-  instance_size = "t3.micro"
-  instance_ami = data.aws_ami.ubuntu.id
-  instance_root_device_size = 20
-  subnets = module.vpc.vpc_private_subnets
-  security_groups = [module.vpc.security_group_private]
-  create_eip = false
 }
 
 module "vpc" {

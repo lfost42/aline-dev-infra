@@ -47,8 +47,11 @@ resource "aws_db_instance" "rds" {
   multi_az                    = true
   skip_final_snapshot         = true
 
-  tags = {
-    Type        = "mysql"
-  }
+  tags = merge(
+    {
+      Type = "mysql"
+    },
+    var.tags
+  )
 }
 

@@ -7,8 +7,6 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "lf-aline-tf"
-    key = "develop/ecs/terraform.tfstate"
     profile = "aline"
     region  = "us-east-1"
   }
@@ -25,11 +23,11 @@ variable "infra_env" {
   default     = "develop"
 }
 
-variable default_region {
-  type = string
-  description = "the region this infrastructure is in"
-  default = "us-east-1"
-}
+# variable default_region {
+#   type = string
+#   description = "the region this infrastructure is in"
+#   default = "us-east-1"
+# }
 
 
 data "aws_ami" "ubuntu" {
