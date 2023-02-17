@@ -5,3 +5,4 @@ aws/modules/ec2/local-exec-output-files/
 **/private-key
 **.terraform.lock.hcl
 **/private-key/
+**.terraform.lock.hcl

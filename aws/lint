@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Move the .tflint.hcl file into each module and environment directory
+find modules environments \
+  -type f \
+  -name '*.tf' \
+  ! -path '*/.terraform/*' \
+  -exec dirname {} \; \
+  | xargs -I {} sh -c '
+      cp /Users/lynda/Desktop/repo/aline-repo-files/dev-infra-cc/aws/.tflint.hcl "$1"
+      cd "$1"
+      tflint
+      terraform fmt -check
+      rm .tflint.hcl
+      echo "====== $1 processed ======"
+    ' sh {}

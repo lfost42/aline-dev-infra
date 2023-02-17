@@ -23,12 +23,6 @@ variable "infra_env" {
   default     = "develop"
 }
 
-# variable default_region {
-#   type = string
-#   description = "the region this infrastructure is in"
-#   default = "us-east-1"
-# }
-
 module "vpc" {
   source = "../../../modules/vpc"
 

@@ -23,12 +23,11 @@ variable "infra_env" {
   default     = "develop"
 }
 
-# variable default_region {
-#   type = string
-#   description = "the region this infrastructure is in"
-#   default = "us-east-1"
-# }
-
+variable "db_password" {
+  type        = string
+  description = "database password"
+  default = ""
+}
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -49,9 +48,10 @@ data "aws_ami" "ubuntu" {
 
 module "ec2_public" {
   source = "../../../modules/ec2"
+
   infra_env = var.infra_env
   infra_role = "public"
-  instance_size = "t3.medium"
+  instance_size = "t3.small"
   instance_ami = data.aws_ami.ubuntu.id
   subnets = keys(module.vpc.vpc_public_subnets)
   security_groups = [module.vpc.security_group_public]
@@ -71,12 +71,22 @@ module "ec2_private" {
   create_eip = false
 }
 
+module "database" {
+  source = "../../../modules/rds"
+  infra_env = var.infra_env
+  vpc_id = module.vpc.vpc_id
+  # instance_class = "db.t3.medium"
+  # subnets = module.vpc.database_subnets[*].id
+  # username = "var.db_user"
+  # password = "var.db_pass"
+  depends_on = [module.vpc]
+}
+
 module "vpc" {
   source = "../../../modules/vpc"
   infra_env = var.infra_env
   vpc_cidr  = "10.0.0.0/17"
   azs = ["us-east-2a", "us-east-2b"] 
-  # uses the cidrsubnets function and the slice functions to generate subnets for us.
   public_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 0, 2)
   private_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 2, 4)
   database_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 4, 6)

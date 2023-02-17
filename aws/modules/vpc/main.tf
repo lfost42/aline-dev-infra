@@ -99,7 +99,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  subnet_id = aws_subnet.public[element(keys(aws_subnet.public), 0)].id
+  subnet_id = aws_subnet.private[element(keys(aws_subnet.private), 0)].id
 
   tags = merge(
     {
