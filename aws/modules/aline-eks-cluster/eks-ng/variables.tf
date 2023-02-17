@@ -3,7 +3,7 @@ variable "tags" {
   type        = map(string)
   default = {
     Project     = "lf-aline"
-    Environment = var.infra_env
+    Environment = "develop"
     ManagedBy   = "terraform"
   }
 }

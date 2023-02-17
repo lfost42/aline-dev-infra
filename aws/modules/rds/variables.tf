@@ -45,17 +45,11 @@ variable "db_password" {
   default = "really_good_password" # overwrite with KMS rotating secret
 }
 
-variable "vpc_id" {
-  type = string
-  description = "The master password of the mysql cluster"
-}
-
 variable "db_parameter_group_name" {
   type = string
   description = "parameter group name"
-  default = "default.mysql8.0"
+  # default = "default.mysql8.0"
 }
-
 
 variable "tags" {
   description = "A map of tags to add to all resources"

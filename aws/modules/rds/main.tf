@@ -15,7 +15,7 @@ resource "aws_security_group_rule" "mysql_inbound_access" {
 
 resource "aws_db_instance" "rds" {
   identifier                  = "aline-${var.infra_env}-mysql"
-  allocated_storage           = 10
+  allocated_storage           = var.db_allocated_storage
   db_name                     = var.db_name
   engine                      = var.db_engine
   engine_version              = var.db_engine_version

@@ -23,30 +23,31 @@ variable "infra_env" {
   default     = "develop"
 }
 
-# resource "aws_db_subnet_group" "rds-private-subnet" {
-#   name = "rds-private-subnet-group"
-#   subnet_ids = module.vpc.vpc_database_subnet_ids
-# }
+resource "aws_db_subnet_group" "rds-private-subnet" {
+  name = "rds-private-subnet-group"
+  subnet_ids = module.vpc.vpc_database_subnet_ids
+}
 
-# module "database" {
-#   source = "../../../modules/rds"
+module "database" {
+  source = "../../../modules/rds"
 
-#   infra_env = var.infra_env
-#   vpc_id = module.vpc.vpc_id
-#   db_instance_class = "db.t3.medium"
-#   db_username = var.db_user"
-#   db_password = var.db_pass"
-#   depends_on = [module.vpc, resource.aws_db_subnet_group.rds-private-subnet]
-# }
+  infra_env = var.infra_env
+  vpc_id = module.vpc.vpc_id
+  db_instance_class = var.db_instance_class
+  db_username = var.db_user
+  db_password = var.db_pass
+  depends_on = [module.vpc, resource.aws_db_subnet_group.rds-private-subnet]
+}
 
 module "vpc" {
   source = "../../../modules/vpc"
+
   infra_env = var.infra_env
-  vpc_cidr  = "10.0.0.0/17"
-  azs = ["us-east-2a", "us-east-2b"] 
-  public_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 0, 2)
-  private_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 2, 4)
-  database_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 4, 6)
+  vpc_cidr = var.aline_cidr
+  vpc_azs = var.aline_azs
+  vpc_public_subnets = var.aline_public_subnets
+  vpc_private_subnets = var.aline_private_subnets
+  vpc_database_subnets = var.aline_database_subnets
 }
 
 # ./run develop aline-eks init

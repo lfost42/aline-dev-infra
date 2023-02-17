@@ -9,23 +9,23 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "azs" {
+variable "vpc_azs" {
   type = list(string)
   description = "AZs to create subnets into"
   default = ["us-east-1a", "us-east-1b"]
 }
 
-variable "public_subnets" {
+variable "vpc_public_subnets" {
   type = list(string)
   description = "subnets to create for public network traffic, one per AZ"
 }
 
-variable "private_subnets" {
+variable "vpc_private_subnets" {
   type = list(string)
   description = "subnets to create for private network traffic, one per AZ"
 }
 
-variable "database_subnets" {
+variable "vpc_database_subnets" {
   type = list(string)
   description = "subnets to create for private network traffic, one per AZ"
 }
@@ -65,11 +65,5 @@ variable "tags" {
     Environment = "develop"
     ManagedBy   = "terraform"
   }
-}
-
-variable security_groups {
-  type = list(string)
-  description = "security groups to assign to server"
-  default = []
 }
 

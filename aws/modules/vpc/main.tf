@@ -8,6 +8,10 @@ resource "aws_vpc" "vpc" {
     },
     var.tags
   )
+    azs = var.vpc_azs
+    public_subnets = var.vpc_public_subnets
+    private_subnets = var.vpc_private_subnets
+    database_subnets = var.vpc_database_subnets
 }
 
 # Create 1 public subnets for each AZ within the regional VPC

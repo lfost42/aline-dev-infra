@@ -69,9 +69,9 @@ module "vpc" {
   source = "../../../modules/vpc"
 
   infra_env = var.infra_env
-  vpc_cidr = "10.0.0.0/17"
-  azs = ["us-east-1a", "us-east-1b"]
-  public_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 0, 2)
-  private_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 2, 4)
-  database_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 4, 6)
+  vpc_cidr = var.aline_cidr
+  vpc_azs = var.aline_azs
+  vpc_public_subnets = var.aline_public_subnets
+  vpc_private_subnets = var.aline_private_subnets
+  vpc_database_subnets = var.aline_database_subnets
 }
