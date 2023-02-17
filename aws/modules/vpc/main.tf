@@ -63,6 +63,9 @@ resource "aws_subnet" "database" {
     },
     var.tags
   )
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 ###
