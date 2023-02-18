@@ -16,12 +16,6 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
-variable "aline_azs" {
-  type = list(string)
-  description = "project availability zones"
-  default = ["us-east-1a", "us-east-1b"]
-}
-
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"

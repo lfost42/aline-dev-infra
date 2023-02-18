@@ -9,27 +9,6 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "vpc_azs" {
-  type = list(string)
-  description = "AZs to create subnets into"
-  default = ["us-east-1a", "us-east-1b"]
-}
-
-variable "vpc_public_subnets" {
-  type = list(string)
-  description = "subnets to create for public network traffic, one per AZ"
-}
-
-variable "vpc_private_subnets" {
-  type = list(string)
-  description = "subnets to create for private network traffic, one per AZ"
-}
-
-variable "vpc_database_subnets" {
-  type = list(string)
-  description = "subnets to create for private network traffic, one per AZ"
-}
-
 variable "public_subnet_numbers" {
   type = map(number)
   description = "Map of AZ to a number that should be used for public subnets"

@@ -6,8 +6,9 @@ find modules environments \
   -name '*.tf' \
   ! -path '*/.terraform/*' \
   -exec dirname {} \; \
+  | sort -u \
   | xargs -I {} sh -c '
-      cp "$2" "$1"
+      cp "$2" "$1/.tflint.hcl"
       cd "$1"
       tflint
       terraform fmt -check

@@ -4,12 +4,6 @@ variable "aline_profile" {
   default = "aline"
 }
 
-variable "infra_env" {
-  type = string
-  description = "infrastructure environment"
-  default = "sandbox"
-}
-
 variable "aline_region" {
   type = string
   description = "project region"
