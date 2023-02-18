@@ -1,20 +1,26 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-  }
+module "ec2_public" {
+  source = "../../../modules/ec2"
 
-  backend "s3" {
-    profile = "aline"
-    region  = "us-east-1"
-  }
+  infra_env = var.infra_env
+  infra_role = "public"
+  instance_size = var.public_ec2_instance_size
+  instance_ami = data.aws_ami.ubuntu.id
+  subnets = keys(module.vpc.vpc_public_subnets)
+  security_groups = [module.vpc.security_group_public]
+  create_eip = true
 }
 
-provider "aws" {
-  profile = var.aline_profile
-  region  = var.aline_region
+module "ec2_private" {
+  source = "../../../modules/ec2"
+
+  infra_env = var.infra_env
+  infra_role = "private"
+  instance_size = var.private_ec2_instance_size
+  instance_ami = data.aws_ami.ubuntu.id
+  instance_root_device_size = 20
+  subnets = keys(module.vpc.vpc_private_subnets)
+  security_groups = [module.vpc.security_group_private]
+  create_eip = false
 }
 
 resource "aws_db_subnet_group" "rds-private-subnet" {
@@ -37,10 +43,7 @@ module "vpc" {
 
   infra_env = var.infra_env
   vpc_cidr = var.aline_cidr
-  vpc_azs = var.aline_azs
   vpc_public_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 0, 2)
   vpc_private_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 2, 4)
   vpc_database_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 4, 6)
 }
-
-# ./run develop aline-eks init

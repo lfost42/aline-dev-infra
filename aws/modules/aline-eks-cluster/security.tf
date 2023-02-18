@@ -1,6 +1,6 @@
 # EKS Cluster Security Group
 resource "aws_security_group" "eks_cluster" {
-  name        = "aline-${var.dev-infra}-cluster-sg"
+  name        = "aline-${var.infra_env}-cluster-sg"
   description = "Cluster communication with worker nodes"
   vpc_id      = aws_vpc.this.id
 
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "cluster_outbound" {
 
 # Security group for data plane
 resource "aws_security_group" "data_plane_sg" {
-  name   =  "aline-${var.dev-infra}-Worker-sg"
+  name   =  "aline-${var.infra_env}-Worker-sg"
   vpc_id = aws_vpc.this.id
 
   tags = merge(
@@ -77,7 +77,7 @@ resource "aws_security_group_rule" "node_outbound" {
 
 # Security group for control plane
 resource "aws_security_group" "control_plane_sg" {
-  name   = "aline-${var.dev-infra}-ControlPlane-sg"
+  name   = "aline-${var.infra_env}-ControlPlane-sg"
   vpc_id = aws_vpc.this.id
 
   tags = merge(

@@ -22,7 +22,6 @@ resource "aws_db_instance" "rds" {
   instance_class              = var.db_instance_class
   username                    = var.db_username
   password                    = var.db_password
-  parameter_group_name        = var.db_parameter_group_name
 
   vpc_security_group_ids      = [aws_security_group.rds-sg.id]
   db_subnet_group_name        = data.aws_db_subnet_group.rds-private-subnet.name

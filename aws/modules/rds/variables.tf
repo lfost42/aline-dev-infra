@@ -45,12 +45,6 @@ variable "db_password" {
   default = "really_good_password" # overwrite with KMS rotating secret
 }
 
-variable "db_parameter_group_name" {
-  type = string
-  description = "parameter group name"
-  # default = "default.mysql8.0"
-}
-
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

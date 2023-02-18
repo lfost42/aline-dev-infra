@@ -8,10 +8,6 @@ resource "aws_vpc" "vpc" {
     },
     var.tags
   )
-    azs = var.vpc_azs
-    public_subnets = var.vpc_public_subnets
-    private_subnets = var.vpc_private_subnets
-    database_subnets = var.vpc_database_subnets
 }
 
 # Create 1 public subnets for each AZ within the regional VPC
@@ -141,6 +137,20 @@ resource "aws_route_table" "private" {
       Name        = "aline-${var.infra_env}-private-rt"
       VPC         = aws_vpc.vpc.id
       Role        = "private"
+    },
+    var.tags
+  )
+}
+
+# Database Route Tables (Subnets with NGW)
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = merge(
+    {
+      Name        = "aline-${var.infra_env}-database-rt"
+      VPC         = aws_vpc.vpc.id
+      Role        = "database"
     },
     var.tags
   )

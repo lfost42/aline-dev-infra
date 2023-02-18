@@ -1,4 +1,4 @@
-variable "dev_infra" {
+variable "infra_env" {
   description = "environment"
   type        = string
   default = "develop"
@@ -9,13 +9,8 @@ variable "aws_access_key" {
   type        = string
 }
 
-variable "aws_secret_key" {
-  description = "AWS secret key"
-  type        = string
-}
-
 variable "region" {
-  description = "The aws region. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html"
+  description = "Aws region."
   type        = string
   default     = "us-east-1"
 }
