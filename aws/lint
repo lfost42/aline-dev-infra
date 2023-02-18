@@ -1,4 +1,5 @@
 #!/bin/bash
+
 TFLINT_CONFIG="/Users/lynda/Desktop/repo/aline-repo-files/dev-infra-cc/aws/.tflint.hcl"
 
 find modules environments \

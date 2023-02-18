@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 TF_ENV=$1 # environment (i.e. develop, sandbox)
 TF_APP=$2 # app (i.e. eks, ecs, test1, test2)
-# TF_STATE ... network, compute, data
+# TF_STATE ... network, compute, data ?
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -16,17 +16,22 @@ if [ $# -gt 0 ]; then
         exit 1
     fi
 
-    if [ "$3" == "init" ]; then
-        terraform -chdir=./$TF_ENV/$TF_APP init \
-          -backend-config="bucket=lf-aline-terraform" \
-          -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
-    elif [ "$3" == "apply" ]; then
-        terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
-    elif [ "$3" == "destroy" ]; then
-        terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
-    else
-        terraform -chdir=./$TF_ENV/$TF_APP $3 $4
-    fi
+    case "$3" in
+        "init")
+            terraform -chdir=./$TF_ENV/$TF_APP init \
+              -backend-config="bucket=lf-aline-terraform" \
+              -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
+            ;;
+        "apply")
+            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            ;;
+        "destroy")
+            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            ;;
+        *)
+            terraform -chdir=./$TF_ENV/$TF_APP $3 $4
+            ;;
+    esac
 
 fi
 # back to original location

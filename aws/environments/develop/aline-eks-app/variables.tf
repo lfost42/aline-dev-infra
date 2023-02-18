@@ -16,16 +16,22 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
-variable "aline_azs" {
-  type = list(string)
-  description = "project availability zones"
-  default = ["us-east-1a", "us-east-1b"]
-}
-
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
   default = "10.0.0.0/17"
+}
+
+variable "public_ec2_instance_size" {
+  type = string
+  description = "instance size for public ec2"
+  default = "t3.small"
+}
+
+variable "private_ec2_instance_size" {
+  type = string
+  description = "instance size for private ec2"
+  default = "t3.medium"
 }
 
 variable "db_instance_class" {

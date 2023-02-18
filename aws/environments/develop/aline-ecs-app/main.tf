@@ -43,7 +43,4 @@ module "vpc" {
 
   infra_env = var.infra_env
   vpc_cidr = var.aline_cidr
-  vpc_public_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 0, 2)
-  vpc_private_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 2, 4)
-  vpc_database_subnets = slice(cidrsubnets("10.0.0.0/17", 4, 4, 4, 4, 4, 4), 4, 6)
 }

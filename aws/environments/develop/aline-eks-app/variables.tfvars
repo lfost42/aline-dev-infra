@@ -4,7 +4,6 @@ aline_profile = "aline"
 
 # global variables
 aline_region = "us-east-1"
-aline_azs = ["us-east-1a", "us-east-1b"]
 aline_cidr = "10.0.0.0/17"
 
 # db variables
@@ -17,9 +16,6 @@ db_username = "really_good_password" # override with kms rotating secret key
 vpc_name = "myvpc"
 subnet_cidr_bits = 8
 
-vpc_public_subnets = ["10.0.101.0/24", "10.0.102.0/24"]
-vpc_private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
-vpc_database_subnets = ["10.0.151.0/24", "10.0.152.0/24"]
 vpc_rds_sg = "<rds security group>"
 vpc_rds_subnet = "<rds subnet group>"
 
