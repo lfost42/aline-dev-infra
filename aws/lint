@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TFLINT_CONFIG="/Users/lynda/Desktop/repo/aline-repo-files/dev-infra-cc/aws/.tflint.hcl"
-echo "runnung linter"
+tflint --init
 find modules environments \
   -type f \
   -name '*.tf' \

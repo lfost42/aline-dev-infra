@@ -6,7 +6,7 @@ variable "infra_env" {
 variable "vpc_cidr" {
   type        = string
   description = "The IP range to use for the VPC"
-  default     = "10.0.0.0/17"
+  default     = "10.0.0.0/19"
 }
 
 variable "cidr_bits" {

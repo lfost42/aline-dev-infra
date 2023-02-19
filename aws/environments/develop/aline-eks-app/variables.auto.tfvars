@@ -10,10 +10,9 @@ db_instance_class = "db.t3.medium"
 db_user = "admin"
 db_pass = "really_good_password" # kms rotating secret key
 
-# VPC Variables
-aline_cidr = "10.0.0.0/17"
-aline_cidr_bits = 8
-aline_az_count = 4 # ok to scale to 4 azs
+aline_cidr = "10.0.0.0/19" # 13 bits for host and 8,190 av IPs per subnet at 6 azs
+aline_cidr_bits = 8 # optimized for 6 azs
+aline_az_count = 2 # us-east-1 allows up to 6 azs
 
 ######### TODO #########
 # vpc_name = "myvpc"

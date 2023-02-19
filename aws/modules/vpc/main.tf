@@ -1,3 +1,4 @@
+# ./run develop aline-eks-app init
 # Create a VPC for the region associated with the AZ
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
@@ -36,7 +37,7 @@ resource "aws_subnet" "private" {
 
   count   = var.az_count
   # offsets the position of the subnet within the VPC's range to avoid cidr block collisions
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 4)
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
@@ -52,7 +53,7 @@ resource "aws_subnet" "database" {
   vpc_id  = aws_vpc.vpc.id
 
   count   = var.az_count
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 8)
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 3))
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
