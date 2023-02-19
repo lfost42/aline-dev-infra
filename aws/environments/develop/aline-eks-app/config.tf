@@ -79,8 +79,8 @@ module "ec2_private" {
   create_eip = false
 }
 
-resource "aws_db_subnet_group" "rds-private-subnet" {
-  name = "rds-private-subnet-group"
+resource "aws_db_subnet_group" "rds_database_subnet" {
+  name = "rds-database-subnet-group"
   subnet_ids = module.vpc.vpc_database_subnet_ids
 }
 
@@ -91,7 +91,8 @@ module "database" {
   db_instance_class = var.db_instance_class
   db_username = var.db_user
   db_password = var.db_pass
-  depends_on = [module.vpc, resource.aws_db_subnet_group.rds-private-subnet]
+  aline_db_subnet_group_name = resource.aws_db_subnet_group.rds_database_subnet.name
+  depends_on = [module.vpc, resource.aws_db_subnet_group.rds_database_subnet]
 }
 
 module "vpc" {
@@ -99,6 +100,8 @@ module "vpc" {
 
   infra_env = var.infra_env
   vpc_cidr = var.aline_cidr
+  cidr_bits = var.aline_cidr_bits
+  az_count = var.aline_az_count
 }
 
-# ./run develop aline-eks init
+# ./run develop lf-aline-eks init

@@ -1,12 +1,12 @@
 # EKS Cluster Security Group
 resource "aws_security_group" "eks_cluster" {
-  name        = "aline-${var.infra_env}-cluster-sg"
+  name        = "lf-aline-${var.infra_env}-cluster-sg"
   description = "Cluster communication with worker nodes"
   vpc_id      = aws_vpc.this.id
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-cluster-sg"
+    Name        = "lf-aline-${var.infra_env}-cluster-sg"
   },
   var.tags
   )
@@ -34,12 +34,12 @@ resource "aws_security_group_rule" "cluster_outbound" {
 
 # Security group for data plane
 resource "aws_security_group" "data_plane_sg" {
-  name   =  "aline-${var.infra_env}-Worker-sg"
+  name   =  "lf-aline-${var.infra_env}-Worker-sg"
   vpc_id = aws_vpc.this.id
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-worker-sg"
+    Name        = "lf-aline-${var.infra_env}-worker-sg"
   },
   var.tags
   )
@@ -77,12 +77,12 @@ resource "aws_security_group_rule" "node_outbound" {
 
 # Security group for control plane
 resource "aws_security_group" "control_plane_sg" {
-  name   = "aline-${var.infra_env}-ControlPlane-sg"
+  name   = "lf-aline-${var.infra_env}-ControlPlane-sg"
   vpc_id = aws_vpc.this.id
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-ControlPlane-sg"
+    Name        = "lf-aline-${var.infra_env}-ControlPlane-sg"
     Project     = "lf-aline"
     Environment = var.infra_env
     ManagedBy   = "terraform"

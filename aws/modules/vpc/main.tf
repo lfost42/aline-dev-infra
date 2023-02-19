@@ -4,24 +4,27 @@ resource "aws_vpc" "vpc" {
 
     tags = merge(
     {
-      Name        = "aline-${var.infra_env}-vpc"
+      Name = "lf-aline-${var.infra_env}-vpc"
     },
     var.tags
   )
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Create 1 public subnets for each AZ within the regional VPC
 resource "aws_subnet" "public" {
-  for_each = var.public_subnet_numbers
-  vpc_id            = aws_vpc.vpc.id
-  availability_zone = each.key
+  vpc_id  = aws_vpc.vpc.id
 
-  # 2,048 IP addresses each
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 4, each.value)
+  count   = var.az_count
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index) # 10.0.0.0/19
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-public-subnet"
-      Subnet      = "${each.key}-${each.value}"
+      Name        = "lf-aline-${var.infra_env}-public-subnet-${count.index+1}"
     },
     var.tags
   )
@@ -29,18 +32,16 @@ resource "aws_subnet" "public" {
 
 # Create 1 private subnets for each AZ within the regional VPC
 resource "aws_subnet" "private" {
-  for_each = var.private_subnet_numbers
+  vpc_id  = aws_vpc.vpc.id
 
-  vpc_id            = aws_vpc.vpc.id
-  availability_zone = each.key
-
-  # 2,048 IP addresses each
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 4, each.value)
+  count   = var.az_count
+  # offsets the position of the subnet within the VPC's range to avoid cidr block collisions
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 4) # 10.0.32.0/19
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-private-subnet"
-      Subnet      = "${each.key}-${each.value}"
+      Name        = "lf-aline-${var.infra_env}-private-subnet-${count.index+1}"
     },
     var.tags
   )
@@ -48,24 +49,18 @@ resource "aws_subnet" "private" {
 
 # Create 1 database subnet for each AZ within the regional VPC
 resource "aws_subnet" "database" {
-  for_each = var.database_subnet_numbers
+  vpc_id  = aws_vpc.vpc.id
 
-  vpc_id            = aws_vpc.vpc.id
-  availability_zone = each.key
-
-  # 2,048 IP addresses each
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 4, each.value)
+  count   = var.az_count
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 8) # 10.0.64.0/19
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-database-subnet"
-      Subnet      = "${each.key}-${each.value}"
+      Name        = "lf-aline-${var.infra_env}-database-subnet-${count.index+1}"
     },
     var.tags
   )
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 ###
@@ -76,8 +71,9 @@ resource "aws_internet_gateway" "igw" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-igw"
+      Name        = "lf-aline-${var.infra_env}-igw"
       VPC         = aws_vpc.vpc.id
+      Role        = "public"
     },
     var.tags
   )
@@ -85,14 +81,14 @@ resource "aws_internet_gateway" "igw" {
 
 resource "aws_eip" "nat" {
   vpc = true
- 
+
   lifecycle {
     # prevent_destroy = true
   }
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-eip"
+      Name        = "lf-aline-${var.infra_env}-eip"
       VPC         = aws_vpc.vpc.id
       Role        = "private"
     },
@@ -102,11 +98,11 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  subnet_id = aws_subnet.private[element(keys(aws_subnet.private), 0)].id
+  subnet_id = aws_subnet.private[0].id
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-ngw"
+      Name        = "lf-aline-${var.infra_env}-ngw"
       VPC         = aws_vpc.vpc.id
       Role        = "private"
     },
@@ -120,7 +116,7 @@ resource "aws_route_table" "public" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-public-rt"
+      Name        = "lf-aline-${var.infra_env}-public-rt"
       VPC         = aws_vpc.vpc.id
       Role        = "public"
     },
@@ -134,7 +130,7 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-private-rt"
+      Name        = "lf-aline-${var.infra_env}-private-rt"
       VPC         = aws_vpc.vpc.id
       Role        = "private"
     },
@@ -148,7 +144,7 @@ resource "aws_route_table" "database" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-database-rt"
+      Name        = "lf-aline-${var.infra_env}-database-rt"
       VPC         = aws_vpc.vpc.id
       Role        = "database"
     },
@@ -170,18 +166,33 @@ resource "aws_route" "private" {
   nat_gateway_id         = aws_nat_gateway.ngw.id
 }
 
+# Database Route
+resource "aws_route" "database" {
+  route_table_id         = aws_route_table.database.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.ngw.id
+}
+
 # Public Route to Public Route Table for Public Subnets
 resource "aws_route_table_association" "public" {
-  for_each  = aws_subnet.public
-  subnet_id = aws_subnet.public[each.key].id
+  count          = var.az_count
+  subnet_id      = aws_subnet.public[count.index].id
 
   route_table_id = aws_route_table.public.id
 }
 
 # Private Route to Private Route Table for Private Subnets
 resource "aws_route_table_association" "private" {
-  for_each  = aws_subnet.private
-  subnet_id = aws_subnet.private[each.key].id
+  count          = var.az_count
+  subnet_id      = aws_subnet.private[count.index].id
 
   route_table_id = aws_route_table.private.id
+}
+
+# Database Route to Database Route Table for Database Subnets
+resource "aws_route_table_association" "database" {
+  count          = var.az_count
+  subnet_id      = aws_subnet.database[count.index].id
+
+  route_table_id = aws_route_table.database.id
 }

@@ -23,7 +23,7 @@ module "ec2_private" {
   create_eip = false
 }
 
-resource "aws_db_subnet_group" "rds-private-subnet" {
+resource "aws_db_subnet_group" "rds_private_subnet" {
   name = "rds-private-subnet-group"
   subnet_ids = module.vpc.vpc_database_subnet_ids
 }

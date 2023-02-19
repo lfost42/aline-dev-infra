@@ -4,18 +4,18 @@ aline_profile = "aline"
 
 # global variables
 aline_region = "us-east-1"
-aline_cidr = "10.0.0.0/17"
 
 # db variables
 db_instance_class = "db.t3.medium"
-db_username = "really_good_password" # override with kms rotating secret key
-
-######### TODO #########
+db_username = "" # kms rotating secret key
 
 # VPC Variables
-vpc_name = "myvpc"
-subnet_cidr_bits = 8
+aline_cidr = "10.0.0.0/17" # /17 provides a range of 32 subnets
+aline_cidr_bits = 9
+aline_az_count = 2
 
+######### TODO #########
+vpc_name = "myvpc"
 vpc_rds_sg = "<rds security group>"
 vpc_rds_subnet = "<rds subnet group>"
 

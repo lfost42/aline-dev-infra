@@ -59,7 +59,7 @@ resource "aws_cloudfront_distribution" "www_s3_distribution" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-s3"
+    Name        = "lf-aline-${var.infra_env}-s3"
   },
   var.tags
   )
@@ -118,7 +118,7 @@ resource "aws_cloudfront_distribution" "root_s3_distribution" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-cloudfront"
+    Name        = "lf-aline-${var.infra_env}-cloudfront"
   },
   var.tags
   )

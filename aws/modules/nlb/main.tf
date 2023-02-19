@@ -1,10 +1,10 @@
 # Kubernetes Service Manifest (Type: Network Load Balancer Service)
-resource "kubernetes_service_v1" "server-nlb" {
+resource "kubernetes_service_v1" "server_nlb" {
   metadata {
-    name = "aline-nlb"
+    name = "lf-aline-nlb"
     annotations = {
       # Traffic Routing
-      "service.beta.kubernetes.io/aws-load-balancer-name" = "aline-nlb"
+      "service.beta.kubernetes.io/aws-load-balancer-name" = "lf-aline-nlb"
       "service.beta.kubernetes.io/aws-load-balancer-type" = "external"
       "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "instance"
 

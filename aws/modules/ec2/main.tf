@@ -38,7 +38,7 @@ resource "aws_eip" "aline_addr" {
 
   tags = merge(
     {
-      Name        = "aline-${var.infra_env}-web-address"
+      Name        = "lf-aline-${var.infra_env}-web-address"
     },
     var.tags
   )

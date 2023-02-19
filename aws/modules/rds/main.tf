@@ -1,5 +1,5 @@
-resource "aws_security_group" "rds-sg" {
-  name   = "my-rds-sg"
+resource "aws_security_group" "rds_sg" {
+  name   = "lf-aline-rds-sg"
   vpc_id = data.aws_vpc.vpc.id
 }
 
@@ -7,14 +7,14 @@ resource "aws_security_group" "rds-sg" {
 resource "aws_security_group_rule" "mysql_inbound_access" {
   from_port         = 3306
   protocol          = "tcp"
-  security_group_id = aws_security_group.rds-sg.id
+  security_group_id = aws_security_group.rds_sg.id
   to_port           = 3306
   type              = "ingress"
   cidr_blocks       = [data.aws_vpc.vpc.cidr_block]
 }
 
 resource "aws_db_instance" "rds" {
-  identifier                  = "aline-${var.infra_env}-mysql"
+  identifier                  = "lf-aline-${var.infra_env}-mysql"
   allocated_storage           = var.db_allocated_storage
   db_name                     = var.db_name
   engine                      = var.db_engine
@@ -23,8 +23,8 @@ resource "aws_db_instance" "rds" {
   username                    = var.db_username
   password                    = var.db_password
 
-  vpc_security_group_ids      = [aws_security_group.rds-sg.id]
-  db_subnet_group_name        = data.aws_db_subnet_group.rds-private-subnet.name
+  vpc_security_group_ids      = [aws_security_group.rds_sg.id]
+  db_subnet_group_name        = var.aline_db_subnet_group_name
 
   # multi_az                    = true
   # allow_major_version_upgrade = false

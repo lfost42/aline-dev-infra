@@ -3,13 +3,13 @@
 ##
 
 resource "aws_security_group" "public" {
-  name = "aline-${var.infra_env}-public-sg"
+  name = "lf-aline-${var.infra_env}-public-sg"
   description = "Public internet access"
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     {
-    Name        = "aline-${var.infra_env}-public-sg"
+    Name        = "lf-aline-${var.infra_env}-public-sg"
     Role        = "public"
     },
     var.tags
@@ -57,13 +57,13 @@ resource "aws_security_group_rule" "public_in_https" {
 # Private Security Group
 ##
 resource "aws_security_group" "private" {
-  name = "aline-${var.infra_env}-private-sg"
+  name = "lf-aline-${var.infra_env}-private-sg"
   description = "Private internet access"
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
     {
-    Name        = "aline-${var.infra_env}-private-sg"
+    Name        = "lf-aline-${var.infra_env}-private-sg"
     Role        = "private"
     },
     var.tags

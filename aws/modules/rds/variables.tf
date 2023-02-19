@@ -45,6 +45,11 @@ variable "db_password" {
   default = "really_good_password" # overwrite with KMS rotating secret
 }
 
+variable "aline_db_subnet_group_name" {
+  type = string
+  description = "db subnet group name"
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

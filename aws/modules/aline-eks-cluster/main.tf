@@ -1,6 +1,6 @@
 # EKS Cluster
 resource "aws_eks_cluster" "this" {
-  name     = "aline-${var.infra_env}-cluster"
+  name     = "lf-aline-${var.infra_env}-cluster"
   role_arn = aws_iam_role.cluster.arn
   version  = "~ 1.21"
 
@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "this" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}"
+    Name        = "lf-aline-${var.infra_env}"
   },
   var.tags
   )
@@ -26,7 +26,7 @@ resource "aws_eks_cluster" "this" {
 
 # EKS Cluster IAM Role
 resource "aws_iam_role" "cluster" {
-  name = "aline-${var.infra_env}-Cluster-Role"
+  name = "lf-aline-${var.infra_env}-Cluster-Role"
 
   assume_role_policy = <<POLICY
 {
@@ -69,7 +69,7 @@ resource "aws_eks_node_group" "this" {
 
   tags = merge(
   {
-    Name        = "aline-${var.infra_env}-nodegroup"
+    Name        = "lf-aline-${var.infra_env}-nodegroup"
   },
   var.tags
   )
@@ -84,7 +84,7 @@ resource "aws_eks_node_group" "this" {
 
 # EKS Node IAM Role
 resource "aws_iam_role" "node" {
-  name = "aline-${var.infra_env}-Worker-Role"
+  name = "lf-aline-${var.infra_env}-Worker-Role"
 
   assume_role_policy = <<POLICY
 {
@@ -120,7 +120,7 @@ resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOn
 
 # EKS Node Security Group
 resource "aws_security_group" "eks_nodes" {
-  name        = "aline-${var.infra_env}-node-sg"
+  name        = "lf-aline-${var.infra_env}-node-sg"
   description = "Security group for all nodes in the cluster"
   vpc_id      = module.vpc.this.id
 
@@ -133,8 +133,8 @@ resource "aws_security_group" "eks_nodes" {
 
   tags = merge(
   {
-    Name                                                   = "$aline-${var.infra_env}-node-sg"
-    "kubernetes.io/cluster/aline-${var.infra_env}-cluster" = "owned"
+    Name                                                   = "$lf-aline-${var.infra_env}-node-sg"
+    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "owned"
   },
   var.tags
   )
@@ -176,17 +176,17 @@ resource "aws_iam_role" "eks-ng-roles" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "aline-AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "aline_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.aline.name
 }
 
-resource "aws_iam_role_policy_attachment" "aline-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "aline_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.aline.name
 }
 
-resource "aws_iam_role_policy_attachment" "aline-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "aline_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.aline.name
 }

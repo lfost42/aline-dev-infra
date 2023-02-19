@@ -16,6 +16,18 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
+variable "aline_az_count" {
+  type = number
+  description = "desired number of availability zones"
+  default = 2
+}
+
+variable "aline_cidr_bits" {
+  type = number
+  description = "number of cidr bits"
+  default = 9 # provides a net mask of /26
+}
+
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
