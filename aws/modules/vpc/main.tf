@@ -1,11 +1,13 @@
 # ./run develop aline-eks-app init
+
 # Create a VPC for the region associated with the AZ
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
     tags = merge(
     {
-      Name = "lf-aline-${var.infra_env}-vpc"
+      Name = "lf-aline-${var.infra_env}"
+      Type = "${var.vpc_type}"
     },
     var.tags
   )
@@ -17,9 +19,9 @@ data "aws_availability_zones" "available" {
 
 # Create 1 public subnets for each AZ within the regional VPC
 resource "aws_subnet" "public" {
-  vpc_id  = aws_vpc.vpc.id
+  count = var.create_public_subnet ? var.az_count : 0
 
-  count   = var.az_count
+  vpc_id  = aws_vpc.vpc.id
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
@@ -33,9 +35,9 @@ resource "aws_subnet" "public" {
 
 # Create 1 private subnets for each AZ within the regional VPC
 resource "aws_subnet" "private" {
-  vpc_id  = aws_vpc.vpc.id
+  count = var.create_private_subnet ? var.az_count : 0
 
-  count   = var.az_count
+  vpc_id  = aws_vpc.vpc.id
   # offsets the position of the subnet within the VPC's range to avoid cidr block collisions
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
@@ -50,9 +52,9 @@ resource "aws_subnet" "private" {
 
 # Create 1 database subnet for each AZ within the regional VPC
 resource "aws_subnet" "database" {
-  vpc_id  = aws_vpc.vpc.id
+  count = var.create_database_subnet ? var.az_count : 0
 
-  count   = var.az_count
+  vpc_id  = aws_vpc.vpc.id
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 3))
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
@@ -64,9 +66,8 @@ resource "aws_subnet" "database" {
   )
 }
 
-###
-# IGW and NGW
-##
+
+### IGW and NGW ###
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
@@ -99,7 +100,8 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  subnet_id = aws_subnet.private[0].id
+  count = var.create_private_subnet || var.create_database_subnet ? 1 : 0
+  subnet_id = var.create_database_subnet ? aws_subnet.database[0].id : aws_subnet.private[0].id
 
   tags = merge(
     {
@@ -111,8 +113,11 @@ resource "aws_nat_gateway" "ngw" {
   )
 }
 
+
+### ROUTE TABLES ###
 # Public Route Table (Subnets with IGW)
 resource "aws_route_table" "public" {
+  count = var.create_public_subnet ? 1 : 0
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
@@ -128,7 +133,7 @@ resource "aws_route_table" "public" {
 # Private Route Tables (Subnets with NGW)
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
-
+  count = var.create_private_subnet ? 1 : 0
   tags = merge(
     {
       Name        = "lf-aline-${var.infra_env}-private-rt"
@@ -141,6 +146,7 @@ resource "aws_route_table" "private" {
 
 # Database Route Tables (Subnets with NGW)
 resource "aws_route_table" "database" {
+  count = var.create_database_subnet ? 1 : 0
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
@@ -155,45 +161,48 @@ resource "aws_route_table" "database" {
 
 # Public Route
 resource "aws_route" "public" {
-  route_table_id         = aws_route_table.public.id
+  count = var.create_public_subnet ? 1 : 0
+  route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
 
 # Private Route
 resource "aws_route" "private" {
-  route_table_id         = aws_route_table.private.id
+  count = var.create_private_subnet ? 1 : 0
+  route_table_id         = aws_route_table.private[0].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw.id
+  nat_gateway_id         = aws_nat_gateway.ngw[0].id
 }
 
 # Database Route
 resource "aws_route" "database" {
-  route_table_id         = aws_route_table.database.id
+  count = var.create_database_subnet ? 1 : 0
+  route_table_id         = aws_route_table.database[0].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw.id
+  nat_gateway_id         = aws_nat_gateway.ngw[0].id
 }
 
 # Public Route to Public Route Table for Public Subnets
 resource "aws_route_table_association" "public" {
-  count          = var.az_count
+  count = length(aws_subnet.public) > 0 && var.create_public_subnet ? var.az_count : 0
   subnet_id      = aws_subnet.public[count.index].id
 
-  route_table_id = aws_route_table.public.id
+  route_table_id = aws_route_table.public[0].id
 }
 
 # Private Route to Private Route Table for Private Subnets
 resource "aws_route_table_association" "private" {
-  count          = var.az_count
+  count = length(aws_subnet.private) > 0 && var.create_private_subnet ? var.az_count : 0
   subnet_id      = aws_subnet.private[count.index].id
 
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[0].id
 }
 
 # Database Route to Database Route Table for Database Subnets
 resource "aws_route_table_association" "database" {
-  count          = var.az_count
+  count = length(aws_subnet.database) > 0 && var.create_database_subnet ? var.az_count : 0
   subnet_id      = aws_subnet.database[count.index].id
 
-  route_table_id = aws_route_table.database.id
+  route_table_id = aws_route_table.database[0].id
 }

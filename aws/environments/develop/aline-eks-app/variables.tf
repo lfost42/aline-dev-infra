@@ -16,6 +16,16 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Project     = "lf-aline"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+  }
+}
+
 variable "aline_az_count" {
   type = number
   description = "desired number of availability zones"
@@ -32,6 +42,30 @@ variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
   default = "10.0.0.0/19"
+}
+
+variable "aline_public_subnet" {
+  type = bool
+  description = "indicates whether to include a public subnet in the VPC"
+  default = true
+}
+
+variable "aline_private_subnet" {
+  type = bool
+  description = "indicates whether to include a private subnet in the VPC"
+  default = true
+}
+
+variable "aline_database_subnet" {
+  type = bool
+  description = "indicates whether to include a database subnet in the VPC"
+  default = true
+}
+
+variable "aline_vpc_type" {
+  type = string
+  description = "type of vpc"
+  default = "main"
 }
 
 variable "public_ec2_instance_size" {
@@ -63,3 +97,28 @@ variable "db_pass" {
   description = "password for the rds database"
   default = "really_good_password" # override with kms rotating secret key
 }
+
+### enable once peering is established ###
+# variable "db_public_subnet" {
+#   type = bool
+#   description = "indicates whether to include a public subnet in the VPC"
+#   default = false
+# }
+
+# variable "db_private_subnet" {
+#   type = bool
+#   description = "indicates whether to include a private subnet in the VPC"
+#   default = false
+# }
+
+# variable "db_database_subnet" {
+#   type = bool
+#   description = "indicates whether to include a database subnet in the VPC"
+#   default = true
+# }
+
+# variable "db_vpc_type" {
+#   type = string
+#   description = "type of vpc"
+#   default = "database"
+# }
