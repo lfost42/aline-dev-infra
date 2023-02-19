@@ -12,13 +12,16 @@ plugin "aws" {
 }
 
 rule "terraform_required_version" {
+  name = "terraform-required-version"
   enabled = false
 }
 
 rule "terraform_required_providers" {
+  name = "terraform-required-providers"
   enabled = false
 }
 
 rule "terraform_deprecated_index" {
+  name = "terraform-depricated-index"
   enabled = false
 }

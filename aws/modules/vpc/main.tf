@@ -19,7 +19,7 @@ resource "aws_subnet" "public" {
   vpc_id  = aws_vpc.vpc.id
 
   count   = var.az_count
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index) # 10.0.0.0/19
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
@@ -36,7 +36,7 @@ resource "aws_subnet" "private" {
 
   count   = var.az_count
   # offsets the position of the subnet within the VPC's range to avoid cidr block collisions
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 4) # 10.0.32.0/19
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 4)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(
@@ -52,7 +52,7 @@ resource "aws_subnet" "database" {
   vpc_id  = aws_vpc.vpc.id
 
   count   = var.az_count
-  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 8) # 10.0.64.0/19
+  cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + 8)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = merge(

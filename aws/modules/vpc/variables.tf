@@ -12,13 +12,11 @@ variable "vpc_cidr" {
 variable "cidr_bits" {
   type = number
   description = "cidr bits for the cidr block"
-  default = 9
 }
 
 variable "az_count" {
   type = number
   description = "number of availability zones"
-  default = 2
 }
 
 variable "tags" {

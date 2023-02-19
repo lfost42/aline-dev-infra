@@ -25,7 +25,7 @@ variable "aline_az_count" {
 variable "aline_cidr_bits" {
   type = number
   description = "number of cidr bits"
-  default = 9 # provides a net mask of /26
+  default = 8
 }
 
 variable "aline_cidr" {
