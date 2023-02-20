@@ -68,17 +68,17 @@ variable "aline_vpc_type" {
   default = "main"
 }
 
-variable "public_ec2_instance_size" {
-  type = string
-  description = "instance size for public ec2"
-  default = "t3.small"
-}
+# variable "public_ec2_instance_size" {
+#   type = string
+#   description = "instance size for public ec2"
+#   default = "t3.small"
+# }
 
-variable "private_ec2_instance_size" {
-  type = string
-  description = "instance size for private ec2"
-  default = "t3.medium"
-}
+# variable "private_ec2_instance_size" {
+#   type = string
+#   description = "instance size for private ec2"
+#   default = "t3.medium"
+# }
 
 variable "db_instance_class" {
   type = string
@@ -95,7 +95,7 @@ variable "db_user" {
 variable "db_pass" {
   type = string
   description = "password for the rds database"
-  default = "really_good_password" # override with kms rotating secret key
+  default = "kms_rotating_secret_key"
 }
 
 ### enable once peering is established ###

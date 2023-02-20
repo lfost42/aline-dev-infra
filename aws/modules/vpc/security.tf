@@ -1,7 +1,4 @@
-###
 # Public Security Group
-##
-
 resource "aws_security_group" "public" {
   name = "lf-aline-${var.infra_env}-public-sg"
   description = "Public internet access"
@@ -9,7 +6,7 @@ resource "aws_security_group" "public" {
 
   tags = merge(
     {
-    Name        = "lf-aline-${var.infra_env}-public-sg"
+    Name = "lf-aline-${var.infra_env}-Public-sg"
     Role        = "public"
     },
     var.tags
@@ -53,9 +50,7 @@ resource "aws_security_group_rule" "public_in_https" {
   security_group_id = aws_security_group.public.id
 }
 
-###
 # Private Security Group
-##
 resource "aws_security_group" "private" {
   name = "lf-aline-${var.infra_env}-private-sg"
   description = "Private internet access"

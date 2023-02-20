@@ -3,6 +3,8 @@
 plugin "terraform" {
   enabled = true
   preset  = "recommended"
+  source  = "github.com/terraform-linters/tflint-ruleset-terraform"
+  version = "0.2.2"
 }
 
 plugin "aws" {
@@ -12,16 +14,17 @@ plugin "aws" {
 }
 
 rule "terraform_required_version" {
-  name = "terraform-required-version"
+  exclude = ["aws/terraform_required_version"]
   enabled = false
+  
 }
 
 rule "terraform_required_providers" {
-  name = "terraform-required-providers"
   enabled = false
+  exclude = ["aws/terraform_required_providers"]
 }
 
 rule "terraform_deprecated_index" {
-  name = "terraform-depricated-index"
   enabled = false
+  exclude = ["aws/terraform_depricated_index"]
 }

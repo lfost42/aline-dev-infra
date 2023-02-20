@@ -37,47 +37,47 @@ provider "aws" {
 #   }))
 # }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-  owners = ["099720109477"] # Canonical official
-}
+# data "aws_ami" "ubuntu" {
+#   most_recent = true
+#   filter {
+#     name   = "name"
+#     values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+#   }
+#   filter {
+#     name   = "virtualization-type"
+#     values = ["hvm"]
+#   }
+#   filter {
+#     name   = "architecture"
+#     values = ["x86_64"]
+#   }
+#   owners = ["099720109477"] # Canonical official
+# }
 
-module "ec2_public" {
-  source = "../../../modules/ec2"
+# module "ec2_public" {
+#   source = "../../../modules/ec2"
 
-  infra_env = var.infra_env
-  infra_role = "public"
-  instance_size = var.public_ec2_instance_size
-  instance_ami = data.aws_ami.ubuntu.id
-  subnets = keys(module.aline_vpc.vpc_public_subnets)
-  security_groups = [module.aline_vpc.security_group_public]
-  create_eip = true
-}
+#   infra_env = var.infra_env
+#   infra_role = "public"
+#   instance_size = var.public_ec2_instance_size
+#   instance_ami = data.aws_ami.ubuntu.id
+#   subnets = keys(module.aline_vpc.vpc_public_subnets)
+#   security_groups = [module.aline_vpc.security_group_public]
+#   create_eip = true
+# }
 
-module "ec2_private" {
-  source = "../../../modules/ec2"
+# module "ec2_private" {
+#   source = "../../../modules/ec2"
 
-  infra_env = var.infra_env
-  infra_role = "private"
-  instance_size = var.private_ec2_instance_size
-  instance_ami = data.aws_ami.ubuntu.id
-  instance_root_device_size = 20
-  subnets = keys(module.aline_vpc.vpc_private_subnets)
-  security_groups = [module.aline_vpc.security_group_private]
-  create_eip = false
-}
+#   infra_env = var.infra_env
+#   infra_role = "private"
+#   instance_size = var.private_ec2_instance_size
+#   instance_ami = data.aws_ami.ubuntu.id
+#   instance_root_device_size = 20
+#   subnets = keys(module.aline_vpc.vpc_private_subnets)
+#   security_groups = [module.aline_vpc.security_group_private]
+#   create_eip = false
+# }
 
 resource "aws_db_subnet_group" "rds_database_subnet" {
   name = "rds-database-subnet-group"
@@ -89,6 +89,7 @@ module "database" {
   source = "../../../modules/rds"
 
   infra_env = var.infra_env
+  
   db_instance_class = var.db_instance_class
   db_username = var.db_user
   db_password = var.db_pass
@@ -108,10 +109,12 @@ module "aline_vpc" {
   create_private_subnet = var.aline_private_subnet
   create_database_subnet = var.aline_database_subnet
   vpc_type = var.aline_vpc_type
+
   tags = merge(
     {
-      Name = "lf-aline-${var.infra_env}-vpc"
-      Type = "${var.aline_vpc_type}"
+      Name = "lf-aline-${var.infra_env}"
+      "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+      Type = var.aline_vpc_type
     },
     var.tags
   )
@@ -132,7 +135,7 @@ module "aline_vpc" {
 #   tags = merge(
 #     {
 #       Name = "lf-aline-${var.infra_env}-vpc"
-#       Type = "${var.db_vpc_type}"
+#       Type = var.db_vpc_type
 #     },
 #     var.tags
 #   )
