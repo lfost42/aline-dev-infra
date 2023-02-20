@@ -109,15 +109,6 @@ module "aline_vpc" {
   create_private_subnet = var.aline_private_subnet
   create_database_subnet = var.aline_database_subnet
   vpc_type = var.aline_vpc_type
-
-  tags = merge(
-    {
-      Name = "lf-aline-${var.infra_env}"
-      "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-      Type = var.aline_vpc_type
-    },
-    var.tags
-  )
 }
 
 ### to implement after we establishing peering ###

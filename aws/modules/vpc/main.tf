@@ -6,8 +6,9 @@ resource "aws_vpc" "vpc" {
 
     tags = merge(
     {
-      Name = "lf-aline-${var.infra_env}-vpc"
-      Type = var.vpc_type
+    Name                                                      = "lf-aline-${var.infra_env}-vpc",
+    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+      Type                                                    = var.vpc_type
     },
     var.tags
   )
@@ -27,10 +28,10 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     {
-      Name                                                      = "lf-aline-${var.infra_env}-public-subnet-${count.index+1}"
+      Name                                                      = "lf-aline-${var.infra_env}-public-sg"
       VPC                                                       = aws_vpc.vpc.id
-      # "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-      # "kubernetes.io/role/elb"                                  = 1
+      "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+      "kubernetes.io/role/elb"                                  = 1
     },
     var.tags
   )
@@ -47,10 +48,9 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     {
-    Name                                                      = "lf-aline-${var.infra_env}-private-subnet-${count.index+1}"
-    VPC                                                       = aws_vpc.vpc.id
-    # "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    # "kubernetes.io/role/internal-elb"                         = 1
+    Name                                                      = "lf-aline-${var.infra_env}-private-sg"
+    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+    "kubernetes.io/role/internal-elb"                         = 1
     },
     var.tags
   )
@@ -66,10 +66,9 @@ resource "aws_subnet" "database" {
 
   tags = merge(
     {
-    Name                                                      = "lf-aline-${var.infra_env}-database-subnet-${count.index+1}"
-    VPC                                                       = aws_vpc.vpc.id
-    # "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    # "kubernetes.io/role/internal-elb"                         = 1
+    Name                                                      = "lf-aline-${var.infra_env}-database-sg"
+    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+    "kubernetes.io/role/internal-elb"                         = 1
     },
     var.tags
   )

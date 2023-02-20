@@ -3,6 +3,7 @@ data "aws_vpc" "this" {
     tags = {
     Name                                                      = "lf-aline-${var.infra_env}-vpc",
     "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+    type = "main"
   }
 }
 
