@@ -38,7 +38,7 @@ module "eks" {
 
   cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_database_subnet_ids)
   ami_type       = var.eks_ami_type
-  instance_types = var.eks_instance_type
+  instance_types = var.eks_instance_types
 
   private_subnets         = concat(module.aline_vpc.vpc_public_subnets,module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
   private_ng_min_size     = var.eks_private_ng_min_size

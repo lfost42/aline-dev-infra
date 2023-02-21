@@ -112,7 +112,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
   count = var.create_private_subnet || var.create_database_subnet ? var.az_count : 0
-  subnet_id = var.create_database_subnet ? aws_subnet.database[index.count].id : aws_subnet.private[index.count].id
+  subnet_id = var.create_database_subnet ? aws_subnet.database[count.index].id : aws_subnet.private[count.index].id
 
   tags = merge(
     {
@@ -157,7 +157,7 @@ resource "aws_route_table" "private" {
 
 # Database Route Tables (Subnets with NGW)
 resource "aws_route_table" "database" {
-  count = var.create_database_subnet ? 1 : 0
+  count = var.create_database_subnet ? var.az_count : 0
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
@@ -173,7 +173,7 @@ resource "aws_route_table" "database" {
 # Public Route
 resource "aws_route" "public" {
   count = var.create_public_subnet ? 1 : 0
-  route_table_id         = aws_route_table.public[0].id
+  route_table_id         = aws_route_table.public[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw.id
 }
@@ -181,17 +181,17 @@ resource "aws_route" "public" {
 # Private Route
 resource "aws_route" "private" {
   count = var.create_private_subnet ? var.az_count : 0
-  route_table_id         = aws_route_table.private[index.count].id
+  route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw[index.count].id
+  nat_gateway_id         = aws_nat_gateway.ngw[count.index].id
 }
 
 # Database Route
 resource "aws_route" "database" {
   count = var.create_database_subnet ? var.az_count : 0
-  route_table_id         = aws_route_table.database[index.count].id
+  route_table_id         = aws_route_table.database[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw[index.count].id
+  nat_gateway_id         = aws_nat_gateway.ngw[count.index].id
 }
 
 # Public Route to Public Route Table for Public Subnets
