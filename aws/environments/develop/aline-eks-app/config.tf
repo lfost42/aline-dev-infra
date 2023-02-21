@@ -51,17 +51,16 @@ module "aline_vpc" {
 }
 
 module "eks" {
-  source  = "../../../modules/aline-eks-cluster"
+  source             = "../../../modules/aline-eks-cluster"
+  infra_env          = var.infra_env
+  cluster_name       = "lf-aline-eks"
+  vpc_id             = module.aline_vpc.vpc_id
 
-  cluster_name     = "lf-aline-eks"
-  vpc_id           = module.aline_vpc.vpc_id
-
-  cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_public_database_ids)
-
+  cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_database_subnet_ids)
   ami_type       = "BOTTLEROCKET_x86_64"
   instance_types = ["t3.micro"]
 
-  private_sunbets         = concat(module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
+  private_subnets         = concat(module.aline_vpc.vpc_public_subnets,module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
   private_ng_min_size     = 2
   private_ng_max_size     = 4
   private_ng_desired_size = 2

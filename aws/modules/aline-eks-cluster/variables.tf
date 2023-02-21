@@ -21,6 +21,12 @@ variable "cluster_version" {
   default = "1.21"
 }
 
+variable "cluster_subnet_ids" {
+  type = list(string)
+  description = "list of cluster subnet ids"
+  default = [""]
+}
+
 variable "ami_type" {
   type = string
   description = "type of ami for ec2 nodes"
@@ -34,15 +40,15 @@ variable "instance_types" {
 }
 
 variable "private_subnets" {
-  description = "list of private subnet"
-  type    = list(string)
-  default = [""]
+  description = "private subnets"
+  # type    = map(string)
+  default = {}
 }
 
 variable "public_subnets" {
-  description = "list of public subnets"
-  type    = list(string)
-  default = [ "" ]
+  description = "public subnets"
+  # type    = map(string)
+  default = {}
 }
 
 variable "private_ng_desired_size" {
