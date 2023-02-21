@@ -53,20 +53,35 @@ module "aline_vpc" {
 module "aline_eks_cluster" {
   source = "../../../modules/aline-eks-cluster"
   infra_env = var.infra_env
-  
-  cluster_subnet_ids      = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
-  endpoint_private_access = true
-  endpoint_public_access  = true
-  public_access_cidrs     = ["0.0.0.0/0"]
+
+  name                    = var.eks_cluster_name
+  subnet_ids              = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
+  endpoint_private_access = "true"
+  endpoint_public_access  = "true"
+
   depends_on = [module.aline_vpc]
 }
 
-module "aline_eks_ng" {
+module "aline_eks_public_ng" {
   source = "../../../modules/aline-eks-cluster"
   infra_env = var.infra_env
 
-  nodegroup_subnet_ids = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
-  depends_on = [module.aline_eks_cluster]
+  public_nodegroup_subnet_ids = flatten([module.aline_vpc.vpc_public_subnet_ids])
+  public_ng_desired_size = 2
+  public_ng_max_size = 4
+  public_ng_min_size = 2
+  public_ng_instance_type = ["t3.medium"]
+}
+
+module "aline_eks_private_ng" {
+  source = "../../../modules/aline-eks-cluster"
+  infra_env = var.infra_env
+
+  private_nodegroup_subnet_ids = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
+  private_ng_desired_size = 2
+  private_ng_max_size = 4
+  private_ng_min_size = 2
+  private_ng_instance_type = ["t3.medium"]
 }
 
 # resource "aws_db_subnet_group" "rds_database_subnet" {

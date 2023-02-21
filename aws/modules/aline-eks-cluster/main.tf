@@ -1,148 +1,115 @@
-# ===== DEPENDENCIES =====
-data "aws_vpc" "vpc" {
-  tags = {
-    Name = "lf-aline-${var.infra_env}-vpc"
-    Type = "main"
-  }
-}
-
-# Security group for data plane
-resource "aws_security_group" "data_plane_sg" {
-  name   =  "lf-aline-${var.infra_env}-Worker-sg"
-  vpc_id = data.aws_vpc.vpc.id
-
-    tags = merge(
-    {
-      Name = "lf-aline-${var.infra_env}-worker-sg"
-    },
-    var.tags
-  )
-}
-
-# Security group traffic rules
-resource "aws_security_group_rule" "nodes" {
-  description       = "Allow nodes to communicate with each other"
-  security_group_id = aws_security_group.data_plane_sg.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "-1"
-  count = var.az_count
-  # all cidr blocks
-  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
-}
-
-resource "aws_security_group_rule" "nodes_inbound" {
-  description       = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
-  security_group_id = aws_security_group.data_plane_sg.id
-  type              = "ingress"
-  from_port         = 1025
-  to_port           = 65535
-  protocol          = "tcp"
-  ##### private and database cidr blocks #####
-  count = var.az_count
-  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
-}
-
-resource "aws_security_group_rule" "node_outbound" {
-  security_group_id = aws_security_group.data_plane_sg.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-# Security group for control plane
-resource "aws_security_group" "control_plane_sg" {
-  name   = "lf-aline-${var.infra_env}-ControlPlane-sg"
-  vpc_id = data.aws_vpc.vpc.id
-
-    tags = merge(
-    {
-      Name = "lf-aline-${var.infra_env}-ControlPlane-sg"
-    },
-    var.tags
-  )
-}
-
-# Security group traffic rules
-resource "aws_security_group_rule" "control_plane_inbound" {
-  count = var.az_count
-  security_group_id = aws_security_group.control_plane_sg.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  ##### private plus public plus database #####
-  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
-}
-
-resource "aws_security_group_rule" "control_plane_outbound" {
-  security_group_id = aws_security_group.control_plane_sg.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-variable "cluster_subnet_ids" {
-  type    = list(string)
-  default = [""]
-}
-
-variable "nodegroup_subnet_ids" {
-  type    = list(string)
-  default = [""]
-}
-
-variable "endpoint_private_access" {
-  type    = bool
-  default = true
-}
-
-variable "endpoint_public_access" {
-  type    = bool
-  default = true
-}
-
-variable "public_access_cidrs" {
-  type    = list(string)
-  default = ["0.0.0.0/0"]
-}
-
-# ====== EKS CLUSTER =====
 # EKS Cluster
 resource "aws_eks_cluster" "this" {
-  name     = "lf-aline-${var.infra_env}-cluster"
-  role_arn = aws_iam_role.cluster.arn
-  version  = "1.21"
+  enabled_cluster_log_types = []
+  name                      = var.cluster_name
+  node_group_name           = var.node_group_name
+  role_arn                  = aws_iam_role.cluster.arn
+  version                   = var.eks_cluster_version
 
   vpc_config {
     subnet_ids              = var.cluster_subnet_ids
+    security_group_ids      = var.security_group_ids
     endpoint_private_access = var.endpoint_private_access
     endpoint_public_access  = var.endpoint_public_access
-    public_access_cidrs     = var.public_access_cidrs
   }
+  tags = var.tags
+
+  depends_on = [
+    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy,
+    aws_cloudwatch_log_group.cluster
+  ]
+}
+
+resource "aws_eks_node_group" "public_ng" {
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "lf-aline-${infra_env}-managed-workers"
+  node_role_arn   = aws_iam_role.managed_workers.arn
+  subnet_ids      = var.public_nodegroup_subnet_ids
+
+  scaling_config {
+    desired_size = var.public_ng_desired_size
+    max_size     = var.public_ng_max_size
+    min_size     = var.public_ng_min_size
+  }
+
+  instance_types = var.public_ng_instance_type
+
+  labels = {
+    lifecycle = "OnDemand"
+  }
+
+  remote_access {
+    ec2_ssh_key               = var.ssh_key_name
+    source_security_group_ids = var.public_subnet_ids
+  }
+
+  release_version = var.managed_node_group_release_version
 
     tags = merge(
     {
-      Name = "lf-aline-${var.infra_env}-eks-cluster"
+      Name   = "public-ng"
+      Role   = "public"
+      Subnet = "public"
     },
     var.tags
   )
 
   depends_on = [
-    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy
+    aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.eks-AmazonEC2ContainerRegistryReadOnly,
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-# EKS Cluster IAM Role
-resource "aws_iam_role" "cluster" {
-  name = "lf-aline-${var.infra_env}-Cluster-Role"
+resource "aws_eks_node_group" "private_ng" {
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "lf-aline-${infra_env}-managed-workers"
+  node_role_arn   = aws_iam_role.managed_workers.arn
+  subnet_ids      = var.private_nodegroup_subnet_ids
+  scaling_config {
+    desired_size = var.private_ng_desired_size
+    max_size     = var.private_ng_max_size
+    min_size     = var.private_ng_min_size
+  }
+  labels = {
+    lifecycle = "OnDemand"
+  }
+  remote_access {
+    ec2_ssh_key               = var.ssh_key_name
+    source_security_group_ids = var.public_subnet_ids
+  }
+  release_version = "1.14.7-20190927"
+  tags = merge(
+    {
+    Name   = "private-ng"
+    Role   = "private"
+    Subnet = "private"
+    },
+    var.tags
+  )
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.eks-AmazonEC2ContainerRegistryReadOnly,
+  ]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
-  assume_role_policy = <<POLICY
+resource "aws_cloudwatch_log_group" "cluster" {
+  name              = "/aws/eks/lf-aline-${infra_env}/cluster"
+  retention_in_days = 7
+}
+
+resource "aws_iam_role" "cluster" {
+  name = "lf-aline-${infra_env}-cluster-role"
+assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -156,199 +123,43 @@ resource "aws_iam_role" "cluster" {
   ]
 }
 POLICY
+tags = var.tags
 }
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment"     "cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster.name
 }
-
-# EKS Cluster Security Group
-resource "aws_security_group" "eks_cluster" {
-  name        = "lf-aline-${var.infra_env}-cluster-sg"
-  description = "Cluster communication with worker nodes"
-  vpc_id = data.aws_vpc.vpc.id
-
-    tags = merge(
-    {
-      Name = "lf-aline-${var.infra_env}-cluster-sg"
-    },
-    var.tags
-  )
+resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  role       = aws_iam_role.cluster.name
 }
 
-resource "aws_security_group_rule" "cluster_inbound" {
-  description              = "Allow worker nodes to communicate with the cluster API Server"
-  from_port                = 443
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.eks_cluster.id
-  source_security_group_id = aws_security_group.eks_nodes.id
-  to_port                  = 443
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "cluster_outbound" {
-  description              = "Allow cluster API Server to communicate with the worker nodes"
-  from_port                = 1024
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.eks_cluster.id
-  source_security_group_id = aws_security_group.eks_nodes.id
-  to_port                  = 65535
-  type                     = "egress"
-}
-
-# EKS Node Groups
-resource "aws_eks_managed_node_group" "this" {
-  source = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
-
-  name            = "lf-aline-${var.infra_env}-managed-nodegroup"
-  cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "lf-aline-${var.infra_env}-ng"
-  cluster_version = "1.24"
-
-  vpc_security_group_ids  = [module.eks.node_security_group_id]
-  node_role_arn           = aws_iam_role.node.arn
-  subnet_ids              = var.nodegroup_subnet_ids
-
-  min_size     = 2
-  max_size     = 5
-  desired_size = 2
-
-  ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-  capacity_type  = "ON_DEMAND"  # ON_DEMAND, SPOT
-  disk_size      = 20
-  instance_types = ["t2.medium"]
-
-  tags = merge(
-    var.tags
-  )
-
-  depends_on = [
-    aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly,
-  ]
-}
-
-# EKS Node IAM Role
-resource "aws_iam_role" "node" {
-  name = "lf-aline-${var.infra_env}-Worker-Role"
-
-  assume_role_policy = <<POLICY
+resource "aws_iam_role" "managed_workers" {
+  name = "lf-aline-${infra_env}-managed-worker-node"
+  assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "ec2.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Effect": "Allow"
     }
   ]
 }
-POLICY
+EOF
 }
-
-resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "eks-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.managed_workers.name
 }
-
-resource "aws_iam_role_policy_attachment" "node_AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "eks-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.managed_workers.name
 }
-
-resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "eks-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.managed_workers.name
 }
-
-
-# ===== EKS Node Security Group =====
-resource "aws_security_group" "eks_nodes" {
-  name        = "lf-aline-${var.infra_env}-node-sg"
-  description = "Security group for all nodes in the cluster"
-  vpc_id = data.aws_vpc.vpc.id
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name                                           = "lf-aline-${var.infra_env}-node-sg"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "owned"
-  }
-}
-
-resource "aws_security_group_rule" "nodes_internal" {
-  description              = "Allow nodes to communicate with each other"
-  from_port                = 0
-  protocol                 = "-1"
-  security_group_id        = aws_security_group.eks_nodes.id
-  source_security_group_id = aws_security_group.eks_nodes.id
-  to_port                  = 65535
-  type                     = "ingress"
-}
-
-resource "aws_security_group_rule" "nodes_cluster_inbound" {
-  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
-  from_port                = 1025
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.eks_nodes.id
-  source_security_group_id = aws_security_group.eks_cluster.id
-  to_port                  = 65535
-  type                     = "ingress"
-}
-
-# ===== VARIABLES =====
-variable "infra_env" {
-  type        = string
-  description = "infrastructure environment"
-}
-
-variable "vpc_cidr" {
-  description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
-  type        = string
-  default     = "10.0.0.0/19"
-}
-
-variable "cidr_bits" {
-  description = "The number of subnet bits for the CIDR. For example, specifying a value 8 for this parameter will create a CIDR with a mask of /24."
-  type        = number
-  default     = 8
-}
-
-variable "az_count" {
-  description = "number of azs"
-  type = number
-  default = 2
-}
-
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default = {
-    Project     = "lf-aline"
-    Environment = "develop"
-    ManagedBy   = "terraform"
-  }
-}
-
-# ===== OUTPUTS =====
-output "cluster_name" {
-  value = aws_eks_cluster.this.name
-}
-
-output "cluster_endpoint" {
-  value = aws_eks_cluster.this.endpoint
-}
-
-output "cluster_ca_certificate" {
-  value = aws_eks_cluster.this.certificate_authority[0].data
-}
-
