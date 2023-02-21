@@ -16,6 +16,24 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
+variable "db_instance_class" {
+  type = string
+  description = "instance class(type) for the rds database"
+  default = "db.t3.medium"
+}
+
+variable "db_user" {
+  type = string
+  description = "master username for the rds database"
+  default = "admin"
+}
+
+variable "db_pass" {
+  type = string
+  description = "password for the rds database"
+  default = "kms_rotating_secret_key"
+}
+
 variable "aline_az_count" {
   type = number
   description = "desired number of availability zones"
@@ -105,24 +123,9 @@ variable "eks_public_ng_desired_size" {
   default = ""
 }
 
-##### DATABASE #####
-# variable "db_instance_class" {
-#   type = string
-#   description = "instance class(type) for the rds database"
-#   default = "db.t3.medium"
-# }
 
-# variable "db_user" {
-#   type = string
-#   description = "master username for the rds database"
-#   default = "admin"
-# }
 
-# variable "db_pass" {
-#   type = string
-#   description = "password for the rds database"
-#   default = "kms_rotating_secret_key"
-# }
+
 
 # variable "tags" {
 #   description = "A map of tags to add to all resources"
@@ -146,6 +149,7 @@ variable "eks_public_ng_desired_size" {
 #   description = "instance size for private ec2"
 #   default = "t3.medium"
 # }
+
 
 ### enable once peering is established ###
 # variable "db_public_subnet" {
