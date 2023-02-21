@@ -4,14 +4,24 @@
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
-    tags = merge(
-    {
-    Name                                                      = "lf-aline-${var.infra_env}-vpc",
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-      Type                                                    = var.vpc_type
-    },
-    var.tags
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = "1"
+  }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = "1"
+  }
+  tags = merge(
+  {
+    Name                                  = "lf-aline-${var.infra_env}-vpc",
+    "kubernetes.io/cluster/lf-aline-eks"  = "shared"
+    Type                                  = var.vpc_type
+  },
+  var.tags
   )
+
+  enable_ecr_dkr_endpoint               = true
+  ecr_dkr_endpoint_private_dns_enabled  = true
+  enable_s3_endpoint                    = true
 }
 
 data "aws_availability_zones" "available" {
@@ -28,7 +38,7 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     {
-      Name                                                      = "lf-aline-${var.infra_env}-public-sg"
+      Name                                                      = "lf-aline-${var.infra_env}-public-sg-${count.index+1}"
       VPC                                                       = aws_vpc.vpc.id
       "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
       "kubernetes.io/role/elb"                                  = 1
@@ -48,7 +58,7 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     {
-    Name                                                      = "lf-aline-${var.infra_env}-private-sg"
+    Name                                                      = "lf-aline-${var.infra_env}-private-sg-${count.index+1}"
     "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
     },
@@ -66,7 +76,7 @@ resource "aws_subnet" "database" {
 
   tags = merge(
     {
-    Name                                                      = "lf-aline-${var.infra_env}-database-sg"
+    Name                                                      = "lf-aline-${var.infra_env}-database-sg-${count.index+1}"
     "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
     },

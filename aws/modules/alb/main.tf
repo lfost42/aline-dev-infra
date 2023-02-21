@@ -5,7 +5,7 @@ module "alb" {
 
   name = "${local.name}-alb"
   load_balancer_type = "application"
-  vpc_id = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
   subnets = [
     for subnet in data.aws_subnet.public : subnet.id
   ]
@@ -69,7 +69,7 @@ module "alb" {
 resource "aws_security_group" "loadbalancer_sg" {
   name = "loadbalancer-sg"
   description = "Security Group with HTTP open for entire Internet (IPv4 CIDR), egress ports are all world open"
-  vpc_id = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
   # Ingress Rules & CIDR Blocks
   ingress_rules = ["http-80-tcp"]
   ingress_cidr_blocks = ["0.0.0.0/0"]

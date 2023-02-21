@@ -33,6 +33,14 @@ output "vpc_database_subnets" {
   }
 }
 
+output "vpc_public_subnet_ids" {
+  value = [for subnet in aws_subnet.public : subnet.id]
+}
+
+output "vpc_private_subnet_ids" {
+  value = [for subnet in aws_subnet.private : subnet.id]
+}
+
 output "vpc_database_subnet_ids" {
   value = [for subnet in aws_subnet.database : subnet.id]
 }

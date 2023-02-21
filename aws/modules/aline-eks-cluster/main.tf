@@ -1,40 +1,15 @@
 # ===== DEPENDENCIES =====
-data "aws_vpc" "this" {
-    tags = {
-    Name                                                      = "lf-aline-${var.infra_env}-vpc",
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    type = "main"
-  }
-}
-
-data "aws_subnet" "public" {
+data "aws_vpc" "vpc" {
   tags = {
-    Name                                                      = "lf-aline-${var.infra_env}-public-sg"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    "kubernetes.io/role/elb"                                  = 1
-  }
-}
-
-data "aws_subnet" "private" {
-  tags = {
-    Name                                                      = "lf-aline-${var.infra_env}-private-sg"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    "kubernetes.io/role/internal-elb"                         = 1
-  }
-}
-
-data "aws_subnet" "database" {
-  tags = {
-    Name                                                      = "lf-aline-${var.infra_env}-database-sg"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
-    "kubernetes.io/role/internal-elb"                         = 1
+    Name = "lf-aline-${var.infra_env}-vpc"
+    Type = "main"
   }
 }
 
 # Security group for data plane
 resource "aws_security_group" "data_plane_sg" {
   name   =  "lf-aline-${var.infra_env}-Worker-sg"
-  vpc_id = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
 
     tags = merge(
     {
@@ -44,13 +19,6 @@ resource "aws_security_group" "data_plane_sg" {
   )
 }
 
-# output "vpc_database_subnets" {
-#   value = {
-#     for subnet in data.aws_subnet.database :
-#     subnet.id => subnet.cidr_block
-#   }
-# }
-
 # Security group traffic rules
 resource "aws_security_group_rule" "nodes" {
   description       = "Allow nodes to communicate with each other"
@@ -59,7 +27,9 @@ resource "aws_security_group_rule" "nodes" {
   from_port         = 0
   to_port           = 65535
   protocol          = "-1"
-  cidr_blocks       = [data.aws_subnet.public.cidr_block, data.aws_subnet.private.cidr_block, data.aws_subnet.database.cidr_block]
+  count = var.az_count
+  # all cidr blocks
+  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
 }
 
 resource "aws_security_group_rule" "nodes_inbound" {
@@ -69,8 +39,9 @@ resource "aws_security_group_rule" "nodes_inbound" {
   from_port         = 1025
   to_port           = 65535
   protocol          = "tcp"
-  ##### private and database cidr blocks only #####
-  cidr_blocks       = [data.aws_subnet.private.cidr_block, data.aws_subnet.database.cidr_block]
+  ##### private and database cidr blocks #####
+  count = var.az_count
+  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
 }
 
 resource "aws_security_group_rule" "node_outbound" {
@@ -85,7 +56,7 @@ resource "aws_security_group_rule" "node_outbound" {
 # Security group for control plane
 resource "aws_security_group" "control_plane_sg" {
   name   = "lf-aline-${var.infra_env}-ControlPlane-sg"
-  vpc_id = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
 
     tags = merge(
     {
@@ -97,13 +68,14 @@ resource "aws_security_group" "control_plane_sg" {
 
 # Security group traffic rules
 resource "aws_security_group_rule" "control_plane_inbound" {
+  count = var.az_count
   security_group_id = aws_security_group.control_plane_sg.id
   type              = "ingress"
   from_port         = 0
   to_port           = 65535
   protocol          = "tcp"
   ##### private plus public plus database #####
-  cidr_blocks       = [data.aws_subnet.public.cidr_block, data.aws_subnet.private.cidr_block, data.aws_subnet.database.cidr_block]
+  cidr_blocks       = flatten([cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count), cidrsubnet(data.aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))])
 }
 
 resource "aws_security_group_rule" "control_plane_outbound" {
@@ -115,6 +87,31 @@ resource "aws_security_group_rule" "control_plane_outbound" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+variable "cluster_subnet_ids" {
+  type    = list(string)
+  default = [""]
+}
+
+variable "nodegroup_subnet_ids" {
+  type    = list(string)
+  default = [""]
+}
+
+variable "endpoint_private_access" {
+  type    = bool
+  default = true
+}
+
+variable "endpoint_public_access" {
+  type    = bool
+  default = true
+}
+
+variable "public_access_cidrs" {
+  type    = list(string)
+  default = ["0.0.0.0/0"]
+}
+
 # ====== EKS CLUSTER =====
 # EKS Cluster
 resource "aws_eks_cluster" "this" {
@@ -123,11 +120,10 @@ resource "aws_eks_cluster" "this" {
   version  = "1.21"
 
   vpc_config {
-    ##### private subnets #####
-    subnet_ids              = [[for subnet in data.aws_subnet.database : subnet.id], [for subnet in data.aws_subnet.public : subnet.id]]
-    endpoint_private_access = true
-    endpoint_public_access  = true
-    public_access_cidrs     = ["0.0.0.0/0"]
+    subnet_ids              = var.cluster_subnet_ids
+    endpoint_private_access = var.endpoint_private_access
+    endpoint_public_access  = var.endpoint_public_access
+    public_access_cidrs     = var.public_access_cidrs
   }
 
     tags = merge(
@@ -171,7 +167,7 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 resource "aws_security_group" "eks_cluster" {
   name        = "lf-aline-${var.infra_env}-cluster-sg"
   description = "Cluster communication with worker nodes"
-  vpc_id      = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
 
     tags = merge(
     {
@@ -202,18 +198,21 @@ resource "aws_security_group_rule" "cluster_outbound" {
 }
 
 # EKS Node Groups
-resource "aws_eks_node_group" "this" {
-  cluster_name    = aws_eks_cluster.this.name
-  node_group_name = var.project
-  node_role_arn   = aws_iam_role.node.arn
-  ##### private subnet id's #####
-  subnet_ids      = [for subnet in data.aws_subnet.database : subnet.id]
+resource "aws_eks_managed_node_group" "this" {
+  source = "terraform-aws-modules/eks/aws//modules/eks-managed-node-group"
 
-  scaling_config {
-    desired_size = 2
-    max_size     = 5
-    min_size     = 1
-  }
+  name            = "lf-aline-${var.infra_env}-managed-nodegroup"
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "lf-aline-${var.infra_env}-ng"
+  cluster_version = "1.24"
+
+  vpc_security_group_ids  = [module.eks.node_security_group_id]
+  node_role_arn           = aws_iam_role.node.arn
+  subnet_ids              = var.nodegroup_subnet_ids
+
+  min_size     = 2
+  max_size     = 5
+  desired_size = 2
 
   ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
   capacity_type  = "ON_DEMAND"  # ON_DEMAND, SPOT
@@ -271,7 +270,7 @@ resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOn
 resource "aws_security_group" "eks_nodes" {
   name        = "lf-aline-${var.infra_env}-node-sg"
   description = "Security group for all nodes in the cluster"
-  vpc_id      = data.aws_vpc.this.id
+  vpc_id = data.aws_vpc.vpc.id
 
   egress {
     from_port   = 0
@@ -306,7 +305,6 @@ resource "aws_security_group_rule" "nodes_cluster_inbound" {
   type                     = "ingress"
 }
 
-
 # ===== VARIABLES =====
 variable "infra_env" {
   type        = string
@@ -323,6 +321,12 @@ variable "cidr_bits" {
   description = "The number of subnet bits for the CIDR. For example, specifying a value 8 for this parameter will create a CIDR with a mask of /24."
   type        = number
   default     = 8
+}
+
+variable "az_count" {
+  description = "number of azs"
+  type = number
+  default = 2
 }
 
 variable "tags" {
