@@ -30,7 +30,7 @@ resource "aws_subnet" "public" {
     {
       Name                                                      = "lf-aline-${var.infra_env}-public-sg-${count.index+1}"
       VPC                                                       = aws_vpc.vpc.id
-      "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+      "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
       "kubernetes.io/role/elb"                                  = 1
     },
     var.tags
@@ -49,7 +49,7 @@ resource "aws_subnet" "private" {
   tags = merge(
     {
     Name                                                      = "lf-aline-${var.infra_env}-private-sg-${count.index+1}"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+    "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
     },
     var.tags
@@ -67,7 +67,7 @@ resource "aws_subnet" "database" {
   tags = merge(
     {
     Name                                                      = "lf-aline-${var.infra_env}-database-sg-${count.index+1}"
-    "kubernetes.io/cluster/lf-aline-${var.infra_env}-cluster" = "shared"
+    "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
     },
     var.tags

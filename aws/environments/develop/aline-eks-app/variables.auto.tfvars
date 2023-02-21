@@ -6,9 +6,9 @@ aline_profile = "aline"
 aline_region = "us-east-1"
 
 # db variables
-db_instance_class = "db.t3.medium"
-db_user = "admin"
-db_pass = "really_good_password" # kms rotating secret key
+# db_instance_class = "db.t3.medium"
+# db_user = "admin"
+# db_pass = "really_good_password" # kms rotating secret key
 
 ### ALINE VPC 
 aline_cidr = "10.0.0.0/19" # 2,046 IP addresses per subnet at 6 azs

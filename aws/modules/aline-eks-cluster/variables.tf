@@ -3,55 +3,46 @@ variable "infra_env" {
   description = "infrastructure environment"
 }
 
-variable "cluster_subnet_ids" {
+variable "vpc_id" {
+  type = string
+  description = "cluster vpc"
+  default = ""
+}
+
+variable "cluster_name" {
+  type = string
+  description = "name of cluster"
+  default = ""
+}
+
+variable "cluster_version" {
+  type = string
+  description = "version number of cluster"
+  default = "1.21"
+}
+
+variable "ami_type" {
+  type = string
+  description = "type of ami for ec2 nodes"
+  default = "BOTTLEROCKET_x86_64"
+}
+
+variable "instance_types" {
+  description = "list of instance types"
+  type = list(string)
+  default = ["t3.medium"]
+}
+
+variable "private_subnets" {
+  description = "list of private subnet"
   type    = list(string)
   default = [""]
 }
 
-variable "endpoint_private_access" {
-  type    = bool
-  default = true
-}
-
-variable "endpoint_public_access" {
-  type    = bool
-  default = true
-}
-
-variable "public_security_group_ids" {
-  description = "list of public security group ids"
-  type = list(string)
-  default = [""]
-}
-
-variable "cluster_security_group_ids" {
-  description = "list of cluster security group ids"
-  type = list(string)
-  default = [""]
-}
-
-variable "private_subnet_ids" {
-  description = "list of private subnet ids"
-  type    = list(string)
-  default = [""]
-}
-
-variable "public_subnet_ids" {
-  description = "list of public subnet ids"
+variable "public_subnets" {
+  description = "list of public subnets"
   type    = list(string)
   default = [ "" ]
-}
-
-variable "public_ng_instance_type" {
-  description = "public ng ec2 instance class"
-  type = list(string)
-  default = [""]
-}
-
-variable "private_ng_instance_type" {
-  description = "private ng ec2 instance class"
-  type = list(string)
-  default = [""]
 }
 
 variable "private_ng_desired_size" {
@@ -115,5 +106,6 @@ variable "tags" {
     Project     = "lf-aline"
     Environment = "develop"
     ManagedBy   = "terraform"
+    Owner       = "lynda"
   }
 }

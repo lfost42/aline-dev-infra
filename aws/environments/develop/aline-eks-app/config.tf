@@ -50,45 +50,27 @@ module "aline_vpc" {
   vpc_type = var.aline_vpc_type
 }
 
-module "aline_eks_cluster" {
-  source = "../../../modules/aline-eks-cluster"
-  infra_env = var.infra_env
-  cluster_subnet_ids      = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
+module "eks" {
+  source  = "../../../modules/aline-eks-cluster"
 
-  endpoint_private_access = "true"
-  endpoint_public_access  = "true"
-  depends_on = [module.aline_vpc]
-}
+  cluster_name     = "lf-aline-eks"
+  vpc_id           = module.aline_vpc.vpc_id
 
-module "aline_eks_public_ng" {
-  source = "../../../modules/aline-eks-cluster"
-  infra_env = var.infra_env
-  public_subnet_ids = module.aline_vpc.vpc_public_subnet_ids
-  public_security_group_ids = [module.aline_vpc.security_group_public]
+  cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_public_database_ids)
 
+  ami_type       = "BOTTLEROCKET_x86_64"
+  instance_types = ["t3.micro"]
+
+  private_sunbets         = concat(module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
+  private_ng_min_size     = 2
+  private_ng_max_size     = 4
+  private_ng_desired_size = 2
+  
+  public_subnets         = module.aline_vpc.vpc_public_subnets
+  public_ng_min_size     = 2
+  public_ng_max_size     = 4
   public_ng_desired_size = 2
-  public_ng_max_size = 4
-  public_ng_min_size = 2
-
-  public_ng_instance_type = ["t3.medium"]
-  ssh_key_name = "lf-terraform-key"
-  depends_on = [module.aline_vpc, module.aline_eks_cluster]
 }
-
-# module "aline_eks_private_ng" {
-#   source = "../../../modules/aline-eks-cluster"
-#   infra_env = var.infra_env
-  # private_subnet_ids = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
-  # public_security_group_ids = [module.aline_vpc.security_group_public]
-
-#   private_ng_desired_size = 2
-#   private_ng_max_size = 4
-#   private_ng_min_size = 2
-
-#   private_ng_instance_type = ["t3.medium"]
-#   ssh_key_name = "lf-terraform-key"
-#   depends_on = [module.aline_vpc, module.aline_eks_cluster]
-# }
 
 # resource "aws_db_subnet_group" "rds_database_subnet" {
 #   name = "rds-database-subnet-group"

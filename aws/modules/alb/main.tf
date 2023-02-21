@@ -1,4 +1,3 @@
-# Attach ALB to API gateway
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "5.16.0"
