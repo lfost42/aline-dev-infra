@@ -28,20 +28,6 @@ resource "aws_security_group" "worker_sg" {
   }
 }
 
-# EKS Cluster Security Group
-resource "aws_security_group" "eks_cluster_sg" {
-  name        = "lf-aline-${var.infra_env}-cluster-sg"
-  description = "Cluster communication with worker nodes"
-  vpc_id      = data.aws_vpc.vpc.id
-
-    tags = merge(
-    {
-      Name = "lf-aline-${var.infra_env}-cluster-sg"
-    },
-    var.tags
-  )
-}
-
 resource "aws_security_group_rule" "vpc_endpoint_egress" {
   security_group_id = aws_security_group.worker_sg.id
   type              = "egress"
@@ -70,5 +56,5 @@ resource "aws_security_group_rule" "vpc_endpoint_eks_cluster_sg" {
   source_security_group_id = aws_security_group.worker_sg.id
   to_port                  = 443
   type                     = "ingress"
-  depends_on = [aws_eks_cluster.cluster]
+  depends_on = [aws_eks_cluster.this]
 }

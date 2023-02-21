@@ -54,8 +54,8 @@ module "aline_eks_cluster" {
   source = "../../../modules/aline-eks-cluster"
   infra_env = var.infra_env
 
-  name                    = var.eks_cluster_name
-  subnet_ids              = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
+  cluster_name            = "lf-aline-eks-cluster"
+  cluster_subnet_ids      = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
   endpoint_private_access = "true"
   endpoint_public_access  = "true"
 
@@ -71,6 +71,8 @@ module "aline_eks_public_ng" {
   public_ng_max_size = 4
   public_ng_min_size = 2
   public_ng_instance_type = ["t3.medium"]
+  ssh_key_name = "lf-terraform-key"
+  depends_on = [module.aline_eks_cluster]
 }
 
 module "aline_eks_private_ng" {
@@ -82,6 +84,8 @@ module "aline_eks_private_ng" {
   private_ng_max_size = 4
   private_ng_min_size = 2
   private_ng_instance_type = ["t3.medium"]
+  ssh_key_name = "lf-terraform-key"
+  depends_on = [module.aline_eks_cluster]
 }
 
 # resource "aws_db_subnet_group" "rds_database_subnet" {

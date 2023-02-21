@@ -1,14 +1,13 @@
 # EKS Cluster
 resource "aws_eks_cluster" "this" {
   enabled_cluster_log_types = []
-  name                      = var.cluster_name
-  node_group_name           = var.node_group_name
+  name                      = "lf-aline-eks-cluster"
   role_arn                  = aws_iam_role.cluster.arn
   version                   = var.eks_cluster_version
 
   vpc_config {
     subnet_ids              = var.cluster_subnet_ids
-    security_group_ids      = var.security_group_ids
+    security_group_ids      = var.cluster_security_group_ids
     endpoint_private_access = var.endpoint_private_access
     endpoint_public_access  = var.endpoint_public_access
   }
@@ -23,7 +22,7 @@ resource "aws_eks_cluster" "this" {
 
 resource "aws_eks_node_group" "public_ng" {
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "lf-aline-${infra_env}-managed-workers"
+  node_group_name = "lf-aline-eks-managed-workers"
   node_role_arn   = aws_iam_role.managed_workers.arn
   subnet_ids      = var.public_nodegroup_subnet_ids
 
@@ -41,7 +40,7 @@ resource "aws_eks_node_group" "public_ng" {
 
   remote_access {
     ec2_ssh_key               = var.ssh_key_name
-    source_security_group_ids = var.public_subnet_ids
+    source_security_group_ids = var.public_security_group_ids
   }
 
   release_version = var.managed_node_group_release_version
@@ -68,7 +67,7 @@ resource "aws_eks_node_group" "public_ng" {
 
 resource "aws_eks_node_group" "private_ng" {
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "lf-aline-${infra_env}-managed-workers"
+  node_group_name = "lf-aline-eks-private-workers"
   node_role_arn   = aws_iam_role.managed_workers.arn
   subnet_ids      = var.private_nodegroup_subnet_ids
   scaling_config {
@@ -81,7 +80,7 @@ resource "aws_eks_node_group" "private_ng" {
   }
   remote_access {
     ec2_ssh_key               = var.ssh_key_name
-    source_security_group_ids = var.public_subnet_ids
+    source_security_group_ids = var.public_security_group_ids
   }
   release_version = "1.14.7-20190927"
   tags = merge(
@@ -103,12 +102,13 @@ resource "aws_eks_node_group" "private_ng" {
 }
 
 resource "aws_cloudwatch_log_group" "cluster" {
-  name              = "/aws/eks/lf-aline-${infra_env}/cluster"
+  name              = "/aws/eks/lf-aline-develop/cluster"
   retention_in_days = 7
 }
 
 resource "aws_iam_role" "cluster" {
-  name = "lf-aline-${infra_env}-cluster-role"
+  name = "eks-cluster-role"
+
 assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -125,17 +125,19 @@ assume_role_policy = <<POLICY
 POLICY
 tags = var.tags
 }
+
 resource "aws_iam_role_policy_attachment"     "cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster.name
 }
+
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.cluster.name
 }
 
 resource "aws_iam_role" "managed_workers" {
-  name = "lf-aline-${infra_env}-managed-worker-node"
+  name = "eks-managed-worker-node"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

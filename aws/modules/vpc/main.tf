@@ -4,12 +4,6 @@
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = "1"
-  }
-  public_subnet_tags = {
-    "kubernetes.io/role/elb" = "1"
-  }
   tags = merge(
   {
     Name                                  = "lf-aline-${var.infra_env}-vpc",
@@ -18,10 +12,6 @@ resource "aws_vpc" "vpc" {
   },
   var.tags
   )
-
-  enable_ecr_dkr_endpoint               = true
-  ecr_dkr_endpoint_private_dns_enabled  = true
-  enable_s3_endpoint                    = true
 }
 
 data "aws_availability_zones" "available" {

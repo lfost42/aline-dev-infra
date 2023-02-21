@@ -46,7 +46,14 @@ variable "public_access_cidrs" {
   default = ["0.0.0.0/0"]
 }
 
-variable "security_group_ids" {
+variable "public_security_group_ids" {
+  description = "list of public security group ids"
+  type = list(string)
+  default = [""]
+}
+
+variable "cluster_security_group_ids" {
+  description = "list of cluster security group ids"
   type = list(string)
   default = [""]
 }
@@ -115,6 +122,18 @@ variable "eks_cluster_version" {
   description = "version for cluster"
   type = string
   default = "1.21"
+}
+
+variable "ssh_key_name" {
+  description = "ssh key name"
+  type = string
+  default = ""
+}
+
+variable "managed_node_group_release_version" {
+  description = "node group release version"
+  type = string
+  default = "1.14.7-20190927"
 }
 
 variable "cluster_name" {
