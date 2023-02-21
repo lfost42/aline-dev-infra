@@ -40,48 +40,7 @@ module "database" {
 
 module "vpc" {
   source = "../../../modules/vpc"
+
   infra_env = var.infra_env
   vpc_cidr = var.aline_cidr
 }
-
-### to implement after we establishing peering ###
-# module "db_vpc" {
-#   source = "../../../modules/vpc"
-
-#   infra_env = var.infra_env
-#   vpc_cidr = var.aline_cidr
-#   cidr_bits = var.aline_cidr_bits
-#   az_count = var.aline_az_count
-#   create_public_subnet = var.db_public_subnet
-#   create_private_subnet = var.db_private_subnet
-#   create_database_subnet = var.db_database_subnet
-#   vpc_type = var.db_vpc_type
-#   tags = merge(
-#     {
-#       Name = "lf-aline-${var.infra_env}-vpc"
-#       Type = var.db_vpc_type
-#     },
-#     var.tags
-#   )
-# }
-
-### to implement after we establishing peering ###
-# module "db_vpc" {
-#   source = "../../../modules/vpc"
-
-#   infra_env = var.infra_env
-#   vpc_cidr = var.aline_cidr
-#   cidr_bits = var.aline_cidr_bits
-#   az_count = var.aline_az_count
-#   create_public_subnet = var.db_public_subnet
-#   create_private_subnet = var.db_private_subnet
-#   create_database_subnet = var.db_database_subnet
-#   vpc_type = var.db_vpc_type
-#   tags = merge(
-#     {
-#       Name = "lf-aline-${var.infra_env}-vpc"
-#       Type = var.db_vpc_type
-#     },
-#     var.tags
-#   )
-# }

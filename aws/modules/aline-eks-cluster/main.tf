@@ -58,4 +58,11 @@ module "eks" {
       desired_size = var.public_ng_desired_size
     }
   }
+  
+  tags = merge(
+  {
+    "kubernetes.io/cluster/lf-aline-eks"  = "shared"
+  },
+  var.tags
+  )
 }

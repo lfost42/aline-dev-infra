@@ -33,7 +33,6 @@ module "aline_vpc" {
 resource "aws_db_subnet_group" "rds_database_subnet" {
   name = "rds-database-subnet-group"
   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
-  # subnet_ids = module.db_vpc.vpc_database_subnet_ids
 }
 
 module "database" {
@@ -47,25 +46,25 @@ module "database" {
   depends_on = [module.aline_vpc, resource.aws_db_subnet_group.rds_database_subnet]
 }
 
-# module "eks" {
-#   source             = "../../../modules/aline-eks-cluster"
-#   infra_env          = var.infra_env
-#   cluster_name       = "lf-aline-eks"
-#   vpc_id             = module.aline_vpc.vpc_id
+module "eks" {
+  source             = "../../../modules/aline-eks-cluster"
+  infra_env          = var.infra_env
+  cluster_name       = var.eks_cluster_name
+  vpc_id             = module.aline_vpc.vpc_id
 
-#   cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_database_subnet_ids)
-#   ami_type       = "BOTTLEROCKET_x86_64"
-#   instance_types = ["t3.micro"]
+  cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_database_subnet_ids)
+  ami_type       = var.eks_ami_type
+  instance_types = [var.eks_instance_types]
 
-#   private_subnets         = concat(module.aline_vpc.vpc_public_subnets,module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
-#   private_ng_min_size     = 2
-#   private_ng_max_size     = 4
-#   private_ng_desired_size = 2
+  private_subnets         = concat(module.aline_vpc.vpc_public_subnets,module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
+  private_ng_min_size     = var.eks_private_ng_min_size
+  private_ng_max_size     = var.eks_private_ng_max_size
+  private_ng_desired_size = var.eks_private_ng_desired_size
   
-#   public_subnets         = module.aline_vpc.vpc_public_subnets
-#   public_ng_min_size     = 2
-#   public_ng_max_size     = 4
-#   public_ng_desired_size = 2
-# }
+  public_subnets         = module.aline_vpc.vpc_public_subnets
+  public_ng_min_size     = var.eks_public_ng_min_size
+  public_ng_max_size     = var.eks_public_ng_max_size
+  public_ng_desired_size = var.eks_public_ng_desired_size
+}
 
 # ./run develop lf-aline-eks init
