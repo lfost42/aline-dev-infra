@@ -26,6 +26,7 @@ resource "aws_subnet" "public" {
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
+  map_public_ip_on_launch = true
   tags = merge(
     {
       Name                                                      = "lf-aline-${var.infra_env}-public-sg-${count.index+1}"
@@ -46,6 +47,7 @@ resource "aws_subnet" "private" {
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + var.az_count)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
+  map_public_ip_on_launch = true
   tags = merge(
     {
     Name                                                      = "lf-aline-${var.infra_env}-private-sg-${count.index+1}"
@@ -60,6 +62,7 @@ resource "aws_subnet" "private" {
 resource "aws_subnet" "database" {
   count = var.create_database_subnet ? var.az_count : 0
 
+  map_public_ip_on_launch = true
   vpc_id  = aws_vpc.vpc.id
   cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, var.cidr_bits, count.index + (var.az_count * 2))
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
