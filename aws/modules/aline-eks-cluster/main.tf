@@ -75,6 +75,9 @@ resource "aws_eks_node_group" "private_ng" {
     max_size     = var.private_ng_max_size
     min_size     = var.private_ng_min_size
   }
+
+  instance_types = var.private_ng_instance_type
+
   labels = {
     lifecycle = "OnDemand"
   }

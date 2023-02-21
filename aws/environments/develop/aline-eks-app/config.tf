@@ -54,7 +54,6 @@ module "aline_eks_cluster" {
   source = "../../../modules/aline-eks-cluster"
   infra_env = var.infra_env
 
-  cluster_name            = "lf-aline-eks-cluster"
   cluster_subnet_ids      = flatten([module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_database_subnet_ids])
   endpoint_private_access = "true"
   endpoint_public_access  = "true"

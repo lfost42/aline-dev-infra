@@ -16,16 +16,6 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default = {
-    Project     = "lf-aline"
-    Environment = "develop"
-    ManagedBy   = "terraform"
-  }
-}
-
 variable "aline_az_count" {
   type = number
   description = "desired number of availability zones"
@@ -68,6 +58,35 @@ variable "aline_vpc_type" {
   default = "main"
 }
 
+##### DATABASE #####
+# variable "db_instance_class" {
+#   type = string
+#   description = "instance class(type) for the rds database"
+#   default = "db.t3.medium"
+# }
+
+# variable "db_user" {
+#   type = string
+#   description = "master username for the rds database"
+#   default = "admin"
+# }
+
+# variable "db_pass" {
+#   type = string
+#   description = "password for the rds database"
+#   default = "kms_rotating_secret_key"
+# }
+
+# variable "tags" {
+#   description = "A map of tags to add to all resources"
+#   type        = map(string)
+#   default = {
+#     Project     = "lf-aline"
+#     Environment = "develop"
+#     ManagedBy   = "terraform"
+#   }
+# }
+
 # variable "public_ec2_instance_size" {
 #   type = string
 #   description = "instance size for public ec2"
@@ -79,24 +98,6 @@ variable "aline_vpc_type" {
 #   description = "instance size for private ec2"
 #   default = "t3.medium"
 # }
-
-variable "db_instance_class" {
-  type = string
-  description = "instance class(type) for the rds database"
-  default = "db.t3.medium"
-}
-
-variable "db_user" {
-  type = string
-  description = "master username for the rds database"
-  default = "admin"
-}
-
-variable "db_pass" {
-  type = string
-  description = "password for the rds database"
-  default = "kms_rotating_secret_key"
-}
 
 ### enable once peering is established ###
 # variable "db_public_subnet" {

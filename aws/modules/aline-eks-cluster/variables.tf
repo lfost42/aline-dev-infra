@@ -3,30 +3,7 @@ variable "infra_env" {
   description = "infrastructure environment"
 }
 
-variable "vpc_cidr" {
-  description = "The CIDR block for the VPC. Default value is a valid CIDR, but not acceptable by AWS and should be overridden"
-  type        = string
-  default     = "10.0.0.0/19"
-}
-
-variable "cidr_bits" {
-  description = "The number of subnet bits for the CIDR. For example, specifying a value 8 for this parameter will create a CIDR with a mask of /24."
-  type        = number
-  default     = 8
-}
-
-variable "az_count" {
-  description = "number of azs"
-  type = number
-  default = 2
-}
-
 variable "cluster_subnet_ids" {
-  type    = list(string)
-  default = [""]
-}
-
-variable "nodegroup_subnet_ids" {
   type    = list(string)
   default = [""]
 }
@@ -39,11 +16,6 @@ variable "endpoint_private_access" {
 variable "endpoint_public_access" {
   type    = bool
   default = true
-}
-
-variable "public_access_cidrs" {
-  type    = list(string)
-  default = ["0.0.0.0/0"]
 }
 
 variable "public_security_group_ids" {
@@ -134,12 +106,6 @@ variable "managed_node_group_release_version" {
   description = "node group release version"
   type = string
   default = "1.14.7-20190927"
-}
-
-variable "cluster_name" {
-  description = "version for cluster"
-  type = string
-  default = ""
 }
 
 variable "tags" {
