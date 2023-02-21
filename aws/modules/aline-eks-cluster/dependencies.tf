@@ -4,3 +4,7 @@ data "aws_vpc" "vpc" {
     Type = "main"
   }
 }
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}

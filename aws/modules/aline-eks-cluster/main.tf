@@ -14,6 +14,7 @@ resource "aws_eks_cluster" "this" {
   tags = var.tags
 
   depends_on = [
+    data.aws_vpc.vpc,
     aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy,
     aws_cloudwatch_log_group.cluster
@@ -21,10 +22,13 @@ resource "aws_eks_cluster" "this" {
 }
 
 resource "aws_eks_node_group" "public_ng" {
+  # count = length(data.aws_availability_zones.available.names)
+
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "lf-aline-eks-managed-workers"
+  node_group_name = "${aws_eks_cluster.this.name}-public-ng"
+  # ${data.aws_availability_zones.available.names[count.index]}"
   node_role_arn   = aws_iam_role.managed_workers.arn
-  subnet_ids      = var.public_nodegroup_subnet_ids
+  subnet_ids      = var.public_subnet_ids
 
   scaling_config {
     desired_size = var.public_ng_desired_size
@@ -55,6 +59,8 @@ resource "aws_eks_node_group" "public_ng" {
   )
 
   depends_on = [
+    data.aws_vpc.vpc,
+    aws_eks_cluster.this,
     aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-AmazonEC2ContainerRegistryReadOnly,
@@ -66,10 +72,13 @@ resource "aws_eks_node_group" "public_ng" {
 }
 
 resource "aws_eks_node_group" "private_ng" {
+  # count = length(data.aws_availability_zones.available.names)
+
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "lf-aline-eks-private-workers"
+  node_group_name = "${aws_eks_cluster.this.name}-private-ng"
+  # ${data.aws_availability_zones.available.names[count.index]}"
   node_role_arn   = aws_iam_role.managed_workers.arn
-  subnet_ids      = var.private_nodegroup_subnet_ids
+  subnet_ids      = var.private_subnet_ids
   scaling_config {
     desired_size = var.private_ng_desired_size
     max_size     = var.private_ng_max_size
@@ -81,10 +90,12 @@ resource "aws_eks_node_group" "private_ng" {
   labels = {
     lifecycle = "OnDemand"
   }
+  
   remote_access {
     ec2_ssh_key               = var.ssh_key_name
     source_security_group_ids = var.public_security_group_ids
   }
+
   release_version = "1.14.7-20190927"
   tags = merge(
     {
@@ -95,6 +106,8 @@ resource "aws_eks_node_group" "private_ng" {
     var.tags
   )
   depends_on = [
+    data.aws_vpc.vpc,
+    aws_eks_cluster.this,
     aws_iam_role_policy_attachment.eks-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-AmazonEC2ContainerRegistryReadOnly,

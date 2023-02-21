@@ -6,6 +6,7 @@ output "vpc_cidr" {
   value = aws_vpc.vpc.cidr_block
 }
 
+
 output "vpc_public_subnets" {
   # Result is a map of subnet id to cidr block, e.g.
   # { "subnet_1234" => "10.0.1.0/4", ...}

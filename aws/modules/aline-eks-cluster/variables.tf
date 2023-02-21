@@ -30,13 +30,13 @@ variable "cluster_security_group_ids" {
   default = [""]
 }
 
-variable "private_nodegroup_subnet_ids" {
+variable "private_subnet_ids" {
   description = "list of private subnet ids"
   type    = list(string)
   default = [""]
 }
 
-variable "public_nodegroup_subnet_ids" {
+variable "public_subnet_ids" {
   description = "list of public subnet ids"
   type    = list(string)
   default = [ "" ]

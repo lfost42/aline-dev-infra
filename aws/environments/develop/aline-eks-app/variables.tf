@@ -59,23 +59,23 @@ variable "aline_vpc_type" {
 }
 
 ##### DATABASE #####
-# variable "db_instance_class" {
-#   type = string
-#   description = "instance class(type) for the rds database"
-#   default = "db.t3.medium"
-# }
+variable "db_instance_class" {
+  type = string
+  description = "instance class(type) for the rds database"
+  default = "db.t3.medium"
+}
 
-# variable "db_user" {
-#   type = string
-#   description = "master username for the rds database"
-#   default = "admin"
-# }
+variable "db_user" {
+  type = string
+  description = "master username for the rds database"
+  default = "admin"
+}
 
-# variable "db_pass" {
-#   type = string
-#   description = "password for the rds database"
-#   default = "kms_rotating_secret_key"
-# }
+variable "db_pass" {
+  type = string
+  description = "password for the rds database"
+  default = "kms_rotating_secret_key"
+}
 
 # variable "tags" {
 #   description = "A map of tags to add to all resources"
