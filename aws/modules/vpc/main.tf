@@ -111,8 +111,8 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat.id
-  count = var.create_private_subnet || var.create_database_subnet ? 1 : 0
-  subnet_id = var.create_database_subnet ? aws_subnet.database[0].id : aws_subnet.private[0].id
+  count = var.create_private_subnet || var.create_database_subnet ? var.az_count : 0
+  subnet_id = var.create_database_subnet ? aws_subnet.database[index.count].id : aws_subnet.private[index.count].id
 
   tags = merge(
     {
@@ -144,7 +144,7 @@ resource "aws_route_table" "public" {
 # Private Route Tables (Subnets with NGW)
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
-  count = var.create_private_subnet ? 1 : 0
+  count = var.create_private_subnet ? var.az_count : 0
   tags = merge(
     {
       Name        = "lf-aline-${var.infra_env}-private-rt"
@@ -180,18 +180,18 @@ resource "aws_route" "public" {
 
 # Private Route
 resource "aws_route" "private" {
-  count = var.create_private_subnet ? 1 : 0
-  route_table_id         = aws_route_table.private[0].id
+  count = var.create_private_subnet ? var.az_count : 0
+  route_table_id         = aws_route_table.private[index.count].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw[0].id
+  nat_gateway_id         = aws_nat_gateway.ngw[index.count].id
 }
 
 # Database Route
 resource "aws_route" "database" {
-  count = var.create_database_subnet ? 1 : 0
-  route_table_id         = aws_route_table.database[0].id
+  count = var.create_database_subnet ? var.az_count : 0
+  route_table_id         = aws_route_table.database[index.count].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ngw[0].id
+  nat_gateway_id         = aws_nat_gateway.ngw[index.count].id
 }
 
 # Public Route to Public Route Table for Public Subnets
@@ -207,7 +207,7 @@ resource "aws_route_table_association" "private" {
   count = length(aws_subnet.private) > 0 ? var.az_count : 0
   subnet_id      = aws_subnet.private[count.index].id
 
-  route_table_id = aws_route_table.private[0].id
+  route_table_id = aws_route_table.private[count.index].id
 }
 
 # Database Route to Database Route Table for Database Subnets
@@ -215,5 +215,5 @@ resource "aws_route_table_association" "database" {
   count = length(aws_subnet.database) > 0 ? var.az_count : 0
   subnet_id      = aws_subnet.database[count.index].id
 
-  route_table_id = aws_route_table.database[0].id
+  route_table_id = aws_route_table.database[count.index].id
 }

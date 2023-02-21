@@ -18,6 +18,19 @@ aline_public_subnet = true
 aline_private_subnet = true
 aline_database_subnet = true
 
+### CLUSTER VARIABLES ###
+eks_cluster_name = "lf-aline-eks"
+eks_ami_type = "BOTTLEROCKET_x86_64"
+eks_instance_types = ["t3.micro"]
+
+eks_private_ng_min_size     = 2
+eks_private_ng_max_size     = 4
+eks_private_ng_desired_size = 2
+
+eks_public_ng_min_size     = 2
+eks_public_ng_max_size     = 4
+eks_public_ng_desired_size = 2
+
 ### DB VPC ###
 # db_public_subnet = false
 # db_private_subnet = false
