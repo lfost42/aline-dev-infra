@@ -48,13 +48,13 @@ module "database" {
 
 module "eks" {
   source             = "../../../modules/aline-eks-cluster"
-  infra_env          = var.infra_env
+
   cluster_name       = var.eks_cluster_name
   vpc_id             = module.aline_vpc.vpc_id
 
   cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids,module.aline_vpc.vpc_private_subnet_ids,module.aline_vpc.vpc_database_subnet_ids)
   ami_type       = var.eks_ami_type
-  instance_types = [var.eks_instance_types]
+  instance_types = var.eks_instance_types
 
   private_subnets         = concat(module.aline_vpc.vpc_public_subnets,module.aline_vpc.vpc_private_subnets,module.aline_vpc.vpc_database_subnets)
   private_ng_min_size     = var.eks_private_ng_min_size
@@ -67,4 +67,4 @@ module "eks" {
   public_ng_desired_size = var.eks_public_ng_desired_size
 }
 
-# ./run develop lf-aline-eks init
+# ./run develop aline-eks-app init

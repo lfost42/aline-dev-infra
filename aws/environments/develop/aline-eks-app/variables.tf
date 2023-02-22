@@ -75,6 +75,7 @@ variable "aline_vpc_type" {
   description = "type of vpc"
   default = "main"
 }
+
 variable "eks_cluster_name" {
   type = string
   description = ""
@@ -122,9 +123,6 @@ variable "eks_public_ng_desired_size" {
   description = ""
   default = ""
 }
-
-
-
 
 
 # variable "tags" {

@@ -52,6 +52,18 @@ variable "private_ng_min_size" {
   default = 2
 }
 
+variable "private_subnets" {
+  description = "private subnets"
+  type = any
+  default = ""
+}
+
+variable "public_subnets" {
+  description = "public subnets"
+  # type = any
+  default = ""
+}
+
 variable "public_ng_desired_size" {
   description = "desired count for public ng"
   type = number

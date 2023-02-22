@@ -1,18 +1,19 @@
 #!/bin/bash
 
-TFLINT_CONFIG="/Users/lynda/Desktop/repo/aline-repo-files/dev-infra-cc/aws/.tflint.hcl"
-tflint --init
+ROOT_DIR="$(dirname "$(readlink -f "$0")")"
+TFLINT_CONFIG_PATH="$ROOT_DIR/.tflint.hcl"
+
 find modules environments \
   -type f \
-  -name '*.tf' \
+  \( -name '*.tf' -o -name '*.tfvars' \) \
   ! -path '*/.terraform/*' \
   -exec dirname {} \; \
   | sort -u \
   | xargs -I {} sh -c '
       cp "$2" "$1/.tflint.hcl"
       cd "$1"
-      tflint
+      tflint --config "$3"
       terraform fmt -check
       rm .tflint.hcl
       echo "====== $1 processed ======"
-    ' sh {} "$TFLINT_CONFIG"
+    ' sh {} "$TFLINT_CONFIG_PATH" "$TFLINT_CONFIG_PATH"
