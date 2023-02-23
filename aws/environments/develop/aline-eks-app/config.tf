@@ -10,6 +10,8 @@ terraform {
     profile        = "aline"
     region         = "us-east-1"
     dynamodb_table = "lf-aline-tflock"
+    bucket  = "lf-aline-terraform"
+    key     = "develop/aline-ecs-app/terraform.tfstate"
   }
 }
 

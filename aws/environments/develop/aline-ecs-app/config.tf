@@ -33,20 +33,20 @@ module "aline_vpc" {
   vpc_type = var.aline_vpc_type
 }
 
-resource "aws_db_subnet_group" "rds_database_subnet" {
-  name = "rds-database-subnet-group"
-  subnet_ids = module.aline_vpc.vpc_database_subnet_ids
-}
+# resource "aws_db_subnet_group" "rds_database_subnet" {
+#   name = "rds-database-subnet-group"
+#   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
+# }
 
-module "database" {
-  source = "../../../modules/rds"
+# module "database" {
+#   source = "../../../modules/rds"
 
-  infra_env = var.infra_env
-  db_instance_class = var.db_instance_class
-  db_username = var.db_user
-  db_password = var.db_pass
-  aline_db_subnet_group_name = resource.aws_db_subnet_group.rds_database_subnet.name
-  depends_on = [module.aline_vpc, resource.aws_db_subnet_group.rds_database_subnet]
-}
+#   infra_env = var.infra_env
+#   db_instance_class = var.db_instance_class
+#   db_username = var.db_user
+#   db_password = var.db_pass
+#   aline_db_subnet_group_name = resource.aws_db_subnet_group.rds_database_subnet.name
+#   depends_on = [module.aline_vpc, resource.aws_db_subnet_group.rds_database_subnet]
+# }
 
 # ./run develop aline-eks-app init

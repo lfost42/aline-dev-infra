@@ -33,10 +33,10 @@ module "aline_vpc" {
   vpc_type = var.aline_vpc_type
 }
 
-resource "aws_db_subnet_group" "rds_database_subnet" {
-  name = "rds-database-subnet-group"
-  subnet_ids = module.aline_vpc.vpc_database_subnet_ids
-}
+# resource "aws_db_subnet_group" "rds_database_subnet" {
+#   name = "rds-database-subnet-group"
+#   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
+# }
 
 # module "database" {
 #   source = "../../../modules/rds"
