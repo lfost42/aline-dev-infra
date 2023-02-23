@@ -16,23 +16,23 @@ variable "aline_region" {
   default = "us-east-1"
 }
 
-variable "db_instance_class" {
-  type = string
-  description = "instance class(type) for the rds database"
-  default = "db.t3.medium"
-}
+# variable "db_instance_class" {
+#   type = string
+#   description = "instance class(type) for the rds database"
+#   default = "db.t3.medium"
+# }
 
-variable "db_user" {
-  type = string
-  description = "master username for the rds database"
-  default = "admin"
-}
+# variable "db_user" {
+#   type = string
+#   description = "master username for the rds database"
+#   default = "admin"
+# }
 
-variable "db_pass" {
-  type = string
-  description = "password for the rds database"
-  default = "kms_rotating_secret_key"
-}
+# variable "db_pass" {
+#   type = string
+#   description = "password for the rds database"
+#   default = "kms_rotating_secret_key"
+# }
 
 variable "aline_az_count" {
   type = number
@@ -49,7 +49,7 @@ variable "aline_cidr_bits" {
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
-  default = "10.0.0.0/19"
+  default = "10.0.0.0/22" 
 }
 
 variable "aline_public_subnet" {

@@ -49,7 +49,7 @@ variable "aline_cidr_bits" {
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
-  default = "10.0.0.0/19"
+  default = "10.0.0.0/22"
 }
 
 variable "aline_public_subnet" {

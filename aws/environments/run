@@ -2,7 +2,7 @@
 
 TF_ENV=$1 # environment (i.e. develop, sandbox)
 TF_APP=$2 # app (i.e. eks, ecs, test1, test2)
-# TF_STATE ... network, compute, data ?
+# TF_CONCERN ... network, compute, data ?
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

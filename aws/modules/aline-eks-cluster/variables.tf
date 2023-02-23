@@ -1,5 +1,5 @@
 variable "vpc_id" {
-  type = string
+  # type = string
   description = "cluster vpc"
   default = ""
 }
@@ -60,7 +60,7 @@ variable "private_subnets" {
 
 variable "public_subnets" {
   description = "public subnets"
-  # type = any
+  type = any
   default = ""
 }
 
