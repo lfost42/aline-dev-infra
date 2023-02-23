@@ -9,6 +9,9 @@ terraform {
   backend "s3" {
     profile = "aline"
     region  = "us-east-1"
+    bucket  = "lf-aline-terraform"
+    key     = "develop/aline-base-infra/terraform.tfstate"
+    dynamodb_table = "lf-aline-tflock"
   }
 }
 

@@ -7,8 +7,9 @@ terraform {
   }
 
   backend "s3" {
-    profile = "aline"
-    region  = "us-east-1"
+    profile        = "aline"
+    region         = "us-east-1"
+    dynamodb_table = "lf-aline-tflock"
   }
 }
 
