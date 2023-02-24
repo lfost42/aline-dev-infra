@@ -4,8 +4,8 @@ aline_profile = "aline"
 aline_region  = "us-east-1"
 
 ### DB RDS
-db_instance_class = "db.t3.medium"
-db_user           = "admin"
+# db_instance_class = "db.t3.medium"
+# db_user           = "admin"
 
 ### ALINE VPC 
 aline_cidr            = "10.0.0.0/22" # 1,023 IP addresses per subnet at 6 azs

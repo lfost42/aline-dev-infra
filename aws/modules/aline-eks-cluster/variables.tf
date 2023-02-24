@@ -1,5 +1,5 @@
 variable "vpc_id" {
-  # type = string
+  type = string
   description = "cluster vpc"
   default = ""
 }
