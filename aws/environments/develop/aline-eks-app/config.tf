@@ -12,7 +12,7 @@ terraform {
     region         = "us-east-1"
     dynamodb_table = "lf-aline-tflock"
     bucket  = "lf-aline-terraform"
-    key     = "develop/aline-ecs-app/terraform.tfstate"
+    key     = "develop/aline-eks-app/terraform.tfstate"
   }
 }
 
@@ -21,11 +21,6 @@ provider "aws" {
   # profile        = "aline"
   region  = var.aline_region
 }
-
-# resource "aws_db_subnet_group" "rds_database_subnet" {
-#   name = "rds-database-subnet-group"
-#   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
-# }
 
 module "aline_vpc" {
   source = "../../../modules/vpc"

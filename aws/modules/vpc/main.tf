@@ -3,6 +3,7 @@
 # Create a VPC for the region associated with the AZ
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
+  enable_dns_support = true
   enable_dns_hostnames= true
 
   tags = merge(
@@ -34,6 +35,7 @@ resource "aws_subnet" "public" {
       VPC                                                       = aws_vpc.vpc.id
       "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
       "kubernetes.io/role/elb"                                  = 1
+      Network                                                   = "Public"
     },
     var.tags
   )
@@ -54,6 +56,7 @@ resource "aws_subnet" "private" {
     Name                                                      = "lf-aline-${var.infra_env}-private-sg-${count.index+1}"
     "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
+    Network                                                   = "Private"
     },
     var.tags
   )
@@ -73,6 +76,7 @@ resource "aws_subnet" "database" {
     Name                                                      = "lf-aline-${var.infra_env}-database-sg-${count.index+1}"
     "kubernetes.io/cluster/lf-aline-eks"                      = "shared"
     "kubernetes.io/role/internal-elb"                         = 1
+    Network                                                   = "Database"
     },
     var.tags
   )

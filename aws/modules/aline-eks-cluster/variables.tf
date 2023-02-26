@@ -13,7 +13,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   type = string
   description = "version number of cluster"
-  default = "1.21"
+  default = "1.24"
 }
 
 variable "cluster_subnet_ids" {

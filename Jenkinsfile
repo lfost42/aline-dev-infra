@@ -28,8 +28,7 @@ pipeline {
                 }
             }
         }
-        stage('terraform plan') {
-            when { branch pattern: "^(main).*", comparator: "REGEXP"}
+        stage('terraform plan') { 
             steps {
                 script {
                     tfplan()
@@ -37,10 +36,9 @@ pipeline {
             }
         }
         stage('terraform apply') {
-
+            when { branch pattern: "^(main).*", comparator: "REGEXP"}
             steps {
                 script {
-                    echo "Terraform Apply"
                     tfapply()
                 }
             }
