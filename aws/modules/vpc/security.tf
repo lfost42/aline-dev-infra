@@ -6,7 +6,7 @@ resource "aws_security_group" "public" {
 
   tags = merge(
     {
-    Name = "lf-aline-${var.infra_env}-Public-sg"
+    Name = "lf-aline-${var.infra_env}-public-sg"
     Role        = "public"
     },
     var.tags

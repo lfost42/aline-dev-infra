@@ -3,6 +3,7 @@
 ROOT_DIR="$(dirname "$(readlink -f "$0")")"
 TFLINT_CONFIG_PATH="$ROOT_DIR/.tflint.hcl"
 
+EXIT_CODE=0
 find modules environments \
   -type f \
   \( -name '*.tf' -o -name '*.tfvars' \) \
@@ -13,7 +14,11 @@ find modules environments \
       cp "$2" "$1/.tflint.hcl"
       cd "$1"
       tflint --config "$3"
-      terraform fmt -check
+      EXIT_CODE=$?
       rm .tflint.hcl
       echo "====== $1 processed ======"
+      exit $EXIT_CODE
     ' sh {} "$TFLINT_CONFIG_PATH" "$TFLINT_CONFIG_PATH"
+
+EXIT_CODE=$?
+exit $EXIT_CODE

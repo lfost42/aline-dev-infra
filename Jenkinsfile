@@ -23,8 +23,7 @@ pipeline {
         stage('tftest') {
             steps {
                 script {
-                  echo 'terratest'
-                    // tftest()
+                    tftest()
                 }
             }
         }

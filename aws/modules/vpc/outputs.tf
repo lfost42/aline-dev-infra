@@ -6,7 +6,7 @@ output "vpc_cidr" {
   value = aws_vpc.vpc.cidr_block
 }
 
-output "vpc_public_subnets" {
+output "public_subnets" {
   value = aws_subnet.public
 }
 

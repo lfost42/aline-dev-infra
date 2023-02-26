@@ -11,7 +11,7 @@ output "vpc_database_subnet_ids" {
   value = module.aline_vpc.vpc_database_subnet_ids
 }
 output "vpc_public_subnets" {
-  value = module.aline_vpc.vpc_public_subnets
+  value = module.aline_vpc.public_subnets
 }
 output "vpc_public_subnet_ids" {
   value = module.aline_vpc.vpc_public_subnet_ids

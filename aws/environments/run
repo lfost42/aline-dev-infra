@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TF_ENV=$1 # environment (i.e. develop, sandbox)
+TF_ENV=$1 # environment (i.e. develop, sandbox, test)
 TF_APP=$2 # app (i.e. eks, ecs, test1, test2)
 # TF_CONCERN ... network, compute, data ?
 
@@ -21,18 +21,28 @@ if [ $# -gt 0 ]; then
             terraform -chdir=./$TF_ENV/$TF_APP init \
               -backend-config="bucket=lf-aline-terraform" \
               -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
+              EXIT_CODE=$?
             ;;
         "apply")
             terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            EXIT_CODE=$?
             ;;
         "destroy")
             terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            EXIT_CODE=$?
+            ;;
+        "plan")
+            terraform -chdir=./$TF_ENV/$TF_APP $3
+            EXIT_CODE=$?
             ;;
         *)
             terraform -chdir=./$TF_ENV/$TF_APP $3 $4
+            EXIT_CODE=$?
             ;;
     esac
 
 fi
-# back to original location
+
 cd -
+echo EXIT_CODE=$?
+exit $EXIT_CODE
