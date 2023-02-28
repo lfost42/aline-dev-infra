@@ -7,7 +7,7 @@ variable "aline_profile" {
 variable "infra_env" {
   type = string
   description = "infrastructure environment"
-  default = "develop"
+  default = "develop-6az"
 }
 
 variable "aline_region" {
@@ -37,19 +37,19 @@ variable "aline_region" {
 variable "aline_az_count" {
   type = number
   description = "desired number of availability zones"
-  default = 2
+  default = 6
 }
 
 variable "aline_cidr_bits" {
   type = number
   description = "number of cidr bits"
-  default = 8
+  default = 6
 }
 
 variable "aline_cidr" {
   type = string
   description = "project cidr subnet block"
-  default = "10.0.0.0/22" 
+  default = "10.2.0.0/22" 
 }
 
 variable "aline_public_subnet" {

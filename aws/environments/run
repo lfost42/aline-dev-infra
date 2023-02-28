@@ -44,5 +44,4 @@ if [ $# -gt 0 ]; then
 fi
 
 cd -
-echo EXIT_CODE=$?
 exit $EXIT_CODE

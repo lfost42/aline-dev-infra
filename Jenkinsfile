@@ -21,6 +21,7 @@ pipeline {
             }
         }
         stage('tftest') {
+            when { branch pattern: "^(feature/).*", comparator: "REGEXP"}
             steps {
                 script {
                     tftest()

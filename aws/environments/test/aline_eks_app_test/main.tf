@@ -96,7 +96,7 @@ output "out_cidr" {
 }
 
 output "public_subnets" {
-  value = module.test_vpc.public_subnets
+  value = module.test_vpc.vpc_public_subnets
 }
 
 
