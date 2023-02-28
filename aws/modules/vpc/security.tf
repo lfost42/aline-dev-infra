@@ -1,13 +1,13 @@
 # Public Security Group
 resource "aws_security_group" "public" {
-  name = "lf-aline-${var.infra_env}-public-sg"
+  name        = "lf-aline-${var.infra_env}-public-sg"
   description = "Public internet access"
-  vpc_id = aws_vpc.vpc.id
+  vpc_id      = aws_vpc.vpc.id
 
   tags = merge(
     {
-    Name = "lf-aline-${var.infra_env}-public-sg"
-    Role        = "public"
+      Name = "lf-aline-${var.infra_env}-public-sg"
+      Role = "public"
     },
     var.tags
   )
@@ -52,14 +52,14 @@ resource "aws_security_group_rule" "public_in_https" {
 
 # Private Security Group
 resource "aws_security_group" "private" {
-  name = "lf-aline-${var.infra_env}-private-sg"
+  name        = "lf-aline-${var.infra_env}-private-sg"
   description = "Private internet access"
-  vpc_id = aws_vpc.vpc.id
+  vpc_id      = aws_vpc.vpc.id
 
   tags = merge(
     {
-    Name        = "lf-aline-${var.infra_env}-private-sg"
-    Role        = "private"
+      Name = "lf-aline-${var.infra_env}-private-sg"
+      Role = "private"
     },
     var.tags
   )
@@ -76,10 +76,10 @@ resource "aws_security_group_rule" "private_out" {
 }
 
 resource "aws_security_group_rule" "private_in" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "-1"
+  type        = "ingress"
+  from_port   = 0
+  to_port     = 65535
+  protocol    = "-1"
   cidr_blocks = [aws_vpc.vpc.cidr_block]
 
   security_group_id = aws_security_group.private.id

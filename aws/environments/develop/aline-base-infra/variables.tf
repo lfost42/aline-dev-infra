@@ -1,19 +1,19 @@
 variable "aline_profile" {
-  type = string
+  type        = string
   description = "aws profile"
-  default = "aline"
+  default     = "aline"
 }
 
 variable "infra_env" {
-  type = string
+  type        = string
   description = "infrastructure environment"
-  default = "develop-6az"
+  default     = "develop-6az"
 }
 
 variable "aline_region" {
-  type = string
+  type        = string
   description = "project region"
-  default = "us-east-1"
+  default     = "us-east-1"
 }
 
 # variable "db_instance_class" {
@@ -35,45 +35,45 @@ variable "aline_region" {
 # }
 
 variable "aline_az_count" {
-  type = number
+  type        = number
   description = "desired number of availability zones"
-  default = 6
+  default     = 6
 }
 
 variable "aline_cidr_bits" {
-  type = number
+  type        = number
   description = "number of cidr bits"
-  default = 6
+  default     = 6
 }
 
 variable "aline_cidr" {
-  type = string
+  type        = string
   description = "project cidr subnet block"
-  default = "10.2.0.0/22" 
+  default     = "10.2.0.0/22"
 }
 
 variable "aline_public_subnet" {
-  type = bool
+  type        = bool
   description = "indicates whether to include a public subnet in the VPC"
-  default = true
+  default     = true
 }
 
 variable "aline_private_subnet" {
-  type = bool
+  type        = bool
   description = "indicates whether to include a private subnet in the VPC"
-  default = true
+  default     = true
 }
 
 variable "aline_database_subnet" {
-  type = bool
+  type        = bool
   description = "indicates whether to include a database subnet in the VPC"
-  default = true
+  default     = true
 }
 
 variable "aline_vpc_type" {
-  type = string
+  type        = string
   description = "type of vpc"
-  default = "main"
+  default     = "main"
 }
 
 # variable "tags" {

@@ -1,52 +1,52 @@
 variable "infra_env" {
   description = "The infrastructure environment."
-  type = string
+  type        = string
 }
 
 variable "db_allocated_storage" {
-  type = number
+  type        = number
   description = "allocated storage in GiB"
-  default = 10
+  default     = 10
 }
 
 variable "db_name" {
-  type = string
+  type        = string
   description = "default name for database"
-  default = "alinedb"
+  default     = "alinedb"
 }
 
 variable "db_engine" {
-  type = string
+  type        = string
   description = "engine for MySQL RDS"
-  default = "mysql"
+  default     = "mysql"
 }
 
 variable "db_engine_version" {
-  type = string
+  type        = string
   description = "engine for MySQL RDS"
-  default = "8.0.28"
+  default     = "8.0.28"
 }
 
 variable "db_instance_class" {
   description = "RDS instance type and size"
-  type = string
-  default = "db.t3.micro"
+  type        = string
+  default     = "db.t3.micro"
 }
 
 variable "db_username" {
-  type = string
+  type        = string
   description = "The master username of the mysql cluster"
   # default = "admin"
 }
 
 variable "db_password" {
-  type = string
+  type        = string
   description = "The master password of the mysql cluster"
-  default = "really_good_password" # overwrite with KMS rotating secret
+  default     = "really_good_password" # overwrite with KMS rotating secret
 }
 
 variable "aline_db_subnet_group_name" {
-  type = string
+  type        = string
   description = "db subnet group name"
 }
 

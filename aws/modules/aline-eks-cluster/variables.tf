@@ -1,85 +1,85 @@
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "cluster vpc"
-  default = ""
+  default     = ""
 }
 
 variable "cluster_name" {
-  type = string
+  type        = string
   description = "name of cluster"
-  default = ""
+  default     = ""
 }
 
 variable "cluster_version" {
-  type = string
+  type        = string
   description = "version number of cluster"
-  default = "1.24"
+  default     = "1.24"
 }
 
 variable "cluster_subnet_ids" {
-  type = list(string)
+  type        = list(string)
   description = "list of cluster subnet ids"
-  default = [""]
+  default     = [""]
 }
 
 variable "ami_type" {
-  type = string
+  type        = string
   description = "type of ami for ec2 nodes"
-  default = "BOTTLEROCKET_x86_64"
+  default     = "BOTTLEROCKET_x86_64"
 }
 
 variable "instance_types" {
   description = "list of instance types"
-  type = list(string)
-  default = ["t3.medium"]
+  type        = list(string)
+  default     = ["t3.medium"]
 }
 
 variable "private_ng_desired_size" {
   description = "desired count for private ng"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "private_ng_max_size" {
   description = "max count for private ng"
-  type = number
-  default = 4
+  type        = number
+  default     = 4
 }
 
 variable "private_ng_min_size" {
   description = "min count for private ng"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "private_subnets" {
   description = "private subnets"
-  type = any
-  default = ""
+  type        = any
+  default     = ""
 }
 
 variable "public_subnets" {
   description = "public subnets"
-  type = any
-  default = ""
+  type        = any
+  default     = ""
 }
 
 variable "public_ng_desired_size" {
   description = "desired count for public ng"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "public_ng_max_size" {
   description = "max count for public ng"
-  type = number
-  default = 4
+  type        = number
+  default     = 4
 }
 
 variable "public_ng_min_size" {
   description = "min count for public ng"
-  type = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "tags" {

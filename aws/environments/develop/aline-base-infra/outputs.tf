@@ -10,6 +10,6 @@ output "vpc_database_subnets" {
 output "vpc_database_subnet_ids" {
   value = module.aline_vpc.vpc_database_subnet_ids
 }
-output "vpc_database_subnet_blocks" {
-  value = module.aline_vpc.vpc_database_subnets_blocks
+output "vpc_database_subnet" {
+  value = module.aline_vpc.vpc_database_subnets
 }

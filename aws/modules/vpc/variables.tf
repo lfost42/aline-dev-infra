@@ -10,32 +10,32 @@ variable "vpc_cidr" {
 }
 
 variable "cidr_bits" {
-  type = number
+  type        = number
   description = "cidr bits for the cidr block"
 }
 
 variable "az_count" {
-  type = number
+  type        = number
   description = "number of availability zones"
 }
 
 variable "create_public_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a public subnet in the vpc"
 }
 
 variable "create_private_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a private subnet in the vpc"
 }
 
 variable "create_database_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a database subnet in the vpc"
 }
 
 variable "vpc_type" {
-  type = string
+  type        = string
   description = "type of vpc"
 }
 

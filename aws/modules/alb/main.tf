@@ -2,9 +2,9 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "5.16.0"
 
-  name = "${local.name}-alb"
+  name               = "${local.name}-alb"
   load_balancer_type = "application"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id             = data.aws_vpc.vpc.id
   subnets = [
     for subnet in data.aws_subnet.public : subnet.id
   ]
@@ -16,7 +16,7 @@ module "alb" {
       protocol           = "HTTP"
       target_group_index = 0 # App1 TG associated to this listener
     }
-  ]  
+  ]
   # Target Groups
   target_groups = [
     {
@@ -26,8 +26,8 @@ module "alb" {
       target_type          = "instance"
       deregistration_delay = 10
       health_check = {
-        enabled             = true
-        interval            = 30
+        enabled  = true
+        interval = 30
         # 
         path                = "/api/alinefinancial.com"
         port                = "traffic-port"
@@ -51,30 +51,30 @@ module "alb" {
       }
       tags = merge(
         {
-          Name        = "lf-aline-${var.infra_env}-target-group"
+          Name = "lf-aline-${var.infra_env}-target-group"
         },
         var.tags
       )
-    }  
+    }
   ]
-      tags = merge(
-        {
-          Name        = "lf-aline-${var.infra_env}-alb"
-        },
-        var.tags
-      )
+  tags = merge(
+    {
+      Name = "lf-aline-${var.infra_env}-alb"
+    },
+    var.tags
+  )
 }
 
 resource "aws_security_group" "loadbalancer_sg" {
-  name = "loadbalancer-sg"
+  name        = "loadbalancer-sg"
   description = "Security Group with HTTP open for entire Internet (IPv4 CIDR), egress ports are all world open"
-  vpc_id = data.aws_vpc.vpc.id
+  vpc_id      = data.aws_vpc.vpc.id
   # Ingress Rules & CIDR Blocks
-  ingress_rules = ["http-80-tcp"]
+  ingress_rules       = ["http-80-tcp"]
   ingress_cidr_blocks = ["0.0.0.0/0"]
   # Egress Rule - all-all open
   egress_rules = ["all-all"]
-  tags = local.common_tags
+  tags         = local.common_tags
 
   # Open to CIDRs blocks (rule or from_port+to_port+protocol+description)
   ingress_with_cidr_blocks = [

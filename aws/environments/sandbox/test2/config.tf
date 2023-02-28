@@ -7,10 +7,10 @@ terraform {
   }
 
   backend "s3" {
-    profile = "aline"
-    region  = "us-east-1"
-    bucket  = "lf-aline-terraform"
-    key     = "sanbox/test2/terraform.tfstate"
+    profile        = "aline"
+    region         = "us-east-1"
+    bucket         = "lf-aline-terraform"
+    key            = "sanbox/test2/terraform.tfstate"
     dynamodb_table = "lf-aline-tflock"
   }
 }

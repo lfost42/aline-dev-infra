@@ -14,23 +14,23 @@ resource "aws_security_group_rule" "mysql_inbound_access" {
 }
 
 resource "aws_db_instance" "rds" {
-  identifier                  = "lf-aline-${var.infra_env}-mysql"
-  allocated_storage           = var.db_allocated_storage
-  db_name                     = var.db_name
-  engine                      = var.db_engine
-  engine_version              = var.db_engine_version
-  instance_class              = var.db_instance_class
-  username                    = var.db_username
-  password                    = var.db_password
+  identifier        = "lf-aline-${var.infra_env}-mysql"
+  allocated_storage = var.db_allocated_storage
+  db_name           = var.db_name
+  engine            = var.db_engine
+  engine_version    = var.db_engine_version
+  instance_class    = var.db_instance_class
+  username          = var.db_username
+  password          = var.db_password
 
-  vpc_security_group_ids      = [aws_security_group.rds_sg.id]
-  db_subnet_group_name        = var.aline_db_subnet_group_name
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name   = var.aline_db_subnet_group_name
 
   # multi_az                    = true
   # allow_major_version_upgrade = false
   # auto_minor_version_upgrade  = false
-  deletion_protection         = false
-  skip_final_snapshot         = true
+  deletion_protection = false
+  skip_final_snapshot = true
 
   # backup_retention_period     = 35
   # backup_window               = "22:00-23:00"

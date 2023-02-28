@@ -1,11 +1,11 @@
 variable "aline_profile" {
-  type = string
+  type        = string
   description = "aws profile"
-  default = "aline"
+  default     = "aline"
 }
 
 variable "aline_region" {
-  type = string
+  type        = string
   description = "project region"
-  default = "us-east-1"
+  default     = "us-east-1"
 }

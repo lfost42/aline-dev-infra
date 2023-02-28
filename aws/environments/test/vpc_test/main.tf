@@ -9,26 +9,26 @@ terraform {
   backend "s3" {
     region         = "us-east-1"
     dynamodb_table = "lf-aline-tflock"
-    bucket  = "lf-aline-terraform"
-    key     = "test/test-aline-eks-app/terraform.tfstate"
+    bucket         = "lf-aline-terraform"
+    key            = "test/test-aline-eks-app/terraform.tfstate"
   }
 }
 
 provider "aws" {
-  region  = "us-east-1"
+  region = "us-east-1"
 }
 
 module "test_vpc" {
   source = "../../../modules/vpc"
 
-  infra_env = var.infra_env
-  vpc_cidr = var.vpc_cidr
-  az_count = var.az_count
-  cidr_bits = var.cidr_bits
-  create_public_subnet = var.create_public_subnet
-  create_private_subnet = var.create_private_subnet
+  infra_env              = var.infra_env
+  vpc_cidr               = var.vpc_cidr
+  az_count               = var.az_count
+  cidr_bits              = var.cidr_bits
+  create_public_subnet   = var.create_public_subnet
+  create_private_subnet  = var.create_private_subnet
   create_database_subnet = var.create_database_subnet
-  vpc_type = var.vpc_type
+  vpc_type               = var.vpc_type
 }
 
 variable "infra_env" {
@@ -44,9 +44,9 @@ variable "vpc_cidr" {
 }
 
 variable "cidr_bits" {
-  type = number
+  type        = number
   description = "cidr bits for the cidr block"
-  default = 6
+  default     = 6
 }
 
 variable "az_count" {
@@ -56,27 +56,27 @@ variable "az_count" {
 }
 
 variable "create_public_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a public subnet in the vpc"
-  default = true
+  default     = true
 }
 
 variable "create_private_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a private subnet in the vpc"
-  default = false
+  default     = false
 }
 
 variable "create_database_subnet" {
-  type = bool
+  type        = bool
   description = "whether to include a database subnet in the vpc"
-  default = false
+  default     = false
 }
 
 variable "vpc_type" {
-  type = string
+  type        = string
   description = "type of vpc"
-  default = "Main"
+  default     = "Main"
 }
 
 data "aws_availability_zones" "available" {
