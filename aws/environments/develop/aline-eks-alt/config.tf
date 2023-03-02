@@ -34,7 +34,7 @@ module "aline_vpc" {
 }
 
 resource "aws_db_subnet_group" "rds_database_subnet" {
-  name       = "rds-database-sg"
+  name       = "aline-eks-alt-db-sg"
   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
 }
 
