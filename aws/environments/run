@@ -36,7 +36,7 @@ if [ $# -gt 0 ]; then
             EXIT_CODE=$?
             ;;
         *)
-            terraform -chdir=./$TF_ENV/$TF_APP $3 $4
+            terraform -chdir=./$TF_ENV/$TF_APP $3 $4 $5 $6 $7 $8 $9 $10
             EXIT_CODE=$?
             ;;
     esac

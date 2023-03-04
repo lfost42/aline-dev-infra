@@ -17,6 +17,11 @@ variable "cidr_bits" {
 variable "az_count" {
   type        = number
   description = "number of availability zones"
+
+  validation {
+    condition = var.az_count <= 6
+    error_message = "The us-east-1 region cannot have more than 6 availability zones."
+  }
 }
 
 variable "create_public_subnet" {

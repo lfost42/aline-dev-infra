@@ -20,6 +20,12 @@ provider "aws" {
   region = var.aline_region
 }
 
+resource "random_string" "random" {
+  length = 4
+  special = false
+  upper = false
+}
+
 module "aline_vpc" {
   source = "../../../modules/vpc"
 
@@ -34,7 +40,7 @@ module "aline_vpc" {
 }
 
 resource "aws_db_subnet_group" "rds_database_subnet" {
-  name       = "aline-ecs-rds-sg"
+  name       = join("-",["aline-rds-sg", random_string.random.result])
   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
 }
 

@@ -2,7 +2,7 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "5.16.0"
 
-  name               = "${local.name}-alb"
+  name               = "lf-aline-alb"
   load_balancer_type = "application"
   vpc_id             = data.aws_vpc.vpc.id
   subnets = [
