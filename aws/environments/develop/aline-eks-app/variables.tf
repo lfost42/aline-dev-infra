@@ -10,23 +10,23 @@ variable "aline_region" {
   default     = "us-east-1"
 }
 
-# variable "db_instance_class" {
-#   type        = string
-#   description = "instance class(type) for the rds database"
-#   default     = "db.t3.medium"
-# }
+variable "db_instance_class" {
+  type        = string
+  description = "instance class(type) for the rds database"
+  default     = "db.t3.medium"
+}
 
-# variable "db_user" {
-#   type        = string
-#   description = "master username for the rds database"
-#   default     = "admin"
-# }
+variable "db_user" {
+  type        = string
+  description = "master username for the rds database"
+  default     = "admin"
+}
 
-# variable "db_pass" {
-#   type        = string
-#   description = "password for the rds database"
-#   default     = "kms_rotating_secret_key"
-# }
+variable "db_pass" {
+  type        = string
+  description = "password for the rds database"
+  default     = "kms_rotating_secret_key"
+}
 
 variable "aline_az_count" {
   type        = number
@@ -70,53 +70,53 @@ variable "aline_vpc_type" {
   default     = "main"
 }
 
-# variable "eks_cluster_name" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_ami_type" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_instance_types" {
-#   type        = list(string)
-#   description = ""
-#   default     = [""]
-# }
+variable "eks_cluster_name" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_ami_type" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_instance_types" {
+  type        = list(string)
+  description = ""
+  default     = [""]
+}
 
-# variable "eks_private_ng_min_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_private_ng_max_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_private_ng_desired_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
+variable "eks_private_ng_min_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_private_ng_max_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_private_ng_desired_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
 
-# variable "eks_public_ng_min_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_public_ng_max_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
-# variable "eks_public_ng_desired_size" {
-#   type        = string
-#   description = ""
-#   default     = ""
-# }
+variable "eks_public_ng_min_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_public_ng_max_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
+variable "eks_public_ng_desired_size" {
+  type        = string
+  description = ""
+  default     = ""
+}
 
 
 

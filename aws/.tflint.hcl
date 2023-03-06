@@ -13,18 +13,14 @@ plugin "aws" {
     source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
 
+
+
 rule "terraform_required_version" {
   exclude = ["aws/terraform_required_version"]
   enabled = false
   
 }
-
 rule "terraform_required_providers" {
   enabled = false
   exclude = ["aws/terraform_required_providers"]
-}
-
-rule "terraform_deprecated_index" {
-  enabled = false
-  exclude = ["aws/terraform_depricated_index"]
 }
