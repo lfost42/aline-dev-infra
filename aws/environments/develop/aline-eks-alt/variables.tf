@@ -37,13 +37,13 @@ variable "aline_az_count" {
 variable "aline_cidr_bits" {
   type        = number
   description = "number of cidr bits"
-  default     = 8
+  default     = 4
 }
 
 variable "aline_cidr" {
   type        = string
   description = "project cidr subnet block"
-  default     = "10.0.0.0/22"
+  default     = "10.0.0.0/18"
 }
 
 variable "aline_public_subnet" {

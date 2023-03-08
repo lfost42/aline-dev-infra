@@ -12,8 +12,8 @@ func TestAlineEksApp(t *testing.T) {
         TerraformDir: ".",
         Vars: map[string]interface{}{
             "infra_env": "test",
-            "vpc_cidr": "10.1.0.0/22",
-            "cidr_bits": 6,
+            "vpc_cidr": "10.1.0.0/18",
+            "cidr_bits": 4,
             "az_count": 2,
             "create_public_subnet": true,
             "create_private_subnet": false,
@@ -32,7 +32,7 @@ func TestAlineEksApp(t *testing.T) {
     assert.NotEmpty(t, subnets)
 
     vpcCidr := terraform.Output(t, terraformOptions, "out_cidr")
-    assert.Equal(t, vpcCidr, "10.1.0.0/22")
+    assert.Equal(t, vpcCidr, "10.1.0.0/18")
 
     azNames := terraform.OutputList(t, terraformOptions, "az_names")
     assert.Equal(t, len(azNames), 6)

@@ -37,19 +37,19 @@ variable "aline_region" {
 variable "aline_az_count" {
   type        = number
   description = "desired number of availability zones"
-  default     = 6
+  default     = 2
 }
 
 variable "aline_cidr_bits" {
   type        = number
   description = "number of cidr bits"
-  default     = 6
+  default     = 4
 }
 
 variable "aline_cidr" {
   type        = string
   description = "project cidr subnet block"
-  default     = "10.2.0.0/22"
+  default     = "10.2.0.0/18"
 }
 
 variable "aline_public_subnet" {

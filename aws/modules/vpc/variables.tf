@@ -6,12 +6,13 @@ variable "infra_env" {
 variable "vpc_cidr" {
   type        = string
   description = "The IP range to use for the VPC"
-  default     = "10.0.0.0/22"
+  default     = "10.0.0.0/17"
 }
 
 variable "cidr_bits" {
   type        = number
   description = "cidr bits for the cidr block"
+  default     = 5
 }
 
 variable "az_count" {
@@ -19,8 +20,8 @@ variable "az_count" {
   description = "number of availability zones"
 
   validation {
-    condition = var.az_count <= 6
-    error_message = "The us-east-1 region cannot have more than 6 availability zones."
+    condition = var.az_count <= 5
+    error_message = "This VPC cannot accomodate more than 5 availability zones."
   }
 }
 

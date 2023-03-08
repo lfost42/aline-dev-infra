@@ -37,13 +37,13 @@ variable "aline_az_count" {
 variable "aline_cidr_bits" {
   type        = number
   description = "number of cidr bits"
-  default     = 8
+  default     = 5
 }
 
 variable "aline_cidr" {
   type        = string
   description = "project cidr subnet block"
-  default     = "10.0.0.0/22"
+  default     = "10.0.0.0/17"
 }
 
 variable "aline_public_subnet" {
@@ -72,9 +72,16 @@ variable "aline_vpc_type" {
 
 variable "eks_cluster_name" {
   type        = string
-  description = ""
+  description = "name of cluster"
   default     = ""
 }
+
+variable "eks_cluster_version" {
+  type        = string
+  description = "eks cluster version"
+  default     = "1.21"
+}
+
 variable "eks_ami_type" {
   type        = string
   description = ""

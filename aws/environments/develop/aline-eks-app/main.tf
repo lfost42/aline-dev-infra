@@ -36,8 +36,9 @@ module "database" {
 module "eks" {
   source = "../../../modules/aline-eks-cluster"
 
-  cluster_name = var.eks_cluster_name
-  vpc_id       = module.aline_vpc.vpc_id
+  cluster_name    = var.eks_cluster_name
+  cluster_version = var.eks_cluster_version
+  vpc_id          = module.aline_vpc.vpc_id
 
   cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_database_subnet_ids)
   ami_type           = var.eks_ami_type
