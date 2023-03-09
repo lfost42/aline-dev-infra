@@ -52,14 +52,18 @@ resource "aws_cloudwatch_event_rule" "deactivate_rds_rule" {
 
 # Associate the rule with the Lambda function
 resource "aws_cloudwatch_event_target" "deactivate_rds_target" {
-  rule      = aws_cloudwatch_event_rule.deactivate_rds_rule.name
+  rule      = aws_cloudwatch_event_rule.deactivate_rds_rule.id
   arn       = aws_lambda_function.deactivate_rds_function.arn
   target_id = aws_lambda_function.deactivate_rds_function.id
+  depends_on = [
+    aws_cloudwatch_event_rule.deactivate_rds_rule,
+    data.archive_file.deactivate_rds_zip
+  ]
 }
 
 # Define the Lambda function code
-# data "archive_file" "deactivate_rds_zip" {
-#   type = "zip"
-#   output_path = "deactivate_rds.zip"
-#   source_file = "deactivate_rds.py"
-# }
+data "archive_file" "deactivate_rds_zip" {
+  type = "zip"
+  output_path = "deactivate_rds.zip"
+  source_file = "deactivate_rds.py"
+}

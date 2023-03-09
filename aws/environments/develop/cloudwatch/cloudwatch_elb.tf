@@ -52,14 +52,18 @@ resource "aws_cloudwatch_event_rule" "remove_lb_rule" {
 
 # Associate the rule with the Lambda function
 resource "aws_cloudwatch_event_target" "remove_lb_target" {
-  rule      = aws_cloudwatch_event_rule.remove_lb_rule.name
+  rule      = aws_cloudwatch_event_rule.remove_lb_rule.id
   arn       = aws_lambda_function.remove_lb_function.arn
   target_id = aws_lambda_function.remove_lb_function.id
+  depends_on = [
+    aws_cloudwatch_event_rule.remove_lb_rule,
+    data.archive_file.remove_lb_zip
+  ]
 }
 
 # Define the Lambda function code
-# data "archive_file" "remove_lb_zip" {
-#   type = "zip"
-#   output_path = "remove_lb.zip"
-#   source_file = "remove_lb.py"
-# }
+data "archive_file" "remove_lb_zip" {
+  type = "zip"
+  output_path = "remove_lb.zip"
+  source_file = "remove_lb.py"
+}

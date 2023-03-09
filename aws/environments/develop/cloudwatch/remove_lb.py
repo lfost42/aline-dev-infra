@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 import boto3
 
 region_name = 'us-east-1'

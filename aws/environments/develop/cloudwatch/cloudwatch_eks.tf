@@ -52,15 +52,19 @@ resource "aws_cloudwatch_event_rule" "remove_eks_rule" {
 
 # Define the CloudWatch event target to associate the rule with the Lambda function
 resource "aws_cloudwatch_event_target" "remove_eks_target" {
-  rule      = aws_cloudwatch_event_rule.remove_eks_rule.name
+  rule      = aws_cloudwatch_event_rule.remove_eks_rule.id
   arn       = aws_lambda_function.remove_eks_function.arn
-  target_id = aws_lambda_function.remove_eks_function.function_name
+  target_id = aws_lambda_function.remove_eks_function.id
+  depends_on = [
+    aws_cloudwatch_event_rule.remove_eks_rule,
+    data.archive_file.remove_eks_zip
+  ]
 }
 
 # Define the Lambda function code
-# data "archive_file" "remove_eks_zip" {
-#   type = "zip"
-#   output_path = "remove_eks.zip"
-#   source_file = "remove_eks.py"
-# }
+data "archive_file" "remove_eks_zip" {
+  type = "zip"
+  output_path = "remove_eks.zip"
+  source_file = "remove_eks.py"
+}
 
