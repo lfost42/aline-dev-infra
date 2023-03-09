@@ -58,8 +58,8 @@ resource "aws_cloudwatch_event_target" "stop_ec2_target" {
 }
 
 # Define the Lambda function code
-data "archive_file" "stop_ec2_zip" {
-  type = "zip"
-  output_path = "stop_ec2.zip"
-  source_file = "stop_ec2.py"
-}
+# data "archive_file" "stop_ec2_zip" {
+#   type = "zip"
+#   output_path = "stop_ec2.zip"
+#   source_file = "stop_ec2.py"
+# }

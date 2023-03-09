@@ -58,9 +58,9 @@ resource "aws_cloudwatch_event_target" "remove_eks_target" {
 }
 
 # Define the Lambda function code
-data "archive_file" "remove_eks_zip" {
-  type = "zip"
-  output_path = "remove_eks.zip"
-  source_file = "remove_eks.py"
-}
+# data "archive_file" "remove_eks_zip" {
+#   type = "zip"
+#   output_path = "remove_eks.zip"
+#   source_file = "remove_eks.py"
+# }
 

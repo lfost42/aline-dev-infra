@@ -70,60 +70,60 @@ variable "aline_vpc_type" {
   default     = "main"
 }
 
-variable "eks_cluster_name" {
-  type        = string
-  description = "name of cluster"
-  default     = ""
-}
+# variable "eks_cluster_name" {
+#   type        = string
+#   description = "name of cluster"
+#   default     = ""
+# }
 
-variable "eks_cluster_version" {
-  type        = string
-  description = "eks cluster version"
-  default     = "1.21"
-}
+# variable "eks_cluster_version" {
+#   type        = string
+#   description = "eks cluster version"
+#   default     = "1.21"
+# }
 
-variable "eks_ami_type" {
-  type        = string
-  description = ""
-  default     = ""
-}
-variable "eks_instance_types" {
-  type        = list(string)
-  description = ""
-  default     = [""]
-}
+# variable "eks_ami_type" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
+# variable "eks_instance_types" {
+#   type        = list(string)
+#   description = ""
+#   default     = [""]
+# }
 
-variable "eks_private_ng_min_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
-variable "eks_private_ng_max_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
-variable "eks_private_ng_desired_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
+# variable "eks_private_ng_min_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
+# variable "eks_private_ng_max_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
+# variable "eks_private_ng_desired_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
 
-variable "eks_public_ng_min_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
-variable "eks_public_ng_max_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
-variable "eks_public_ng_desired_size" {
-  type        = string
-  description = ""
-  default     = ""
-}
+# variable "eks_public_ng_min_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
+# variable "eks_public_ng_max_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
+# variable "eks_public_ng_desired_size" {
+#   type        = string
+#   description = ""
+#   default     = ""
+# }
 
 
 

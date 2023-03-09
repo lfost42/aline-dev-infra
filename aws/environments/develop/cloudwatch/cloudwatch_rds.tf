@@ -58,8 +58,8 @@ resource "aws_cloudwatch_event_target" "deactivate_rds_target" {
 }
 
 # Define the Lambda function code
-data "archive_file" "deactivate_rds_zip" {
-  type = "zip"
-  output_path = "deactivate_rds.zip"
-  source_file = "deactivate_rds.py"
-}
+# data "archive_file" "deactivate_rds_zip" {
+#   type = "zip"
+#   output_path = "deactivate_rds.zip"
+#   source_file = "deactivate_rds.py"
+# }

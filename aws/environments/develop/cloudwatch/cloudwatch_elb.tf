@@ -58,8 +58,8 @@ resource "aws_cloudwatch_event_target" "remove_lb_target" {
 }
 
 # Define the Lambda function code
-data "archive_file" "remove_lb_zip" {
-  type = "zip"
-  output_path = "remove_lb.zip"
-  source_file = "remove_lb.py"
-}
+# data "archive_file" "remove_lb_zip" {
+#   type = "zip"
+#   output_path = "remove_lb.zip"
+#   source_file = "remove_lb.py"
+# }
