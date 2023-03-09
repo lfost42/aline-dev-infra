@@ -5,6 +5,8 @@ def gv
 pipeline {
     agent any
     environment {
+        def user = input.user.getDisplayName()
+        def time = new Date()
         AWS_ACCESS_KEY_ID = credentials('LF_AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('LF_AWS_SECRET_ACCESS_KEY')
         AWS_ID = credentials('AWS_ID')
