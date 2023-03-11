@@ -7,22 +7,27 @@ Parameters:
         Description: Please enter the IP range (CIDR notation) for this
         Type: String
         Default: ${VpcCIDR}
+
     PublicSubnet1CIDR:
         Description: Please enter the IP range (CIDR notation) for this
         Type: String
         Default: ${PublicSubnet1CIDR}
+
     PublicSubnet2CIDR:
         Description: Please enter the IP range (CIDR notation) for this
         Type: String
         Default: ${PublicSubnet2CIDR}
+
     PrivateSubnet1CIDR:
         Description: Please enter the IP range (CIDR notation) for this
         Type: String
         Default: ${PrivateSubnet1CIDR}
+
     PrivateSubnet2CIDR:
         Description: Please enter the IP range (CIDR notation) for this
         Type: String
         Default: ${PrivateSubnet2CIDR}
+
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -39,8 +44,8 @@ Resources:
           - Key: name
             Value: !Ref EnvironmentName
   InternetGatewayAttachment:
-     Type: AWS::EC2::VPCGatewayAttachment
-     Properties:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
         InternetGatewayId: !Ref InternetGateway
         VpcId: !Ref VPC
   PublicSubnet1:

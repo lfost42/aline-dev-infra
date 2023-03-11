@@ -18,13 +18,14 @@ if [ $# -gt 0 ]; then
 
     case "$3" in
         "init")
+            terraform validate && \
             terraform -chdir=./$TF_ENV/$TF_APP init \
               -backend-config="bucket=lf-aline-terraform" \
               -backend-config="key=$TF_ENV/$TF_APP/terraform.tfstate"
               EXIT_CODE=$?
             ;;
         "apply")
-            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve "$TF_APP"
             EXIT_CODE=$?
             ;;
         "destroy")
@@ -32,6 +33,7 @@ if [ $# -gt 0 ]; then
             EXIT_CODE=$?
             ;;
         "plan")
+            terraform validate && \
             terraform -chdir=./$TF_ENV/$TF_APP $3
             EXIT_CODE=$?
             ;;
