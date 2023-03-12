@@ -25,11 +25,19 @@ if [ $# -gt 0 ]; then
               EXIT_CODE=$?
             ;;
         "apply")
-            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve "$TF_APP"
+            terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            EXIT_CODE=$?
+            ;;
+        "apply-n")
+            terraform -chdir=./$TF_ENV/$TF_APP $3
             EXIT_CODE=$?
             ;;
         "destroy")
             terraform -chdir=./$TF_ENV/$TF_APP $3 --auto-approve
+            EXIT_CODE=$?
+            ;;
+        "destroy-n")
+            terraform -chdir=./$TF_ENV/$TF_APP $3
             EXIT_CODE=$?
             ;;
         "plan")
