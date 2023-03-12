@@ -29,7 +29,7 @@ if [ $# -gt 0 ]; then
             EXIT_CODE=$?
             ;;
         "apply-n")
-            terraform -chdir=./$TF_ENV/$TF_APP $3
+            terraform -chdir=./$TF_ENV/$TF_APP apply
             EXIT_CODE=$?
             ;;
         "destroy")
@@ -37,7 +37,7 @@ if [ $# -gt 0 ]; then
             EXIT_CODE=$?
             ;;
         "destroy-n")
-            terraform -chdir=./$TF_ENV/$TF_APP $3
+            terraform -chdir=./$TF_ENV/$TF_APP destroy
             EXIT_CODE=$?
             ;;
         "plan")
