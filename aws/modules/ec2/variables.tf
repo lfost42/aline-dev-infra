@@ -11,23 +11,25 @@ variable "infra_role" {
 variable "instance_size" {
   type        = string
   description = "ec2 web server size"
-  default     = "t3.medium"
+  default     = "t3.micro"
 }
 
 variable "instance_ami" {
   type        = string
   description = "Server image to use"
+  default     = "ami-005f9685cb30f234b" # Amazon Linux 2 AMI
 }
 
 variable "instance_root_device_size" {
   type        = number
   description = "Root bock device size in GB"
-  default     = 20
+  default     = 4
 }
 
 variable "subnets" {
   type        = list(string)
   description = "valid subnets to assign to server"
+  default     = []
 }
 
 variable "security_groups" {

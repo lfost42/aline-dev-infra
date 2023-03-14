@@ -18,7 +18,7 @@ module "aline_vpc" {
 }
 
 resource "aws_db_subnet_group" "rds_database_subnet" {
-  name       = join("-",["aline-rds-sg", random_string.random.result])
+  name       = join("-",["aline-rds-subnetgroup", random_string.random.result])
   subnet_ids = module.aline_vpc.vpc_database_subnet_ids
 }
 
