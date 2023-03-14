@@ -23,7 +23,7 @@ variable "instance_ami" {
 variable "instance_root_device_size" {
   type        = number
   description = "Root bock device size in GB"
-  default     = 4
+  default     = 8
 }
 
 variable "subnets" {

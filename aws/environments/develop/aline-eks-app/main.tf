@@ -33,27 +33,27 @@ module "database" {
   depends_on                 = [module.aline_vpc, resource.aws_db_subnet_group.rds_database_subnet]
 }
 
-# module "eks" {
-#   source = "../../../modules/aline-eks-cluster"
+module "eks" {
+  source = "../../../modules/aline-eks-cluster"
 
-#   cluster_name    = var.eks_cluster_name
-#   cluster_version = var.eks_cluster_version
-#   vpc_id          = module.aline_vpc.vpc_id
+  cluster_name    = var.eks_cluster_name
+  cluster_version = var.eks_cluster_version
+  vpc_id          = module.aline_vpc.vpc_id
 
-#   cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_database_subnet_ids)
-#   ami_type           = var.eks_ami_type
-#   instance_types     = var.eks_instance_types
+  cluster_subnet_ids = concat(module.aline_vpc.vpc_public_subnet_ids, module.aline_vpc.vpc_private_subnet_ids, module.aline_vpc.vpc_database_subnet_ids)
+  ami_type           = var.eks_ami_type
+  instance_types     = var.eks_instance_types
 
-#   private_subnets         = concat(module.aline_vpc.vpc_private_subnets, module.aline_vpc.vpc_database_subnets)
-#   private_ng_min_size     = var.eks_private_ng_min_size
-#   private_ng_max_size     = var.eks_private_ng_max_size
-#   private_ng_desired_size = var.eks_private_ng_desired_size
+  private_subnets         = concat(module.aline_vpc.vpc_private_subnets, module.aline_vpc.vpc_database_subnets)
+  private_ng_min_size     = var.eks_private_ng_min_size
+  private_ng_max_size     = var.eks_private_ng_max_size
+  private_ng_desired_size = var.eks_private_ng_desired_size
 
-#   public_subnets         = module.aline_vpc.vpc_public_subnets
-#   public_ng_min_size     = var.eks_public_ng_min_size
-#   public_ng_max_size     = var.eks_public_ng_max_size
-#   public_ng_desired_size = var.eks_public_ng_desired_size
-# }
+  public_subnets         = module.aline_vpc.vpc_public_subnets
+  public_ng_min_size     = var.eks_public_ng_min_size
+  public_ng_max_size     = var.eks_public_ng_max_size
+  public_ng_desired_size = var.eks_public_ng_desired_size
+}
 
 
 # ./run develop aline-eks-app init

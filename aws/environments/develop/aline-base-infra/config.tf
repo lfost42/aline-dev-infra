@@ -39,21 +39,21 @@ module "aline_vpc" {
   vpc_type               = var.aline_vpc_type
 }
 
-module "ansible-host-node" {
-  source = "../../../modules/ec2"
-  infra_env       = var.infra_env
-  security_groups = [data.aws_security_group.public.id]
-  infra_role      = "public"
-}
+# module "ansible-host-node" {
+#   source = "../../../modules/ec2"
+#   infra_env       = var.infra_env
+#   security_groups = [data.aws_security_group.public.id]
+#   infra_role      = "public"
+# }
 
-data "aws_security_group" "public" {
-    tags = {
-    Name = "lf-aline-${var.infra_env}-public-sg"
-    Role = "public"
-    Type = "main"
-  }
-  depends_on = [ module.aline_vpc ]
-}
+# data "aws_security_group" "public" {
+#     tags = {
+#     Name = "lf-aline-${var.infra_env}-public-sg"
+#     Role = "public"
+#     Type = "main"
+#   }
+#   depends_on = [ module.aline_vpc ]
+# }
 
 # resource "aws_db_subnet_group" "rds_database_subnet" {
 #   name       = join("-",["aline-rds-sg", random_string.random.result])
