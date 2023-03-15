@@ -84,49 +84,52 @@ variable "eks_cluster_version" {
 
 variable "eks_ami_type" {
   type        = string
-  description = ""
+  description = "AMI ID for eks instances."
   default     = ""
 }
 variable "eks_instance_types" {
   type        = list(string)
-  description = ""
+  description = "Size of instance for eks nodes."
   default     = [""]
 }
 
 variable "eks_private_ng_min_size" {
   type        = string
-  description = ""
+  description = "Minimum size for eks node group."
   default     = ""
 }
 variable "eks_private_ng_max_size" {
   type        = string
-  description = ""
+  description = "Maximum size for eks node group/"
   default     = ""
 }
 variable "eks_private_ng_desired_size" {
   type        = string
-  description = ""
+  description = "Desired size of eks private node group"
   default     = ""
 }
 
 variable "eks_public_ng_min_size" {
   type        = string
-  description = ""
+  description = "Minimum size of eks public node group."
   default     = ""
 }
 variable "eks_public_ng_max_size" {
   type        = string
-  description = ""
+  description = "Maximum size of eks public node group."
   default     = ""
 }
 variable "eks_public_ng_desired_size" {
   type        = string
-  description = ""
+  description = "Desired size of eks public node group."
   default     = ""
 }
 
-
-
+variable "key_name" {
+  type        = string
+  description = "Name of pem key"
+  default     = "lf-ansible"
+}
 
 # variable "tags" {
 #   description = "A map of tags to add to all resources"
@@ -150,7 +153,6 @@ variable "eks_public_ng_desired_size" {
 #   description = "instance size for private ec2"
 #   default = "t3.medium"
 # }
-
 
 ### enable once peering is established ###
 # variable "db_public_subnet" {

@@ -6,6 +6,7 @@ resource "random_shuffle" "subnets" {
 resource "aws_instance" "ec2" {
   ami           = var.instance_ami
   instance_type = var.instance_size
+  key_name      = var.key_name
 
   root_block_device {
     volume_size = var.instance_root_device_size

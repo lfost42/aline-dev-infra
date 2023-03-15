@@ -24,60 +24,60 @@ variable "cluster_subnet_ids" {
 
 variable "ami_type" {
   type        = string
-  description = "type of ami for ec2 nodes"
+  description = "Type of ami for ec2 nodes."
   default     = "BOTTLEROCKET_x86_64"
 }
 
 variable "instance_types" {
-  description = "list of instance types"
+  description = "List of instance types (sizes)."
   type        = list(string)
   default     = ["t3.medium"]
 }
 
 variable "private_ng_desired_size" {
-  description = "desired count for private ng"
+  description = "Desired count for private node group."
   type        = number
   default     = 2
 }
 
 variable "private_ng_max_size" {
-  description = "max count for private ng"
+  description = "Max count for private node group."
   type        = number
   default     = 4
 }
 
 variable "private_ng_min_size" {
-  description = "min count for private ng"
+  description = "Min count for private node group."
   type        = number
   default     = 2
 }
 
 variable "private_subnets" {
-  description = "private subnets"
+  description = "List of private subnets"
   type        = any
   default     = ""
 }
 
 variable "public_subnets" {
-  description = "public subnets"
+  description = "List of public subnets"
   type        = any
   default     = ""
 }
 
 variable "public_ng_desired_size" {
-  description = "desired count for public ng"
+  description = "Desired count for public node group."
   type        = number
   default     = 2
 }
 
 variable "public_ng_max_size" {
-  description = "max count for public ng"
+  description = "Max count for public node group."
   type        = number
   default     = 4
 }
 
 variable "public_ng_min_size" {
-  description = "min count for public ng"
+  description = "Min count for public node group."
   type        = number
   default     = 2
 }
