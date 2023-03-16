@@ -26,26 +26,26 @@ lynda.foster@smoothstack.com<br>
     - [x] Docker-Compose Cloud via ECS
 
 - [x] Jenkins CI/CD
-Our Jenkins distributed environment and SonarQube server is runs on 2 EC2 instances.  
+Our Jenkins distributed environment and SonarQube server is runs on 2 EC2 instances on AWS.  
     - [x] Jenkins Pipelines for Microservices
-        - Multi-branch pipelines with a [Node](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/lib-aline-node) and [Maven](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/lib-aline-maven) class library.
+        - Multi-branch pipelines with a [Class Library](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/lib-aline).
         - Push and Merge triggers via Jenkins Integrations webhook on GitLab. 
     - [x] Jenkins Integration with SonarQube
         - Tests and Quality Gates for each Maven and Node applications implemented. 
-    - [x] Docker-Compose via Jenkins
-    - [x] Kubernetes via Jenkins
-    - [x] Terraform Plan and Apply via Jenkins
+    - [x] [Docker-Compose](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-coud-cicd) via Jenkins
+    - [x] [Kubernetes](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-coud-cicd) via Jenkins
+    - [x] [Terraform](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Plan and Apply via Jenkins
 
-- [x] Terraform CI/CD
+- [x] [Terraform CI/CD](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra)
     - [x] Architect Base Infrastructure
     - [x] Create Base Infrastructure
     - [x] TFLint
     - [x] Terratest
     - [x] Terraform Associate Certificate
 
-- [ ] General CI/CD
-    - [ ] Ansible Playbooks
-    - [ ] Vanilla CloudFormation Templates
+- [x] General CI/CD
+    - [x] [Ansible](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Playbooks
+    - [x] Vanilla [CloudFormation](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Templates
  
 ## Acknowledgements
 Lead Developer:
@@ -54,9 +54,7 @@ Lead Developer:
 
 With support from the Cyber Cumulus Team:
 
-[Anthony Foster](https://git1.smoothstack.com/anthony.foster)<br>
 [Nathan Galler](https://git1.smoothstack.com/nathan.galler)<br>
-[Dennis Ghitas](https://git1.smoothstack.com/dennis.ghitas)<br>
 [Sebastian Marzal](https://git1.smoothstack.com/sebastian.marzal)
 
 ## License
@@ -67,3 +65,4 @@ Local Containerization and Automation Complete
 Coud Containerization and Automation Complete
 Jenkins CI/CD Complete
 Terraform CI/CD Complete
+General CI/CD - In Progress

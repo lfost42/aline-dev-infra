@@ -1,3 +1,9 @@
+variable "project" {
+  type        = string
+  description = "infrastructure environment"
+  default     = "lf-aline"
+}
+
 variable "infra_env" {
   type        = string
   description = "infrastructure environment"
@@ -20,16 +26,22 @@ variable "instance_ami" {
   default     = "ami-005f9685cb30f234b" # Amazon Linux 2 AMI
 }
 
+variable "key_name" {
+  type        = string
+  description = "Name of aws pem key used to log into instance."
+  default     = ""
+}
+
 variable "instance_root_device_size" {
   type        = number
   description = "Root bock device size in GB"
   default     = 8
 }
 
-variable "subnets" {
-  type        = list(string)
+variable "subnet" {
+  type        = string
   description = "valid subnets to assign to server"
-  default     = []
+  default     = ""
 }
 
 variable "security_groups" {
@@ -48,7 +60,7 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    Project     = "lf-aline"
+    Project     = "aline"
     Environment = "develop"
     ManagedBy   = "terraform"
     Owner       = "lynda"

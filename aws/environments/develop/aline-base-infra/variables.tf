@@ -7,7 +7,7 @@ variable "aline_profile" {
 variable "infra_env" {
   type        = string
   description = "infrastructure environment"
-  default     = "develop-6az"
+  default     = "develop-5az"
 }
 
 variable "aline_region" {
@@ -16,28 +16,10 @@ variable "aline_region" {
   default     = "us-east-1"
 }
 
-# variable "db_instance_class" {
-#   type = string
-#   description = "instance class(type) for the rds database"
-#   default = "db.t3.medium"
-# }
-
-# variable "db_user" {
-#   type = string
-#   description = "master username for the rds database"
-#   default = "admin"
-# }
-
-# variable "db_pass" {
-#   type = string
-#   description = "password for the rds database"
-#   default = "kms_rotating_secret_key"
-# }
-
 variable "aline_az_count" {
   type        = number
   description = "desired number of availability zones"
-  default     = 2
+  default     = 5
 }
 
 variable "aline_cidr_bits" {
@@ -49,7 +31,7 @@ variable "aline_cidr_bits" {
 variable "aline_cidr" {
   type        = string
   description = "project cidr subnet block"
-  default     = "10.3.0.0/18"
+  default     = "10.2.0.0/18"
 }
 
 variable "aline_public_subnet" {
@@ -85,18 +67,6 @@ variable "aline_vpc_type" {
 #     ManagedBy   = "terraform"
 #     Owner       = "lynda"
 #   }
-# }
-
-# variable "public_ec2_instance_size" {
-#   type = string
-#   description = "instance size for public ec2"
-#   default = "t3.small"
-# }
-
-# variable "private_ec2_instance_size" {
-#   type = string
-#   description = "instance size for private ec2"
-#   default = "t3.medium"
 # }
 
 

@@ -1,8 +1,3 @@
-resource "random_shuffle" "subnets" {
-  input        = var.subnets
-  result_count = 1
-}
-
 resource "aws_instance" "ec2" {
   ami           = var.instance_ami
   instance_type = var.instance_size
@@ -13,7 +8,7 @@ resource "aws_instance" "ec2" {
     volume_type = "gp3"
   }
 
-  subnet_id              = random_shuffle.subnets.result[0]
+  subnet_id              = var.subnet
   vpc_security_group_ids = var.security_groups
 
   lifecycle {
@@ -22,7 +17,7 @@ resource "aws_instance" "ec2" {
 
   tags = merge(
     {
-      Name = "lf-aline-${var.infra_env}-${var.infra_role}"
+      Name = "${var.project}-${var.infra_env}-${var.infra_role}"
       Role = var.infra_role
     },
     var.tags
