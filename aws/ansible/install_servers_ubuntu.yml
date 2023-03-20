@@ -1,0 +1,35 @@
+---
+- hosts: ubuntu
+  become: true
+  tasks:
+  - name: Install Certbot on Debian and Ubuntu
+    become: true
+    apt:
+      name: certbot
+      state: present
+
+  - name: Verify certbot is installed on Debian and Ubuntu
+    shell: dpkg -s certbot 2>/dev/null | grep -q 'Status:.*installed'
+    register: certbot_installed
+    changed_when: false
+
+  - debug:
+      msg: "Certbot is installed"
+    when: certbot_installed.rc == 0
+
+  # update and verify OpenSSH
+  - name: Update OpenSSH on Ubuntu
+    become: true
+    apt:
+      name: openssh-server
+      state: latest
+
+  - name: Verify OpenSSH version on Ubuntu
+    shell: ssh -V
+    register: ssh_version
+    changed_when: false
+
+  - debug:
+      msg: "OpenSSH version is {{ ssh_version.stdout }}"
+
+  # ansible-playbook install_servers_ubuntu.yml
