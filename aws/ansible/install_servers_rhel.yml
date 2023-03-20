@@ -17,28 +17,10 @@
       name: certbot
       state: present
 
-  - name: Verify certbot is installed on RedHat or CentOS
-    yum:
-      name: certbot
-      state: present
-    register: certbot_installed
-
-  - debug:
-      msg: "Certbot is installed"
-    when: certbot_installed.changed == False
-
   - name: Update OpenSSH on Red Hat
     become: true
     dnf:
       name: openssh-server
       state: latest
-
-  - name: Verify OpenSSH version on Red Hat
-    shell: rpm -q openssh-server
-    register: ssh_version
-    changed_when: false
-
-  - debug:
-      msg: "OpenSSH version is {{ ssh_version.stdout }}"
 
 # ansible-playbook install_servers_rhel.yml

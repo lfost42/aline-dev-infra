@@ -1,0 +1,27 @@
+---
+- name: Functional tests for install_servers_ubuntu playbook
+  hosts: ubuntu
+  gather_facts: true
+  tasks:
+    # Verify that Certbot is installed
+    - name: Verify Certbot is installed
+      command: dpkg -s certbot 2>/dev/null | grep -q 'Status:.*installed'
+      register: certbot_installed
+      changed_when: false
+      failed_when: false
+
+    # Verify that OpenSSH has been updated to the latest version
+    - name: Verify OpenSSH is updated
+      command: ssh -V | head -n 1 | grep -q 'OpenSSH'
+      register: openssh_updated
+      changed_when: false
+      failed_when: false
+
+    # Check if any tests failed
+    - name: Check if any tests failed
+      assert:
+        that:
+          - certbot_installed.rc == 0
+          - openssh_updated.rc == 0
+
+# ansible-playbook -i inventory.ini test_servers_ubuntu.yml
