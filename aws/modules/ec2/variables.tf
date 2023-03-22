@@ -35,7 +35,7 @@ variable "key_name" {
 variable "instance_root_device_size" {
   type        = number
   description = "Root bock device size in GB"
-  default     = 8
+  default     = 10
 }
 
 variable "subnet" {
