@@ -52,8 +52,8 @@ module "ansible-managed-node1" {
   project         = var.ansible_project
   key_name        = var.ansible_key
   infra_env       = var.infra_env
-  subnet          = module.ansible_vpc.vpc_private_subnet_ids[0]
-  security_groups = [module.ansible_vpc.security_group_private]
+  subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
+  security_groups = [module.ansible_vpc.security_group_public]
   instance_ami    = var.node1_ami
 }
 
@@ -63,8 +63,8 @@ module "ansible-managed-node2" {
   project         = var.ansible_project
   key_name        = var.ansible_key
   infra_env       = var.infra_env
-  subnet          = module.ansible_vpc.vpc_private_subnet_ids[0]
-  security_groups = [module.ansible_vpc.security_group_private]
+  subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
+  security_groups = [module.ansible_vpc.security_group_public]
   instance_ami    = var.node2_ami
 }
 
@@ -74,8 +74,8 @@ module "ansible-managed-node3" {
   project         = var.ansible_project
   key_name        = var.ansible_key
   infra_env       = var.infra_env
-  subnet          = module.ansible_vpc.vpc_private_subnet_ids[0]
-  security_groups = [module.ansible_vpc.security_group_private]
+  subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
+  security_groups = [module.ansible_vpc.security_group_public]
   instance_ami    = var.node3_ami
 }
 
