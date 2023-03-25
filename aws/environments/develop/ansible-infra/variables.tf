@@ -73,13 +73,13 @@ variable "ansible_public_subnet" {
 variable "ansible_private_subnet" {
   type        = bool
   description = "indicates whether to include a private subnet in the VPC"
-  default     = true
+  default     = false
 }
 
 variable "ansible_database_subnet" {
   type        = bool
   description = "indicates whether to include a database subnet in the VPC"
-  default     = true
+  default     = false
 }
 
 variable "ansible_vpc_type" {
