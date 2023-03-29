@@ -17,7 +17,7 @@ resource "aws_instance" "ec2" {
 
   tags = merge(
     {
-      Name = "${var.project}-${var.infra_env}-${var.infra_role}"
+      Name = "${var.project}-${var.infra_env}-${var.infra_role}-LF"
       Role = var.infra_role
     },
     var.tags
