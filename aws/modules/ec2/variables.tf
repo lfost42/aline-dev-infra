@@ -60,7 +60,7 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default = {
-    Project     = "aline"
+    Project     = "ansible"
     Environment = "develop"
     ManagedBy   = "terraform"
     Owner       = "lynda"

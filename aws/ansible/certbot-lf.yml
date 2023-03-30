@@ -9,52 +9,44 @@
       yum:
         name: dnf-plugins-core
         state: present
-
     - name: Redhat - Update package cache
       become: True
       dnf:
         update_cache: yes
-
     - name: Redhat - Import EPEL PGP key.
       become: True
       rpm_key:
         key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
         state: present
-
     - name: Redhat - Install EPEL repo.
       become: True
       yum:
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
         state: present
-
     - name: Redhat - Enable EPEL
       become: True
       dnf:
         name: epel-release
         state: present
         enablerepo: extras
-
     - name: Redhat - Install snapd
       become: True
       dnf:
         name: snapd
         state: present
         enablerepo: epel
-
     - name: Redhat - Ensure snapd is installed.
       become: True
       package:
         name: snapd
         state: present
       register: snapd_install
-
     - name: Redhat - Enable snapd
       become: True
       systemd:
         name: snapd.socket
         enabled: True
         state: started
-
     - name: Redhat - Enable classic snap support.
       become: True
       file:
@@ -62,20 +54,17 @@
         dest: /snap
         state: link
       when: ansible_os_family != "Debian"
-
     - name: Redhat - Update snap after install.
       become: True
       shell: snap install core; snap refresh core
       changed_when: True
       failed_when: false
       when: snapd_install is changed
-
     - name: Redhat - Install certbot via snap.
       become: True
       snap:
         name: certbot
         classic: True
-
     - name: Redhat - Symlink certbot into place.
       become: True
       file:
@@ -83,12 +72,10 @@
         dest: /usr/bin/certbot
         state: link
       ignore_errors: "{{ ansible_check_mode }}"
-
     - name: Redhat - Set Certbot script variable.
       become: True
       set_fact:
         certbot_script: /usr/bin/certbot
-    
     # VERIFY Certbot is installed REDHAT
     - name: Redhat - verify Certbot is installed
       become: True
@@ -97,13 +84,11 @@
       register: certbot_installed
       changed_when: false
       check_mode: no
-
     - name: Redhat - Update OpenSSH on RedHat
       become: True
       dnf:
         name: openssh-server
         state: latest
-
     # VERIFY OpenSSH does not require udpates REDHAT
     - name: Red Hat - Verify OpenSSH does not require an update
       become: true
@@ -123,19 +108,16 @@
       apt:
         name: openssh-client
         state: latest
-
     - name: Update APT Cache
       become: True
       apt:
         update_cache: yes
         force_apt_get: yes
-
     - name: Remove apt lock file
       become: True
       file:
         state: absent
         path: "/var/lib/dpkg/lock"
-
     # VERIFY openssh does not rquire updates DEBIAN
     - name: Debian - Verify OpenSSH does not require an update
       become: True
@@ -146,20 +128,17 @@
       register: apt_output
       changed_when: False
       check_mode: no
-
     - name: Debian - Install Snap on Ubuntu
       become: True
       apt:
         name: snapd
         state: present
-
     - name: Debian - Install Certbot with Snap on Ubuntu
       become: True
       snap:
         name: certbot
         classic: yes
         channel: stable
-
     - name: Debian - Check Certbot status
       become: True
       systemd:
@@ -167,7 +146,6 @@
         state: started
         enabled: yes
       register: certbot_status
-
     # VERIFY certbot is installed DEBIAN
     - name: Debian - Verify certbot is installed
       become: True
