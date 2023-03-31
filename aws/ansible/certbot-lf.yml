@@ -62,9 +62,7 @@
       when: snapd_install is changed
     - name: Redhat - Install certbot via snap.
       become: True
-      snap:
-        name: certbot
-        classic: True
+      shell: snap install certbot --classic
     - name: Redhat - Symlink certbot into place.
       become: True
       file:
@@ -135,10 +133,7 @@
         state: present
     - name: Debian - Install Certbot with Snap on Ubuntu
       become: True
-      snap:
-        name: certbot
-        classic: yes
-        channel: stable
+      shell: snap install certbot --classic
     - name: Debian - Check Certbot status
       become: True
       systemd:
@@ -147,6 +142,16 @@
         enabled: yes
       register: certbot_status
     # VERIFY certbot is installed DEBIAN
+    - name: Update APT Cache
+      become: True
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+    - name: Remove apt lock file
+      become: True
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock"
     - name: Debian - Verify certbot is installed
       become: True
       package:
@@ -156,6 +161,6 @@
       check_mode: no
 
 # cd ansible
-# ansible-playbook -i inventory certbot.yml
+# ansible-playbook -i inventory certbot-lf.yml
 
 

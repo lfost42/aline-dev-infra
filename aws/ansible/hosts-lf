@@ -1,0 +1,6 @@
+[redhat]
+node1 ansible_host=ec2-107-22-132-135.compute-1.amazonaws.com ansible_ssh_private_key_file=/home/ubuntu/.ssh/lf-ansible.pem ansible_user=ec2-user
+
+[debian]
+node2 ansible_host=ec2-18-207-220-221.compute-1.amazonaws.com ansible_ssh_private_key_file=/home/ubuntu/.ssh/lf-ansible.pem ansible_user=admin
+node3 ansible_host=ec2-35-170-201-57.compute-1.amazonaws.com ansible_ssh_private_key_file=/home/ubuntu/.ssh/lf-ansible.pem ansible_user=ubuntu
