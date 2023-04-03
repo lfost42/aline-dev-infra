@@ -1,3 +1,74 @@
+# module "vpc" {
+#   source = "../../../modules/vpc"
+
+#   infra_env              = var.infra_env
+#   vpc_cidr               = var.aline_cidr
+#   cidr_bits              = var.aline_cidr_bits
+#   az_count               = var.aline_az_count
+#   create_public_subnet   = var.aline_public_subnet
+#   create_private_subnet  = var.aline_private_subnet
+#   create_database_subnet = var.aline_database_subnet
+#   vpc_type               = var.aline_vpc_type
+# }
+
+# variable "aline_az_count" {
+#   type        = number
+#   description = "desired number of availability zones"
+#   default     = 1
+# }
+
+# variable "aline_cidr_bits" {
+#   type        = number
+#   description = "number of cidr bits"
+#   default     = 4
+# }
+
+# variable "aline_cidr" {
+#   type        = string
+#   description = "project cidr subnet block"
+#   default     = "10.2.0.0/18"
+# }
+
+# variable "aline_public_subnet" {
+#   type        = bool
+#   description = "indicates whether to include a public subnet in the VPC"
+#   default     = true
+# }
+
+# variable "aline_private_subnet" {
+#   type        = bool
+#   description = "indicates whether to include a private subnet in the VPC"
+#   default     = true
+# }
+
+# variable "aline_database_subnet" {
+#   type        = bool
+#   description = "indicates whether to include a database subnet in the VPC"
+#   default     = true
+# }
+
+# variable "aline_vpc_type" {
+#   type        = string
+#   description = "type of vpc"
+#   default     = "main"
+# }
+
+# output "vpc_id" {
+#   value = module.vpc.vpc_id
+# }
+# output "vpc_cidr" {
+#   value = module.vpc.vpc_cidr
+# }
+# output "vpc_database_subnets" {
+#   value = module.vpc.vpc_database_subnets
+# }
+# output "vpc_database_subnet_ids" {
+#   value = module.vpc.vpc_database_subnet_ids
+# }
+# output "vpc_database_subnet" {
+#   value = module.vpc.vpc_database_subnets
+# }
+
 locals {
   account_id = data.aws_caller_identity.current.account_id
   tags = {
@@ -26,8 +97,8 @@ module "eks" {
     }
   }
 
-  vpc_id     = data.terraform_remote_state.vpc.outputs.vpc_id
-  subnet_ids = data.terraform_remote_state.vpc.outputs.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
 
   manage_aws_auth_configmap = true
 
@@ -84,9 +155,9 @@ module "eks" {
       ami_type      = "BOTTLEROCKET_x86_64"
       platform      = "bottlerocket"
       min_size      = 1
-      max_size      = 2
-      desired_size  = 2
-      # instance_types = ["t3.micro"]
+      max_size      = 1
+      desired_size  = 1
+      instance_types = ["t3.micro"]
       capacity_type = "SPOT"
 
       # this will get added to what AWS provides

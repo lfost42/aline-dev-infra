@@ -5,12 +5,14 @@ resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
 
   tags = merge(
     {
-      Name                                 = "lf-aline-${var.infra_env}-vpc",
-      "kubernetes.io/cluster/lf-aline-eks" = "shared"
-      Type                                 = var.vpc_type
+      Name                                        = "lf-aline-${var.infra_env}-vpc",
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+      Type                                        = var.vpc_type
     },
     var.tags
   )
@@ -31,11 +33,11 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
   tags = merge(
     {
-      Name                                 = "lf-aline-${var.infra_env}-public-sg-${count.index + 1}"
-      VPC                                  = aws_vpc.vpc.id
-      "kubernetes.io/cluster/lf-aline-eks" = "shared"
-      "kubernetes.io/role/elb"             = 1
-      Network                              = "Public"
+      Name                                        = "lf-aline-${var.infra_env}-public-sg-${count.index + 1}"
+      VPC                                         = aws_vpc.vpc.id
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+      "kubernetes.io/role/elb"                    = 1
+      Network                                     = "Public"
     },
     var.tags
   )
@@ -53,10 +55,10 @@ resource "aws_subnet" "private" {
   # map_public_ip_on_launch = true
   tags = merge(
     {
-      Name                                 = "lf-aline-${var.infra_env}-private-sg-${count.index + 1}"
-      "kubernetes.io/cluster/lf-aline-eks" = "shared"
-      "kubernetes.io/role/internal-elb"    = 1
-      Network                              = "Private"
+      Name                                        = "lf-aline-${var.infra_env}-private-sg-${count.index + 1}"
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+      "kubernetes.io/role/internal-elb"           = 1
+      Network                                     = "Private"
     },
     var.tags
   )
@@ -73,10 +75,10 @@ resource "aws_subnet" "database" {
 
   tags = merge(
     {
-      Name                                 = "lf-aline-${var.infra_env}-database-sg-${count.index + 1}"
-      "kubernetes.io/cluster/lf-aline-eks" = "shared"
-      "kubernetes.io/role/internal-elb"    = 1
-      Network                              = "Database"
+      Name                                        = "lf-aline-${var.infra_env}-database-sg-${count.index + 1}"
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+      "kubernetes.io/role/internal-elb"           = 1
+      Network                                     = "Database"
     },
     var.tags
   )

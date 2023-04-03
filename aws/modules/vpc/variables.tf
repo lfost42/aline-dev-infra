@@ -3,6 +3,12 @@ variable "infra_env" {
   description = "infrastructure environment"
 }
 
+variable "cluster_name" {
+  type        = string
+  description = "EKS cluster name"
+  default     = "lf-eks"
+}
+
 variable "vpc_cidr" {
   type        = string
   description = "The IP range to use for the VPC"
