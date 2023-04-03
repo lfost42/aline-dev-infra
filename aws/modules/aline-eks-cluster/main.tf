@@ -1,68 +1,99 @@
-resource "aws_kms_key" "eks" {
-  description = "EKS Secret Encryption Key"
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"
+  version = "19.7.0"
 
   cluster_name                   = var.cluster_name
   cluster_version                = var.cluster_version
-  cluster_endpoint_public_access = true
-  enable_irsa                    = true
-  vpc_id                         = var.vpc_id
+  cluster_endpoint_public_access = var.cluster_endpoint_public_access
 
-  cluster_encryption_config = {
-    provider_key_arn = aws_kms_key.eks.arn
-    resources        = ["secrets"]
-  }
+  vpc_id      = var.vpc_id
+  subnet_ids  = var.subnet_ids
 
-  subnet_ids = var.cluster_subnet_ids
+  eks_managed_node_groups = var.eks_managed_node_groups
+}
 
-  cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
+resource "aws_iam_policy" "external_dns" {
+  name        = "external_dns_policy_NG"
 
-    kube-proxy = {
-      most_recent = true
-    }
-
-    vpc-cni = {
-      most_recent = true
-    }
-
-    aws-ebs-csi-driver = {
-      most_recent = true
-    }
-  }
-
-  eks_managed_node_group_defaults = {
-    ami_type       = var.ami_type
-    instance_types = var.instance_types
-  }
-
-  eks_managed_node_groups = {
-    private = {
-      name         = "private-ng"
-      subnets      = var.private_subnets
-      min_size     = var.private_ng_min_size
-      max_size     = var.private_ng_max_size
-      desired_size = var.private_ng_desired_size
-    }
-    public = {
-      name         = "public-ng"
-      subnets      = var.public_subnets
-      min_size     = var.public_ng_min_size
-      max_size     = var.public_ng_max_size
-      desired_size = var.public_ng_desired_size
-    }
-  }
-
-  tags = merge(
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
     {
-      "kubernetes.io/cluster/lf-aline-eks" = "shared"
+      "Effect": "Allow",
+      "Action": [
+        "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": [
+        "arn:aws:route53:::hostedzone/*"
+      ]
     },
-    var.tags
-  )
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:ListHostedZones",
+        "route53:ListResourceRecordSets"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+POLICY
+}
+
+data "aws_eks_cluster" "default" {
+  name = module.eks.cluster_name
+  depends_on = [module.eks.cluster_id]
+}
+
+data "aws_eks_cluster_auth" "default" {
+  name = module.eks.cluster_name
+  depends_on = [module.eks.cluster_id]
+}
+
+module "lambda_function" {
+  source = ".././lambda_function"
+
+  source_file_path = "eks.py"
+  runtime          = "python3.9"
+
+  environment_variables = {
+    cluster_name = var.cluster_name
+  }
+  
+  iam_role_arn = var.lambda_iam_role_arn
+}
+
+resource "aws_cloudwatch_metric_alarm" "eks_cpu_threshold_alarm" {
+  alarm_name          = "eks_cpu_threshold_alarm"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = 30
+  metric_name         = "node_cpu_utilization"
+  namespace           = "ContainerInsights"
+  period              = 60
+  statistic           = "Average"
+  threshold           = 0.7
+  alarm_description   = "This metric monitors the EKS cluster's average CPU utilization."
+  
+  dimensions = {
+    ClusterName = var.cluster_name
+  }
+
+  datapoints_to_alarm = 1
+
+  alarm_actions = [
+    aws_autoscaling_policy.autoscale_to_zero.arn,
+  ]
+}
+
+resource "aws_autoscaling_policy" "autoscale_to_zero" {
+  name = "autoscale_to_zero_${module.eks.cluster_name}"
+  policy_type = "SimpleScaling"
+
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+
+  autoscaling_group_name =  module.eks.eks_managed_node_groups_autoscaling_group_names[0]
 }

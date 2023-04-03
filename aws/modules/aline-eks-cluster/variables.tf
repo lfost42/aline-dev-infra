@@ -1,94 +1,38 @@
-variable "vpc_id" {
-  type        = string
-  description = "cluster vpc"
-  default     = ""
-}
-
 variable "cluster_name" {
-  type        = string
-  description = "name of cluster"
-  default     = ""
+  description = "Name of the EKS cluster."
 }
 
 variable "cluster_version" {
-  type        = string
-  description = "version number of cluster"
-  default     = "1.24"
+  description = "Kubernetes version to use for the EKS cluster."
 }
 
-variable "cluster_subnet_ids" {
+variable "cluster_endpoint_public_access" {
+  description = "Set to true to enable public access to the EKS cluster endpoint."
+  default     = false
+}
+
+variable "vpc_id" {
+  description = "ID of the VPC where the EKS cluster will be deployed."
+}
+
+variable "subnet_ids" {
+  description = "List of IDs of the subnets where the EKS cluster will be deployed."
   type        = list(string)
-  description = "list of cluster subnet ids"
-  default     = [""]
 }
 
-variable "ami_type" {
+variable "lambda_iam_role_arn" {
+  description = "ARN of the IAM role for the Lambda function"
   type        = string
-  description = "Type of ami for ec2 nodes."
-  default     = "BOTTLEROCKET_x86_64"
 }
 
-variable "instance_types" {
-  description = "List of instance types (sizes)."
-  type        = list(string)
-  default     = ["t3.medium"]
+variable "eks_managed_node_groups" {
+  description = "A map of managed node group configurations."
+  type        = map(object({
+    min_size        = number
+    max_size        = number
+    desired_size    = number
+    instance_types  = list(string)
+    capacity_type   = string
+  }))
 }
 
-variable "private_ng_desired_size" {
-  description = "Desired count for private node group."
-  type        = number
-  default     = 2
-}
-
-variable "private_ng_max_size" {
-  description = "Max count for private node group."
-  type        = number
-  default     = 4
-}
-
-variable "private_ng_min_size" {
-  description = "Min count for private node group."
-  type        = number
-  default     = 2
-}
-
-variable "private_subnets" {
-  description = "List of private subnets"
-  type        = any
-  default     = ""
-}
-
-variable "public_subnets" {
-  description = "List of public subnets"
-  type        = any
-  default     = ""
-}
-
-variable "public_ng_desired_size" {
-  description = "Desired count for public node group."
-  type        = number
-  default     = 2
-}
-
-variable "public_ng_max_size" {
-  description = "Max count for public node group."
-  type        = number
-  default     = 4
-}
-
-variable "public_ng_min_size" {
-  description = "Min count for public node group."
-  type        = number
-  default     = 2
-}
-
-variable "tags" {
-  description = "A map of tags to add to all resources"
-  type        = map(string)
-  default = {
-    Project     = "lf-aline"
-    Environment = "develop"
-    ManagedBy   = "terraform"
-    Owner       = "lynda"
-  }
-}
