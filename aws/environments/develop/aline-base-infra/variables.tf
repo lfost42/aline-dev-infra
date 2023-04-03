@@ -1,13 +1,7 @@
-variable "aline_profile" {
-  type        = string
-  description = "aws profile"
-  default     = "aline"
-}
-
 variable "infra_env" {
   type        = string
   description = "infrastructure environment"
-  default     = "develop-5az"
+  default     = "base-infra"
 }
 
 variable "aline_region" {
@@ -19,7 +13,7 @@ variable "aline_region" {
 variable "aline_az_count" {
   type        = number
   description = "desired number of availability zones"
-  default     = 5
+  default     = 1
 }
 
 variable "aline_cidr_bits" {
