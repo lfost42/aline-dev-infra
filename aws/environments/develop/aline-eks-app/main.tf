@@ -91,6 +91,7 @@ module "eks" {
       desired_size   = 1
       instance_types = ["t3.micro"]
       capacity_type  = "SPOT"
+      disk_size      = 10
       labels         = { 
         subnet = "public" 
       }

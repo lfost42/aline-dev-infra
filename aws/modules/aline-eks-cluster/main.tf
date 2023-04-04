@@ -90,6 +90,7 @@ module "eks" {
       labels         = { 
         subnet = "public" 
       }
+      disk_size      = 10
 
       # this will get added to what AWS provides
       bootstrap_extra_args = <<-EOT
