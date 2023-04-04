@@ -55,10 +55,10 @@ output "vpc_database_subnet_ids" {
   value = [for subnet in aws_subnet.database : subnet.id]
 }
 
-output "security_group_public" {
-  value = aws_security_group.public.id
-}
+# output "security_group_public" {
+#   value = aws_security_group.public.id
+# }
 
-output "security_group_private" {
-  value = aws_security_group.private.id
-}
+# output "security_group_private" {
+#   value = aws_security_group.private.id
+# }

@@ -1,11 +1,15 @@
-output "eks_cluster" {
-  value = data.aws_eks_cluster.default
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
 }
 
-output "eks_cluster_auth" {
-  value = data.aws_eks_cluster_auth.default
+output "cluster_iam_role_arn" {
+  value = module.eks.cluster_iam_role_arn
 }
 
-output "worker_sec_group" {
-  value = module.eks.node_security_group_id
+output "cluster_certificate_authority_data" {
+  value = module.eks.cluster_certificate_authority_data
+}
+
+output "cluster_id" {
+  value = module.eks.cluster_id
 }

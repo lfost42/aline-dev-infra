@@ -5,8 +5,6 @@ resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
 
   tags = merge(
     {
@@ -63,6 +61,8 @@ resource "aws_subnet" "private" {
     var.tags
   )
 }
+
+
 
 # Create 1 database subnet for each AZ within the regional VPC
 resource "aws_subnet" "database" {

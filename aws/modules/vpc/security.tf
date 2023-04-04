@@ -1,4 +1,4 @@
-# Public Security Group
+## Public Security Group
 resource "aws_security_group" "public" {
   name        = "lf-aline-${var.infra_env}-public-sg"
   description = "Public internet access"
@@ -83,33 +83,4 @@ resource "aws_security_group_rule" "private_in" {
   cidr_blocks = [aws_vpc.vpc.cidr_block]
 
   security_group_id = aws_security_group.private.id
-}
-
-# Security group for control plane
-resource "aws_security_group" "control_plane_sg" {
-  name   = "${var.infra_env}-ControlPlane-sg"
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name = "${var.infra_env}-ControlPlane-sg"
-  }
-}
-
-# Security group traffic rules
-resource "aws_security_group_rule" "control_plane_inbound" {
-  security_group_id = aws_security_group.control_plane_sg.id
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
-
-resource "aws_security_group_rule" "control_plane_outbound" {
-  security_group_id = aws_security_group.control_plane_sg.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
 }

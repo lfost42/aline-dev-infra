@@ -1,99 +1,103 @@
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+  tags = {
+    Name      = "${var.cluster_name}"
+    Project   = "lf-eks"
+    ManagedBy = "terraform"
+  }
+}
+
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "19.7.0"
+  source                          = "terraform-aws-modules/eks/aws"
+  version                         = "18.29.1"
+  cluster_name                    = var.cluster_name
+  cluster_version                 = var.cluster_version
+  cluster_endpoint_private_access = true
+  cluster_endpoint_public_access  = true
+  enable_irsa                     = true
 
-  cluster_name                   = var.cluster_name
-  cluster_version                = var.cluster_version
-  cluster_endpoint_public_access = var.cluster_endpoint_public_access
-
-  vpc_id      = var.vpc_id
-  subnet_ids  = var.subnet_ids
-
-  eks_managed_node_groups = var.eks_managed_node_groups
-}
-
-resource "aws_iam_policy" "external_dns" {
-  name        = "external_dns_policy_NG"
-
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "route53:ChangeResourceRecordSets"
-      ],
-      "Resource": [
-        "arn:aws:route53:::hostedzone/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "route53:ListHostedZones",
-        "route53:ListResourceRecordSets"
-      ],
-      "Resource": [
-        "*"
-      ]
+  cluster_addons = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
     }
-  ]
-}
-POLICY
-}
-
-data "aws_eks_cluster" "default" {
-  name = module.eks.cluster_name
-  depends_on = [module.eks.cluster_id]
-}
-
-data "aws_eks_cluster_auth" "default" {
-  name = module.eks.cluster_name
-  depends_on = [module.eks.cluster_id]
-}
-
-module "lambda_function" {
-  source = ".././lambda_function"
-
-  source_file_path = "eks.py"
-  runtime          = "python3.9"
-
-  environment_variables = {
-    cluster_name = var.cluster_name
-  }
-  
-  iam_role_arn = var.lambda_iam_role_arn
-}
-
-resource "aws_cloudwatch_metric_alarm" "eks_cpu_threshold_alarm" {
-  alarm_name          = "eks_cpu_threshold_alarm"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = 30
-  metric_name         = "node_cpu_utilization"
-  namespace           = "ContainerInsights"
-  period              = 60
-  statistic           = "Average"
-  threshold           = 0.7
-  alarm_description   = "This metric monitors the EKS cluster's average CPU utilization."
-  
-  dimensions = {
-    ClusterName = var.cluster_name
+    kube-proxy = {}
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+    }
   }
 
-  datapoints_to_alarm = 1
+  vpc_id     = module.aline_vpc.vpc_id
+  subnet_ids = module.aline_vpc.private_subnets
+  manage_aws_auth_configmap = true
 
-  alarm_actions = [
-    aws_autoscaling_policy.autoscale_to_zero.arn,
+  aws_auth_users = [
+    {
+      userarn  = "arn:aws:iam::${local.account_id}:user/eksadmin"
+      username = "cluster-admin"
+      groups   = ["system:masters"]
+    },
   ]
-}
 
-resource "aws_autoscaling_policy" "autoscale_to_zero" {
-  name = "autoscale_to_zero_${module.eks.cluster_name}"
-  policy_type = "SimpleScaling"
+  # Extend cluster security group rules
+  cluster_security_group_additional_rules = {
+    egress_nodes_ephemeral_ports_tcp = {
+      description                = "To node 1025-65535"
+      protocol                   = "tcp"
+      from_port                  = 1025
+      to_port                    = 65535
+      type                       = "egress"
+      source_node_security_group = true
+    }
+  }
 
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
+  node_security_group_additional_rules = {
+    ingress_allow_access_from_control_plane = {
+      type                          = "ingress"
+      protocol                      = "tcp"
+      from_port                     = 9443
+      to_port                       = 9443
+      source_cluster_security_group = true
+      description                   = "Allow access from control plane to webhook port of AWS load balancer controller"
+    }
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
 
-  autoscaling_group_name =  module.eks.eks_managed_node_groups_autoscaling_group_names[0]
+  eks_managed_node_groups = {
+    public_node = {
+      ami_type       = "BOTTLEROCKET_x86_64"
+      platform       = "bottlerocket"
+      min_size       = 1
+      max_size       = 2
+      desired_size   = 1
+      instance_types = ["t3.micro"]
+      capacity_type  = "SPOT"
+      labels         = { 
+        subnet = "public" 
+      }
+
+      # this will get added to what AWS provides
+      bootstrap_extra_args = <<-EOT
+      # extra args added
+      [settings.kernel]
+      lockdown = "integrity"
+      EOT
+    }
+  }
+
 }

@@ -1,74 +1,3 @@
-# module "vpc" {
-#   source = "../../../modules/vpc"
-
-#   infra_env              = var.infra_env
-#   vpc_cidr               = var.aline_cidr
-#   cidr_bits              = var.aline_cidr_bits
-#   az_count               = var.aline_az_count
-#   create_public_subnet   = var.aline_public_subnet
-#   create_private_subnet  = var.aline_private_subnet
-#   create_database_subnet = var.aline_database_subnet
-#   vpc_type               = var.aline_vpc_type
-# }
-
-# variable "aline_az_count" {
-#   type        = number
-#   description = "desired number of availability zones"
-#   default     = 1
-# }
-
-# variable "aline_cidr_bits" {
-#   type        = number
-#   description = "number of cidr bits"
-#   default     = 4
-# }
-
-# variable "aline_cidr" {
-#   type        = string
-#   description = "project cidr subnet block"
-#   default     = "10.2.0.0/18"
-# }
-
-# variable "aline_public_subnet" {
-#   type        = bool
-#   description = "indicates whether to include a public subnet in the VPC"
-#   default     = true
-# }
-
-# variable "aline_private_subnet" {
-#   type        = bool
-#   description = "indicates whether to include a private subnet in the VPC"
-#   default     = true
-# }
-
-# variable "aline_database_subnet" {
-#   type        = bool
-#   description = "indicates whether to include a database subnet in the VPC"
-#   default     = true
-# }
-
-# variable "aline_vpc_type" {
-#   type        = string
-#   description = "type of vpc"
-#   default     = "main"
-# }
-
-# output "vpc_id" {
-#   value = module.vpc.vpc_id
-# }
-# output "vpc_cidr" {
-#   value = module.vpc.vpc_cidr
-# }
-# output "vpc_database_subnets" {
-#   value = module.vpc.vpc_database_subnets
-# }
-# output "vpc_database_subnet_ids" {
-#   value = module.vpc.vpc_database_subnet_ids
-# }
-# output "vpc_database_subnet" {
-#   value = module.vpc.vpc_database_subnets
-# }
-
 locals {
   account_id = data.aws_caller_identity.current.account_id
   tags = {
@@ -97,8 +26,11 @@ module "eks" {
     }
   }
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.aline_vpc.vpc_id
+  subnet_ids = module.aline_vpc.private_subnets
+
+##  module vpc
+#     subnet_ids = module.aline_vpc.private_subnets
 
   manage_aws_auth_configmap = true
 
@@ -151,14 +83,17 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    bottlerocket_nodes = {
-      ami_type      = "BOTTLEROCKET_x86_64"
-      platform      = "bottlerocket"
-      min_size      = 1
-      max_size      = 1
-      desired_size  = 1
+    public_node = {
+      ami_type       = "BOTTLEROCKET_x86_64"
+      platform       = "bottlerocket"
+      min_size       = 1
+      max_size       = 2
+      desired_size   = 1
       instance_types = ["t3.micro"]
-      capacity_type = "SPOT"
+      capacity_type  = "SPOT"
+      labels         = { 
+        subnet = "public" 
+      }
 
       # this will get added to what AWS provides
       bootstrap_extra_args = <<-EOT
@@ -169,4 +104,46 @@ module "eks" {
     }
   }
 
+  depends_on = [
+    module.aline_vpc
+  ]
+
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
+
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+}
+
+output "cluster_iam_role_arn" {
+  value = module.eks.cluster_iam_role_arn
+}
+
+output "cluster_certificate_authority_data" {
+  value = module.eks.cluster_certificate_authority_data
+}
+
+output "cluster_id" {
+  value = module.eks.cluster_id
+}
+
+variable "cluster_version" {
+  type        = string
+  description = "Kubernetes cluster version"
+  default     = "1.23"
+}
+
+variable "aws_image_repository" {
+  type        = string
+  description = "AWS image repository for us-east-1 region" ## https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html
+  default     = "052911266688.dkr.ecr.us-west-1.amazonaws.com"
 }
