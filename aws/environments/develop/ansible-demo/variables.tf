@@ -111,3 +111,42 @@ variable "node3_ami" {
   description = "AMI of ec2 instance"
   default     = "ami-0557a15b87f6559cf" # Ubuntu
 }
+
+variable "rhel_tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Project     = "ansible"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+    Owner       = "lynda"
+    System      = "rhel"
+    User        = "ec2-user"
+  }
+}
+
+variable "debian_tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Project     = "ansible"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+    Owner       = "lynda"
+    System      = "debian"
+    User        = "admin"
+  }
+}
+
+variable "ubuntu_tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default = {
+    Project     = "ansible"
+    Environment = "develop"
+    ManagedBy   = "terraform"
+    Owner       = "lynda"
+    System      = "ubuntu"
+    User        = "ubuntu"
+  }
+}

@@ -10,18 +10,11 @@ resource "aws_instance" "ec2" {
 
   subnet_id              = var.subnet
   vpc_security_group_ids = var.security_groups
+  tags                   = var.tags
 
   lifecycle {
     create_before_destroy = true
   }
-
-  tags = merge(
-    {
-      Name = "${var.project}-${var.infra_env}-${var.infra_role}-LF"
-      Role = var.infra_role
-    },
-    var.tags
-  )
 }
 
 resource "aws_eip" "aline_addr" {

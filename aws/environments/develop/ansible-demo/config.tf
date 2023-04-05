@@ -35,16 +35,16 @@ module "ansible_vpc" {
   vpc_type               = var.ansible_vpc_type
 }
 
-# module "ansible-control-node" {
-#   source = "../../../modules/ec2"
-#   infra_role      = var.ansible_infra_role_0
-#   project         = var.ansible_project
-#   key_name        = var.ansible_key
-#   infra_env       = var.infra_env
-#   subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
-#   security_groups = [module.ansible_vpc.security_group_public]
-#   instance_ami    = var.host_ami
-# }
+module "ansible-control-node" {
+  source = "../../../modules/ec2"
+  infra_role      = var.ansible_infra_role_0
+  project         = var.ansible_project
+  key_name        = var.ansible_key
+  infra_env       = var.infra_env
+  subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
+  security_groups = [module.ansible_vpc.security_group_public]
+  instance_ami    = var.host_ami
+}
 
 module "ansible-managed-node1" {
   source = "../../../modules/ec2"
@@ -55,6 +55,7 @@ module "ansible-managed-node1" {
   subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
   security_groups = [module.ansible_vpc.security_group_public]
   instance_ami    = var.node1_ami
+  tags            = var.rhel_tags
 }
 
 module "ansible-managed-node2" {
@@ -64,8 +65,9 @@ module "ansible-managed-node2" {
   key_name        = var.ansible_key
   infra_env       = var.infra_env
   subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
-  security_groups = [module.ansible_vpc.security_group_public]
+  security_groups = [""]
   instance_ami    = var.node2_ami
+  tags            = var.debian_tags
 }
 
 module "ansible-managed-node3" {
@@ -77,6 +79,7 @@ module "ansible-managed-node3" {
   subnet          = module.ansible_vpc.vpc_public_subnet_ids[0]
   security_groups = [module.ansible_vpc.security_group_public]
   instance_ami    = var.node3_ami
+  tags            = var.ubuntu_tags
 }
 
 # ./run develop aline-eks-app init

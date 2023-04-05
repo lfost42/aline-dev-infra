@@ -1,7 +1,69 @@
 ---
+- name: Certbot debian play
+  hosts: debian
+  user: admin
+  tasks:
+    - name: Debian - Update OpenSSH on Debian and Ubuntu
+      become: True
+      apt:
+        name: openssh-client
+        state: latest
+    - name: Update APT Cache
+      become: True
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+    - name: Remove apt lock file
+      become: True
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock"
+    # VERIFY openssh does not rquire updates DEBIAN
+    - name: Debian - Verify OpenSSH does not require an update
+      become: True
+      apt:
+        name: openssh-server
+        update_cache: yes
+        state: latest
+      register: apt_output
+      changed_when: False
+      check_mode: no
+    - name: Debian - Install Snap on Ubuntu
+      become: True
+      apt:
+        name: snapd
+        state: present
+    - name: Debian - Install Certbot with Snap on Ubuntu
+      become: True
+      shell: snap install certbot --classic
+    - name: Debian - Check Certbot status
+      become: True
+      systemd:
+        name: snap.certbot.renew.service
+        state: started
+        enabled: yes
+      register: certbot_status
+    # VERIFY certbot is installed DEBIAN
+    - name: Update APT Cache
+      become: True
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+    - name: Remove apt lock file
+      become: True
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock"
+    - name: Debian - Verify certbot is installed
+      become: True
+      package:
+        name: certbot
+        state: present
+      register: certbot_installed
+      check_mode: no
 - name: Certbot redhat play
-  hosts: 
-    - redhat
+  hosts: redhat
+  user: ec2-user
   serial: 1
   tasks:
     - name: Redhat - Ensure dnf-plugins are installed.
@@ -95,69 +157,6 @@
         state: latest
       register: yum_output
       changed_when: false
-      check_mode: no
-
-- name: Certbot debian play
-  hosts: 
-    - debian
-  tasks:
-    - name: Debian - Update OpenSSH on Debian and Ubuntu
-      become: True
-      apt:
-        name: openssh-client
-        state: latest
-    - name: Update APT Cache
-      become: True
-      apt:
-        update_cache: yes
-        force_apt_get: yes
-    - name: Remove apt lock file
-      become: True
-      file:
-        state: absent
-        path: "/var/lib/dpkg/lock"
-    # VERIFY openssh does not rquire updates DEBIAN
-    - name: Debian - Verify OpenSSH does not require an update
-      become: True
-      apt:
-        name: openssh-server
-        update_cache: yes
-        state: latest
-      register: apt_output
-      changed_when: False
-      check_mode: no
-    - name: Debian - Install Snap on Ubuntu
-      become: True
-      apt:
-        name: snapd
-        state: present
-    - name: Debian - Install Certbot with Snap on Ubuntu
-      become: True
-      shell: snap install certbot --classic
-    - name: Debian - Check Certbot status
-      become: True
-      systemd:
-        name: snap.certbot.renew.service
-        state: started
-        enabled: yes
-      register: certbot_status
-    # VERIFY certbot is installed DEBIAN
-    - name: Update APT Cache
-      become: True
-      apt:
-        update_cache: yes
-        force_apt_get: yes
-    - name: Remove apt lock file
-      become: True
-      file:
-        state: absent
-        path: "/var/lib/dpkg/lock"
-    - name: Debian - Verify certbot is installed
-      become: True
-      package:
-        name: certbot
-        state: present
-      register: certbot_installed
       check_mode: no
 
 # cd ansible

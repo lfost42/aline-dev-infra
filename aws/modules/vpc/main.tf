@@ -1,4 +1,5 @@
 # ./run develop aline-eks-app init
+# terraform-docs markdown table --output-file README.md .
 
 # Create a VPC for the region associated with the AZ
 resource "aws_vpc" "vpc" {

@@ -1,0 +1,12 @@
+plugin: amazon.aws.aws_ec2
+aws_profile: default
+private_key_file: ~/.ssh/lf-ansible
+
+regions:
+  - us-east-1
+filters:
+  "tag:Controller": "Ansible"
+  "tag:Owner": "lf"
+groups:
+  redhat: "'redhat' in tags.System"
+  debian: "'debian' in tags.System"
