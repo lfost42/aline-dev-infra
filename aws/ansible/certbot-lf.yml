@@ -159,6 +159,23 @@
       changed_when: false
       check_mode: no
 
+- hosts: all
+  become: true
+  tasks:
+  - name: certbot version
+    shell: certbot --version
+    register: certbot_version
+    when: ansible_facts["distribution"] != "Debian"
+  - name: print certbot version
+    debug: msg="{{ certbot_version.stderr if (ansible_facts["distribution"] == "Amazon") else certbot_version.stdout }}"
+    when: ansible_facts["distribution"] != "Debian"
+  - name: openssh version
+    shell: ssh -V
+    register: openssh_version
+  - name: print openssh version
+    debug: msg="{{ openssh_version.stderr }}"
+
+
 # cd ansible
 # ansible-playbook -i inventory certbot-lf.yml
 

@@ -3,7 +3,7 @@ aws_profile: default
 private_key_file: ~/.ssh/lf-ansible
 
 regions:
-  - us-east-1
+  - us-east-2
 filters:
   "tag:Controller": "Ansible"
   "tag:Owner": "lf"

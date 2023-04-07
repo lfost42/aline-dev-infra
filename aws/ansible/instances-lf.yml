@@ -1,60 +1,60 @@
-- name: provision EC2 instances
-  hosts: localhost
-  connection: local
-  gather_facts: False
-  tasks:
-    - name: Provision an rhel instance with a public IP address
-      amazon.aws.ec2_instance:
-        name: lf-rhel
-        key_name: ansible 
-        instance_type: t3.micro
-        region: us-east-2
-        security_group: SSH
-        wait: yes
-        wait_timeout: 600
-        network:
-          assign_public_ip: true
-        image_id: ami-067a8829f9ae24c1c
-        tags:
-          Environment: Develop
-          Owner: lf
-          Controller: Ansible
-          System: redhat
-          User: ec2-user
-    - name: Provision an debian instance with a public IP address
-      amazon.aws.ec2_instance:
-        name: lf-debian
-        key_name: ansible 
-        instance_type: t3.micro
-        region: us-east-2
-        security_group: SSH
-        wait: yes
-        wait_timeout: 600
-        network:
-          assign_public_ip: true
-        image_id: ami-0f35413f664528e13
-        tags:
-          Environment: Develop
-          Owner: lf
-          Controller: Ansible
-          System: debian
-          User: admin
-    - name: Provision an debian instance with a public IP address
-      amazon.aws.ec2_instance:
-        name: lf-ubuntu
-        key_name: ansible 
-        instance_type: t3.micro
-        region: us-east-2
-        security_group: SSH
-        wait: yes
-        wait_timeout: 600
-        network:
-          assign_public_ip: true
-        image_id: ami-0a695f0d95cefc163
-        tags:
-          Environment: Develop
-          Owner: lf
-          Controller: Ansible
-          System: debian
-          User: ubuntu
+# - name: provision EC2 instances
+#   hosts: localhost
+#   connection: local
+#   gather_facts: False
+#   tasks:
+#     - name: Provision an rhel instance with a public IP address
+#       amazon.aws.ec2_instance:
+#         name: lf-rhel
+#         key_name: ansible 
+#         instance_type: t3.micro
+#         region: us-east-2
+#         security_group: SSH
+#         wait: yes
+#         wait_timeout: 600
+#         network:
+#           assign_public_ip: true
+#         image_id: ami-067a8829f9ae24c1c
+#         tags:
+#           Environment: Develop
+#           Owner: lf
+#           Controller: Ansible
+#           System: redhat
+#           User: ec2-user
+#     - name: Provision an debian instance with a public IP address
+#       amazon.aws.ec2_instance:
+#         name: lf-debian
+#         key_name: ansible 
+#         instance_type: t3.micro
+#         region: us-east-2
+#         security_group: SSH
+#         wait: yes
+#         wait_timeout: 600
+#         network:
+#           assign_public_ip: true
+#         image_id: ami-0f35413f664528e13
+#         tags:
+#           Environment: Develop
+#           Owner: lf
+#           Controller: Ansible
+#           System: debian
+#           User: admin
+#     - name: Provision an debian instance with a public IP address
+#       amazon.aws.ec2_instance:
+#         name: lf-ubuntu
+#         key_name: ansible 
+#         instance_type: t3.micro
+#         region: us-east-2
+#         security_group: SSH
+#         wait: yes
+#         wait_timeout: 600
+#         network:
+#           assign_public_ip: true
+#         image_id: ami-0a695f0d95cefc163
+#         tags:
+#           Environment: Develop
+#           Owner: lf
+#           Controller: Ansible
+#           System: debian
+#           User: ubuntu
 
