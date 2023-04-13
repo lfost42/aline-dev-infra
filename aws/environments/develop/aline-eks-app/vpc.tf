@@ -24,12 +24,12 @@ module "aline_vpc" {
       Network                                     = "Public"
   }
 
-  private_subnet_tags = {
-    VPC                                         = module.aline_vpc.vpc_id
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"           = 1
-    Network                                     = "Private"
-  }
+  # private_subnet_tags = {
+  #   VPC                                         = module.aline_vpc.vpc_id
+  #   "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+  #   "kubernetes.io/role/internal-elb"           = 1
+  #   Network                                     = "Private"
+  # }
 
 }
 
@@ -41,9 +41,9 @@ output "aline_public_subnets" {
   value = module.aline_vpc.public_subnets
 }
 
-output "aline_private_subnets" {
-  value = module.aline_vpc.private_subnets
-}
+# output "aline_private_subnets" {
+#   value = module.aline_vpc.private_subnets
+# }
 
 variable "vpc_cidr" {
   type        = string
@@ -63,11 +63,11 @@ variable "availability_zones" {
   default     = ["us-east-1a", "us-east-1b"]
 }
 
-variable "private_subnets" {
-  type        = list(string)
-  description = "Private subnet cidr"
-  default     = ["10.2.0.0/22", "10.2.4.0/24"]
-}
+# variable "private_subnets" {
+#   type        = list(string)
+#   description = "Private subnet cidr"
+#   default     = ["10.2.0.0/22", "10.2.4.0/24"]
+# }
 
 variable "public_subnets" {
   type        = list(string)
