@@ -12,7 +12,7 @@ module "eks" {
   version                         = "18.29.1"
   cluster_name                    = var.cluster_name
   cluster_version                 = var.cluster_version
-  cluster_endpoint_private_access = true
+  cluster_endpoint_private_access = false
   cluster_endpoint_public_access  = true
   enable_irsa                     = true
 
@@ -27,10 +27,7 @@ module "eks" {
   }
 
   vpc_id     = module.aline_vpc.vpc_id
-  subnet_ids = module.aline_vpc.private_subnets
-
-##  module vpc
-#     subnet_ids = module.aline_vpc.private_subnets
+  subnet_ids = module.aline_vpc.public_subnets # module.aline_vpc.private_subnets
 
   manage_aws_auth_configmap = true
 
