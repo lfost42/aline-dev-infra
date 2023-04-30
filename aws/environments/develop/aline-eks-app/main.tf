@@ -84,13 +84,13 @@ module "eks" {
       ami_type       = "BOTTLEROCKET_x86_64"
       platform       = "bottlerocket"
       min_size       = 1
-      max_size       = 2
+      max_size       = 4
       desired_size   = 1
-      instance_types = ["t3.micro"]
+      instance_types = ["t3.small"]
       capacity_type  = "SPOT"
       disk_size      = 10
       labels         = { 
-        subnet = "public" 
+        subnet = "public"
       }
 
       # this will get added to what AWS provides

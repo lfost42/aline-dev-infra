@@ -7,7 +7,7 @@ variable "region" {
 variable "infra_env" {
   type        = string
   description = "Deployment environment name."
-  default     = "dev-eks"
+  default     = "develop"
 }
 
 variable "tags" {
@@ -15,7 +15,7 @@ variable "tags" {
   type        = map(string)
   default = {
     Project     = "lf-aline"
-    Environment = "dev-eks"
+    Environment = "develop"
     ManagedBy   = "terraform"
     Owner       = "lynda"
   }
