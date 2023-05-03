@@ -32,11 +32,11 @@ Our Jenkins distributed environment and SonarQube server is runs on 2 EC2 instan
         - Push and Merge triggers via Jenkins Integrations webhook on GitLab. 
     - [x] Jenkins Integration with SonarQube
         - Tests and Quality Gates for each Maven and Node applications implemented. 
-    - [x] [Docker-Compose](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-coud-cicd) via Jenkins
-    - [x] [Kubernetes](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-coud-cicd) via Jenkins
-    - [x] [Terraform](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Plan and Apply via Jenkins
+    - [x] [Docker-Compose](https://github.com/lfost42/aline-cicd) via Jenkins
+    - [x] [Kubernetes](https://github.com/lfost42/aline-cicd) via Jenkins
+    - [x] [Terraform](https://github.com/lfost42/aline-dev-infra) Plan and Apply via Jenkins
 
-- [x] [Terraform CI/CD](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra)
+- [x] [Terraform CI/CD](https://github.com/lfost42/aline-dev-infra)
     - [x] Architect Base Infrastructure
     - [x] Create Base Infrastructure
     - [x] TFLint
@@ -44,13 +44,13 @@ Our Jenkins distributed environment and SonarQube server is runs on 2 EC2 instan
     - [x] Terraform Associate Certificate
 
 - [x] General CI/CD
-    - [x] [Ansible](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Playbooks
-    - [x] Vanilla [CloudFormation](https://git1.smoothstack.com/cohorts/2022/organizations/cyber-cumulus/lynda-foster/dev-infra) Templates
+    - [x] [Ansible](https://github.com/lfost42/aline-dev-infra) Playbooks
+    - [x] Vanilla [CloudFormation](https://github.com/lfost42/aline-dev-infra) Templates
  
 ## Acknowledgements
 Lead Developer:
 
-[Lynda Foster](https://git1.smoothstack.com/lynda.foster)
+[Lynda Foster](https://github.com/lfost42)
 
 With support from the Cyber Cumulus Team:
 
