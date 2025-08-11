@@ -20,9 +20,6 @@ When designing a base infrastructure to be highly available, fault-tolerant, and
 
 To ensure that only authorized users or applications can connect to the database and microservices, we used security groups and policies that implemented the principle of least privilege. This separation of concerns significantly reduces the risk of attacks and ultimately improves the overall stability and reliability of the application. 
 
-#### VPC
-Much of our scaling challenges were addressed in the implementation of our VPC module. We utilized the cidrsubnet function with the appropriate index and cidr bits to accommodate our subnet groups to scale up to 5 availability zones. We also adjust the index value based on the number of availability zones to adapt to whatever count we set it to. 
-
 #### Scalability
 In terms of directory structure, we took a modular approach. This allowed resources that are shared by both the ECS and EKS deployment to be used without the need to refactor or duplicate code. In the environments directory, each application combines a set of child modules to make up a more holistic solution. This is accomplished using outputs, which are propagated from the child modules up into the root deployments. The extensible nature allows us to add new resources or update existing ones without disturbing or having to rewrite the overall architecture of the solution. It also provides consistency, follows best practices, and makes the code easier to manage and maintain over time. 
 
@@ -40,9 +37,7 @@ In the AWS directory, I have a lint script that runs tflint and terraform format
 Both scripts are set up to capture the exit code to ensure that any failures caused by running either script are propagated to the Jenkins pipeline. This allows us to quickly identify and address any issues that arise during the development process. 
 
 ### Pipeline
-Knowing that Jack was going to run his pipeline live, I went ahead and ran this ahead of time. Terraform Apply is set to only run on merges to the Main branch since Infrastructure isn’t something we want to change until it is ready for production. 
-
-To conform to various compliance standards, this step requires administrative approval as shown here. When infrastructure changes are approved, an email confirmation is triggered. The email includes the pipeline name, build, person who authorized the change, as well as the git commit hash connected to the change. This helps maintain a clear audit trail and improve the traceability across our development process. 
+Terraform Apply is set to only run on merges to the Main branch since Infrastructure isn’t something we want to change until it is ready for production. To conform to various compliance standards, this step requires administrative approval as shown here. When infrastructure changes are approved, an email confirmation is triggered. The email includes the pipeline name, build, person who authorized the change, as well as the git commit hash connected to the change. This helps maintain a clear audit trail and improve the traceability across our development process. 
 
 ## Roadmap
 
