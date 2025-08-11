@@ -26,9 +26,7 @@ Much of our scaling challenges were addressed in the implementation of our VPC m
 #### Scalability
 In terms of directory structure, we took a modular approach. This allowed resources that are shared by both the ECS and EKS deployment to be used without the need to refactor or duplicate code. In the environments directory, each application combines a set of child modules to make up a more holistic solution. This is accomplished using outputs, which are propagated from the child modules up into the root deployments. The extensible nature allows us to add new resources or update existing ones without disturbing or having to rewrite the overall architecture of the solution. It also provides consistency, follows best practices, and makes the code easier to manage and maintain over time. 
 
-Our tfvars file provides us with the flexibility to scale or modify the default configuration of our application. This includes the ability to scale individual components up or down as needed. We can also easily update the number of availability zones, which will automatically create subnets that are initiated as true. 
-
-In main.tf, we can modify the node properties of our cluster to adjust the scale of our nodes or change the type of our AMI (amazon machine image). By leveraging the tfvars file, we are able to make changes quickly and efficiently, without the need for significant manual intervention. 
+Our tfvars file provides us with the flexibility to scale or modify the default configuration of our application. This includes the ability to scale individual components up or down as needed. We can also modify the node properties of our cluster to adjust the scale of our nodes or change the type of our AMI (amazon machine image). By leveraging the tfvars file, we are able to make changes quickly and efficiently, without the need for significant manual intervention. 
 
 #### Work Flow
 One of the challenges of working with modules was the work flow in itself in navigating to the appropriate directory to run various terraform tasks. This led to the development of two bash scripts that reduced my back and forth to only the AWS and environment directories.   

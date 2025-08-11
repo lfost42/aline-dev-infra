@@ -88,11 +88,11 @@ variable "ansible_vpc_type" {
   default     = "main"
 }
 
-# variable "host_ami" {
-#   type        = string
-#   description = "AMI of ec2 instance"
-#   default     = "ami-005f9685cb30f234b" # Amazon Linux 2 
-# }
+variable "host_ami" {
+  type        = string
+  description = "AMI of ec2 instance"
+  default     = "ami-005f9685cb30f234b" # Amazon Linux 2 
+}
 
 variable "node1_ami" {
   type        = string

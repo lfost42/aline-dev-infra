@@ -79,28 +79,7 @@ module "eks" {
     }
   }
 
-  eks_managed_node_groups = {
-    public_node = {
-      ami_type       = "BOTTLEROCKET_x86_64"
-      platform       = "bottlerocket"
-      min_size       = 1
-      max_size       = 4
-      desired_size   = 1
-      instance_types = ["t3.small"]
-      capacity_type  = "SPOT"
-      disk_size      = 10
-      labels         = { 
-        subnet = "public"
-      }
-
-      # this will get added to what AWS provides
-      bootstrap_extra_args = <<-EOT
-      # extra args added
-      [settings.kernel]
-      lockdown = "integrity"
-      EOT
-    }
-  }
+  eks_managed_node_groups = var.eks_node_groups
 
   depends_on = [
     module.aline_vpc
