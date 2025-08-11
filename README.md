@@ -59,10 +59,3 @@ With support from the Cyber Cumulus Team:
 
 ## License
 [MIT License](LICENSE)
-
-## Project status
-Local Containerization and Automation Complete
-Coud Containerization and Automation Complete
-Jenkins CI/CD Complete
-Terraform CI/CD Complete
-General CI/CD - In Progress
