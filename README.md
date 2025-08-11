@@ -29,7 +29,7 @@ Our tfvars file provides us with the flexibility to scale or modify the default 
 One of the challenges of working with modules was the work flow in itself in navigating to the appropriate directory to run various terraform tasks. This led to the development of two bash scripts that reduced my back and forth to only the AWS and environment directories.   
 
 #### RUN SCRIPT
-For the environment directory, I have a run script and I called terraform output earlier. This one allows me to pass in the environment [deploy] and application directory [aline-eks-app] followed by the terraform command `let say stay state list`, and it will pass in access the root directory and backend configuration state files which are stored centrally on s3 buckets with dynamodb locking. This shows a list of the current resources in this deployment. 
+For the environment directory, I have a run script and I called terraform output earlier. This one allows me to pass in the environment `deploy` and application directory `aline-eks-app` followed by the terraform command `let say stay state list`, and it will pass in access the root directory and backend configuration state files which are stored centrally on s3 buckets with dynamodb locking. This shows a list of the current resources in this deployment. 
 
 ### Lint Scripts
 In the AWS directory, I have a lint script that runs tflint and terraform format in both the environment and module directories. This is something I use frequently to ensure I am following best practices and maintain the quality as well as readability of my code. It also helps prevent minor issues from building up over time. Finding the issue is a matter of clicking the link that proceeds the issue, following the recommendation, and rerun `./lint`. 
