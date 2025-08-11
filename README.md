@@ -6,7 +6,7 @@ Aline Financial is an online banking platform that utilizes the power of the AWS
 
 ### Aline Financial App Architecture:
 
-![logo](diagram.png)
+![logo](Cloud_Architecture_Expanded.png)
 
 ## Source files
 This repo contains Terraform resource files for the Aline Banking Application. 
