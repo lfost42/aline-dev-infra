@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE}-deployment
+  namespace: aline
+  labels:
+    aline.component: ${SERVICE}
+    subnet: ${SUBNET}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      aline.component: ${SERVICE}
+      subnet: ${SUBNET}
+  template:
+    metadata:
+      labels:
+        aline.component: ${SERVICE}
+        subnet: ${SUBNET}
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: subnet
+                operator: In
+                values:
+                - ${SUBNET}
+      imagePullSecrets:
+        - name: aws-registry-key
+      containers:
+      - name: ${SERVICE}
+        image: ${REPO}:${GIT_COMMIT}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: ${APP_PORT}
+        resources:
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+          requests:
+            cpu: "150m"
+            memory: "128Mi"
+      restartPolicy: Always
+
